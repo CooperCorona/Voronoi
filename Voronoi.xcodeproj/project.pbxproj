@@ -7,13 +7,60 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		DC11AF2D1CFFA232001439BA /* Voronoi.h in Headers */ = {isa = PBXBuildFile; fileRef = DC11AF2C1CFFA232001439BA /* Voronoi.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DC11AF3B1CFFAC3D001439BA /* ExposedBinarySearchTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF341CFFAC3D001439BA /* ExposedBinarySearchTree.swift */; };
+		DC11AF3C1CFFAC3D001439BA /* SwiftPriorityQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF351CFFAC3D001439BA /* SwiftPriorityQueue.swift */; };
+		DC11AF3D1CFFAC3D001439BA /* VoronoiCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF361CFFAC3D001439BA /* VoronoiCell.swift */; };
+		DC11AF3E1CFFAC3D001439BA /* VoronoiDiagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF371CFFAC3D001439BA /* VoronoiDiagram.swift */; };
+		DC11AF3F1CFFAC3D001439BA /* VoronoiEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF381CFFAC3D001439BA /* VoronoiEdge.swift */; };
+		DC11AF401CFFAC3D001439BA /* VoronoiEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF391CFFAC3D001439BA /* VoronoiEvent.swift */; };
+		DC11AF411CFFAC3D001439BA /* VoronoiParabola.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF3A1CFFAC3D001439BA /* VoronoiParabola.swift */; };
+		DC11AF511CFFAC5B001439BA /* OmniSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC11AF4A1CFFAC46001439BA /* OmniSwift.framework */; };
+		DC11AF631CFFB32A001439BA /* VoronoiResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF621CFFB32A001439BA /* VoronoiResult.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		DC11AF491CFFAC46001439BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DC72AA3B1B166C7D0035BF49;
+			remoteInfo = OmniSwift;
+		};
+		DC11AF4B1CFFAC46001439BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DC72AA461B166C7D0035BF49;
+			remoteInfo = OmniSwiftTests;
+		};
+		DC11AF4D1CFFAC46001439BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DC37E8B61BB740D700313B10;
+			remoteInfo = OmniSwiftShapes;
+		};
+		DC11AF4F1CFFAC46001439BA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = DC37E8BF1BB740D700313B10;
+			remoteInfo = OmniSwiftShapesTests;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		DC11AF291CFFA232001439BA /* Voronoi.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Voronoi.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DC11AF2C1CFFA232001439BA /* Voronoi.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Voronoi.h; sourceTree = "<group>"; };
 		DC11AF2E1CFFA232001439BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DC11AF341CFFAC3D001439BA /* ExposedBinarySearchTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExposedBinarySearchTree.swift; sourceTree = "<group>"; };
+		DC11AF351CFFAC3D001439BA /* SwiftPriorityQueue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftPriorityQueue.swift; sourceTree = "<group>"; };
+		DC11AF361CFFAC3D001439BA /* VoronoiCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCell.swift; sourceTree = "<group>"; };
+		DC11AF371CFFAC3D001439BA /* VoronoiDiagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiDiagram.swift; sourceTree = "<group>"; };
+		DC11AF381CFFAC3D001439BA /* VoronoiEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiEdge.swift; sourceTree = "<group>"; };
+		DC11AF391CFFAC3D001439BA /* VoronoiEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiEvent.swift; sourceTree = "<group>"; };
+		DC11AF3A1CFFAC3D001439BA /* VoronoiParabola.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiParabola.swift; sourceTree = "<group>"; };
+		DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OmniSwift.xcodeproj; path = ../OmniSwift/OmniSwift.xcodeproj; sourceTree = "<group>"; };
+		DC11AF621CFFB32A001439BA /* VoronoiResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiResult.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -21,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC11AF511CFFAC5B001439BA /* OmniSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -30,6 +78,7 @@
 		DC11AF1F1CFFA232001439BA = {
 			isa = PBXGroup;
 			children = (
+				DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */,
 				DC11AF2B1CFFA232001439BA /* Voronoi */,
 				DC11AF2A1CFFA232001439BA /* Products */,
 			);
@@ -46,10 +95,28 @@
 		DC11AF2B1CFFA232001439BA /* Voronoi */ = {
 			isa = PBXGroup;
 			children = (
-				DC11AF2C1CFFA232001439BA /* Voronoi.h */,
+				DC11AF341CFFAC3D001439BA /* ExposedBinarySearchTree.swift */,
+				DC11AF351CFFAC3D001439BA /* SwiftPriorityQueue.swift */,
+				DC11AF361CFFAC3D001439BA /* VoronoiCell.swift */,
+				DC11AF371CFFAC3D001439BA /* VoronoiDiagram.swift */,
+				DC11AF381CFFAC3D001439BA /* VoronoiEdge.swift */,
+				DC11AF391CFFAC3D001439BA /* VoronoiEvent.swift */,
+				DC11AF3A1CFFAC3D001439BA /* VoronoiParabola.swift */,
+				DC11AF621CFFB32A001439BA /* VoronoiResult.swift */,
 				DC11AF2E1CFFA232001439BA /* Info.plist */,
 			);
 			path = Voronoi;
+			sourceTree = "<group>";
+		};
+		DC11AF431CFFAC46001439BA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DC11AF4A1CFFAC46001439BA /* OmniSwift.framework */,
+				DC11AF4C1CFFAC46001439BA /* OmniSwiftTests.xctest */,
+				DC11AF4E1CFFAC46001439BA /* OmniSwiftShapes.framework */,
+				DC11AF501CFFAC46001439BA /* OmniSwiftShapesTests.xctest */,
+			);
+			name = Products;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -59,7 +126,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DC11AF2D1CFFA232001439BA /* Voronoi.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -108,12 +174,49 @@
 			mainGroup = DC11AF1F1CFFA232001439BA;
 			productRefGroup = DC11AF2A1CFFA232001439BA /* Products */;
 			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = DC11AF431CFFAC46001439BA /* Products */;
+					ProjectRef = DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */;
+				},
+			);
 			projectRoot = "";
 			targets = (
 				DC11AF281CFFA232001439BA /* Voronoi */,
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		DC11AF4A1CFFAC46001439BA /* OmniSwift.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = OmniSwift.framework;
+			remoteRef = DC11AF491CFFAC46001439BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DC11AF4C1CFFAC46001439BA /* OmniSwiftTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = OmniSwiftTests.xctest;
+			remoteRef = DC11AF4B1CFFAC46001439BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DC11AF4E1CFFAC46001439BA /* OmniSwiftShapes.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = OmniSwiftShapes.framework;
+			remoteRef = DC11AF4D1CFFAC46001439BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		DC11AF501CFFAC46001439BA /* OmniSwiftShapesTests.xctest */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.cfbundle;
+			path = OmniSwiftShapesTests.xctest;
+			remoteRef = DC11AF4F1CFFAC46001439BA /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
 		DC11AF271CFFA232001439BA /* Resources */ = {
@@ -130,6 +233,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC11AF3E1CFFAC3D001439BA /* VoronoiDiagram.swift in Sources */,
+				DC11AF631CFFB32A001439BA /* VoronoiResult.swift in Sources */,
+				DC11AF3B1CFFAC3D001439BA /* ExposedBinarySearchTree.swift in Sources */,
+				DC11AF3C1CFFAC3D001439BA /* SwiftPriorityQueue.swift in Sources */,
+				DC11AF401CFFAC3D001439BA /* VoronoiEvent.swift in Sources */,
+				DC11AF411CFFAC3D001439BA /* VoronoiParabola.swift in Sources */,
+				DC11AF3F1CFFAC3D001439BA /* VoronoiEdge.swift in Sources */,
+				DC11AF3D1CFFAC3D001439BA /* VoronoiCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -230,6 +341,7 @@
 		DC11AF321CFFA232001439BA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -240,12 +352,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "Corona-Corporation.Voronoi";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		DC11AF331CFFA232001439BA /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -278,6 +392,7 @@
 				DC11AF331CFFA232001439BA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
