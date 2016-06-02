@@ -28,7 +28,7 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
     
     ///The circle event associated with this parabola. When the circle event is
     ///processed, this parabola is removed from the tree.
-    internal var circleEvent:CircleEvent? = nil {
+    internal var circleEvent:VoronoiCircleEvent? = nil {
         didSet {
             if oldValue?.parabola === self {
                 oldValue?.parabola = nil
@@ -134,6 +134,8 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
     }
     
 }
+
+// MARK: - Comparable Protocol / ExposedBinarySearchTreeProtocol
 
 internal func ==(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
     return lhs.focus == rhs.focus

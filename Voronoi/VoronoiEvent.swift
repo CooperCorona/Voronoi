@@ -10,55 +10,25 @@ import Foundation
 import UIKit
 import OmniSwift
 
+///Represents an event that happens when the sweep line crosses a specific point.
 internal class VoronoiEvent: Comparable {
+    
+    ///The point at which the event is triggerred.
     internal let point:CGPoint
     
+    ///Initializes a VoronoiEvent with a given point.
     internal init(point:CGPoint) {
         self.point = point
     }
     
+    ///Triggers the event on the VoronoiDiagram.
     internal func performEvent(diagram:VoronoiDiagram) {
         
     }
+
 }
 
-internal class SiteEvent: VoronoiEvent {
-    
-    private let cell:VoronoiCell
-    
-    internal init(cell:VoronoiCell) {
-        self.cell = cell
-        super.init(point: cell.voronoiPoint)
-    }
-    
-    internal override func performEvent(diagram: VoronoiDiagram) {
-        diagram.sweepLine = self.point.y
-        diagram.addPoint(self.cell)
-    }
-}
-
-internal class CircleEvent: VoronoiEvent {
-    
-    let center:CGPoint
-    let radius:CGFloat
-    weak var parabola:VoronoiParabola?
-    
-    internal init(point:CGPoint, radius:CGFloat, parabola:VoronoiParabola) {
-        self.center = point
-        self.parabola = parabola
-        self.radius = radius
-        super.init(point: point + CGPoint(y: radius))
-    }
-    
-    internal override func performEvent(diagram: VoronoiDiagram) {
-        diagram.sweepLine = self.point.y
-        diagram.removeParabolaFromCircleEvent(self)
-    }
-
-    internal func isEqualTo(event:CircleEvent) -> Bool {
-        return self.center ~= event.center && self.radius ~= event.radius
-    }
-}
+// MARK: - Comparable Protocol
 
 internal func ==(lhs:VoronoiEvent, rhs:VoronoiEvent) -> Bool {
     return lhs.point.y == rhs.point.y

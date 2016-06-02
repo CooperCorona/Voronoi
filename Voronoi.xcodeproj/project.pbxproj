@@ -17,6 +17,8 @@
 		DC11AF511CFFAC5B001439BA /* OmniSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC11AF4A1CFFAC46001439BA /* OmniSwift.framework */; };
 		DC11AF631CFFB32A001439BA /* VoronoiResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF621CFFB32A001439BA /* VoronoiResult.swift */; };
 		DC11AF6A1CFFC338001439BA /* VoronoiCellEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */; };
+		DC11AF741CFFCC72001439BA /* VoronoiSiteEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */; };
+		DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +65,8 @@
 		DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OmniSwift.xcodeproj; path = ../OmniSwift/OmniSwift.xcodeproj; sourceTree = "<group>"; };
 		DC11AF621CFFB32A001439BA /* VoronoiResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiResult.swift; sourceTree = "<group>"; };
 		DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCellEdge.swift; sourceTree = "<group>"; };
+		DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiSiteEvent.swift; sourceTree = "<group>"; };
+		DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCircleEvent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,11 +105,13 @@
 				DC11AF351CFFAC3D001439BA /* SwiftPriorityQueue.swift */,
 				DC11AF361CFFAC3D001439BA /* VoronoiCell.swift */,
 				DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */,
+				DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */,
 				DC11AF371CFFAC3D001439BA /* VoronoiDiagram.swift */,
 				DC11AF381CFFAC3D001439BA /* VoronoiEdge.swift */,
 				DC11AF391CFFAC3D001439BA /* VoronoiEvent.swift */,
 				DC11AF3A1CFFAC3D001439BA /* VoronoiParabola.swift */,
 				DC11AF621CFFB32A001439BA /* VoronoiResult.swift */,
+				DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */,
 				DC11AF2E1CFFA232001439BA /* Info.plist */,
 			);
 			path = Voronoi;
@@ -240,6 +246,8 @@
 				DC11AF631CFFB32A001439BA /* VoronoiResult.swift in Sources */,
 				DC11AF3B1CFFAC3D001439BA /* ExposedBinarySearchTree.swift in Sources */,
 				DC11AF3C1CFFAC3D001439BA /* SwiftPriorityQueue.swift in Sources */,
+				DC11AF741CFFCC72001439BA /* VoronoiSiteEvent.swift in Sources */,
+				DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */,
 				DC11AF401CFFAC3D001439BA /* VoronoiEvent.swift in Sources */,
 				DC11AF6A1CFFC338001439BA /* VoronoiCellEdge.swift in Sources */,
 				DC11AF411CFFAC3D001439BA /* VoronoiParabola.swift in Sources */,

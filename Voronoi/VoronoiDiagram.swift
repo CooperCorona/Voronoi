@@ -42,7 +42,7 @@ public class VoronoiDiagram: NSObject {
     public internal(set) var sweepLine:CGFloat = 0.0
     private var result:VoronoiResult? = nil
     
-    private var circleEvents:[CircleEvent] = []
+    private var circleEvents:[VoronoiCircleEvent] = []
     
     public init(points:[CGPoint], size:CGSize) {
         self.points = points
@@ -52,7 +52,7 @@ public class VoronoiDiagram: NSObject {
         super.init()
         
         for cell in self.cells {
-            self.addEvent(SiteEvent(cell: cell))
+            self.addEvent(VoronoiSiteEvent(cell: cell))
         }
         
     }
@@ -83,7 +83,7 @@ public class VoronoiDiagram: NSObject {
     private func sweepOnce() {
         
         if let event = self.events.pop() {
-            if let circleEvent = event as? CircleEvent where circleEvent.parabola == nil || event.point.y < self.sweepLine {
+            if let circleEvent = event as? VoronoiCircleEvent where circleEvent.parabola == nil || event.point.y < self.sweepLine {
                 self.sweepOnce()
                 return
             }
@@ -190,7 +190,7 @@ public class VoronoiDiagram: NSObject {
         self.checkCircleEventForParabola(rightParab)
     }
     
-    internal func removeParabolaFromCircleEvent(event:CircleEvent) {
+    internal func removeParabolaFromCircleEvent(event:VoronoiCircleEvent) {
         guard let parabola = event.parabola else {
             return
         }
@@ -278,7 +278,7 @@ public class VoronoiDiagram: NSObject {
             return
         }
         
-        let event = CircleEvent(point: circle.center, radius: circle.radius, parabola: parabola)
+        let event = VoronoiCircleEvent(point: circle.center, radius: circle.radius, parabola: parabola)
         if self.circleEvents.contains({ $0.isEqualTo(event) }) {
             return
         }
