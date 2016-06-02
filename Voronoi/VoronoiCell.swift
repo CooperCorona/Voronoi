@@ -9,102 +9,18 @@
 import UIKit
 import OmniSwift
 
-internal class VoronoiCellEdge {
-    
-    internal weak var startNeighbor:VoronoiCellEdge? = nil
-    internal weak var endNeighbor:VoronoiCellEdge?   = nil
-    internal var startPoint:CGPoint             = CGPoint.zero
-    internal var endPoint:CGPoint               = CGPoint.zero {
-        didSet {
-            self.hasSetEnd = true
-        }
-    }
-    internal var hasSetEnd                      = false
-    internal weak var owner:VoronoiCell?        = nil
-    internal var directionVector:CGPoint { return (self.endPoint - self.startPoint).unit() }
-    
-    internal init(start:CGPoint) {
-        self.startPoint = start
-    }
-    
-    internal func makeNeighbor(cellEdge:VoronoiCellEdge) {
-        if self.startPoint ~= cellEdge.startPoint {
-            self.startNeighbor = cellEdge
-            cellEdge.startNeighbor = self
-        } else if self.startPoint ~= cellEdge.endPoint {
-            self.startNeighbor = cellEdge
-            cellEdge.endNeighbor = self
-        } else if self.endPoint ~= cellEdge.startPoint {
-            self.endNeighbor = cellEdge
-            cellEdge.startNeighbor = self
-        } else if self.endPoint ~= cellEdge.endPoint {
-            self.endNeighbor = cellEdge
-            cellEdge.endNeighbor = self
-        }
-    }
-    
-    internal func getNextFrom(cellEdge:VoronoiCellEdge) -> (edge:VoronoiCellEdge?, vertex:CGPoint) {
-        if self.startNeighbor === cellEdge {
-            return (self.endNeighbor, self.endPoint)
-        } else {
-            return (self.startNeighbor, self.startPoint)
-        }
-    }
-    
-    internal func intersectionWith(boundaries:CGSize) -> CGPoint? {
-        let vector = self.endPoint - self.startPoint
-        //Horizontal boundaries
-        if (self.startPoint.x <= 0.0) == (0.0 <= self.endPoint.x) {
-            //Edge crosses line x = 0
-            let t = -self.startPoint.x / vector.x
-            let y = vector.y * t + self.startPoint.y
-            if 0.0 <= y && y <= boundaries.height {
-                //Point crosses the edge that actually lies on the boundaries
-                return CGPoint(x: 0.0, y: y)
-            }
-        } else if (self.startPoint.x <= boundaries.width) == (boundaries.width <= self.endPoint.x) {
-            //Edge crosses line x = boundaries.width
-            let t = (boundaries.width - self.startPoint.x) / vector.x
-            let y = vector.y * t + self.startPoint.y
-            if 0.0 <= y && y <= boundaries.height {
-                //Point crosses the edge that actually lies on the boundaries
-                return CGPoint(x: boundaries.width, y: y)
-            }
-        }
-        
-        //Vertical boundaries
-        if (self.startPoint.y <= 0.0) == (0.0 <= self.endPoint.y) {
-            //Edge crosses line x = 0
-            let t = -self.startPoint.y / vector.y
-            let x = vector.x * t + self.startPoint.x
-            if 0.0 <= x && x <= boundaries.width {
-                //Point crosses the edge that actually lies on the boundaries
-                return CGPoint(x: x, y: 0.0)
-            }
-        } else if (self.startPoint.y <= boundaries.height) == (boundaries.height <= self.endPoint.y) {
-            //Edge crosses line y = boundaries.height
-            let t = (boundaries.height - self.startPoint.y) / vector.y
-            let x = vector.x * t + self.startPoint.x
-            if 0.0 <= x && x <= boundaries.width {
-                //Point crosses the edge that actually lies on the boundaries
-                return CGPoint(x: x, y: boundaries.height)
-            }
-        }
-        
-        return nil
-    }
-    
-}
-
+/**
+ Combines a voronoi point and the edges / vertices around it.
+ */
 public class VoronoiCell {
     
-    public enum Error: ErrorType {
-        case NoEdges
-    }
-    
+    ///The original voronoi point.
     public let voronoiPoint:CGPoint
+    ///The boundaries of the VoronoiDiagram.
     public let boundaries:CGSize
-    internal var vertices:[CGPoint]
+    ///The vertices that form the edges of this cell.
+    private var vertices:[CGPoint]
+    ///The actual edges that form the boundaries of this cell.
     internal var cellEdges:[VoronoiCellEdge] = []
     
     ///These are needed because sometimes I need to connect
@@ -112,55 +28,26 @@ public class VoronoiCell {
     ///being considered twice. No cell will need to connect
     ///more than 2 corners, so this is more than sufficient.
     private var usedLeftSide    = false
+    ///See docs for ```usedLeftSide```.
     private var usedRightSide   = false
+    ///See docs for ```usedLeftSide```.
     private var usedTopSide     = false
+    ///See docs for ```usedLeftSide```.
     private var usedBottomSide  = false
     
+    ///Initializes a VoronoiCell with a voronoi point and the boundaries of a VoronoiDiagram.
     public init(point:CGPoint, boundaries:CGSize) {
         self.voronoiPoint   = point
         self.vertices       = []
         self.boundaries     = boundaries
     }
     
-    public func triangleFanVertices() -> [(first:CGPoint, second:CGPoint, third:CGPoint)] {
-        var verts:[(first:CGPoint, second:CGPoint, third:CGPoint)] = []
-        for (i, vertex) in self.vertices.enumerateSkipLast() {
-            verts.append((self.voronoiPoint, vertex, self.vertices[i + 1]))
-        }
-        if let first = self.vertices.first, last = self.vertices.last {
-            verts.append((self.voronoiPoint, last, first))
-        }
-        return verts
-    }
-    
-    public func makeVertexLoop() throws -> [CGPoint] {
+    ///Calculates the vertices in the correct order so they can be
+    ///combined to form the edges of this cell.
+    public func makeVertexLoop() -> [CGPoint] {
         guard let start = self.cellEdges.first else {
-            throw Error.NoEdges
+            return []
         }
-        /*
-        var vertices:[CGPoint]
-        var next:VoronoiCellEdge?
-        if start.startNeighbor != nil{
-            vertices    = [start.startPoint]
-            next        = start.startNeighbor
-        } else if start.endNeighbor != nil {
-            vertices    = [start.endPoint]
-            next        = start.endNeighbor
-        } else {
-            throw Error.NoEdges
-        }
-        var previous    = start
-        while let after = next {
-            if after === start {
-                return vertices
-            }
-            let tuple   = after.getNextFrom(previous)
-            next        = tuple.edge
-            previous    = after
-            vertices.append(tuple.vertex)
-        }
-        throw Error.NoLoop
-        */
         let startVertices = self.seekToEndOfEdges(start, nextEdge: (start.startNeighbor, start.startPoint))
         //Inner point, we already have a loop.
         if startVertices.count == self.cellEdges.count + 1 {
@@ -193,6 +80,12 @@ public class VoronoiCell {
         return verts
     }
     
+    /**
+     Determines if the two end points of vertices (```first``` and ```last```)
+     need to connect to the corner to complete the edges of this cell.
+     - returns: The corner to connect the first/last points to, or nil if the
+     the points already connect.
+     */
     internal func connectToCornerFirst(first:CGPoint, last:CGPoint) -> CGPoint? {
         if !(first.x ~= last.x || first.y ~= last.y) {
             let x:CGFloat
@@ -216,6 +109,11 @@ public class VoronoiCell {
         return nil
     }
     
+    /**
+     Iterates through a linked list of VoronoiCellEdges, adding each vertex.
+     - parameters prev: The VoronoiCellEdge to start iterating at.
+     - parameters nextEdge: The neighbor pair of prev determining which direction (start or end) to search in.
+     */
     private func seekToEndOfEdges(prev:VoronoiCellEdge, nextEdge:(edge:VoronoiCellEdge?, vertex:CGPoint)) -> [CGPoint] {
         let frame = CGRect(width: 1024.0, height: 1366.0)
 //        if let nEdge = nextEdge.edge where !(frame.contains(nEdge.startPoint) && frame.contains(nEdge.endPoint)) {

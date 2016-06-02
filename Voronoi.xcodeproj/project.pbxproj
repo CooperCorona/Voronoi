@@ -16,6 +16,7 @@
 		DC11AF411CFFAC3D001439BA /* VoronoiParabola.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF3A1CFFAC3D001439BA /* VoronoiParabola.swift */; };
 		DC11AF511CFFAC5B001439BA /* OmniSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC11AF4A1CFFAC46001439BA /* OmniSwift.framework */; };
 		DC11AF631CFFB32A001439BA /* VoronoiResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF621CFFB32A001439BA /* VoronoiResult.swift */; };
+		DC11AF6A1CFFC338001439BA /* VoronoiCellEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		DC11AF3A1CFFAC3D001439BA /* VoronoiParabola.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiParabola.swift; sourceTree = "<group>"; };
 		DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OmniSwift.xcodeproj; path = ../OmniSwift/OmniSwift.xcodeproj; sourceTree = "<group>"; };
 		DC11AF621CFFB32A001439BA /* VoronoiResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiResult.swift; sourceTree = "<group>"; };
+		DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCellEdge.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -98,6 +100,7 @@
 				DC11AF341CFFAC3D001439BA /* ExposedBinarySearchTree.swift */,
 				DC11AF351CFFAC3D001439BA /* SwiftPriorityQueue.swift */,
 				DC11AF361CFFAC3D001439BA /* VoronoiCell.swift */,
+				DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */,
 				DC11AF371CFFAC3D001439BA /* VoronoiDiagram.swift */,
 				DC11AF381CFFAC3D001439BA /* VoronoiEdge.swift */,
 				DC11AF391CFFAC3D001439BA /* VoronoiEvent.swift */,
@@ -238,6 +241,7 @@
 				DC11AF3B1CFFAC3D001439BA /* ExposedBinarySearchTree.swift in Sources */,
 				DC11AF3C1CFFAC3D001439BA /* SwiftPriorityQueue.swift in Sources */,
 				DC11AF401CFFAC3D001439BA /* VoronoiEvent.swift in Sources */,
+				DC11AF6A1CFFC338001439BA /* VoronoiCellEdge.swift in Sources */,
 				DC11AF411CFFAC3D001439BA /* VoronoiParabola.swift in Sources */,
 				DC11AF3F1CFFAC3D001439BA /* VoronoiEdge.swift in Sources */,
 				DC11AF3D1CFFAC3D001439BA /* VoronoiCell.swift in Sources */,
