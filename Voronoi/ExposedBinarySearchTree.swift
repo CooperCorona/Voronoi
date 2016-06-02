@@ -144,23 +144,6 @@ public struct ExposedBinarySearchTree<T: ExposedBinarySearchTreeProtocol>: Custo
     }
     
     public mutating func insert(value:T) {
-        /*if self.root == nil {
-            self.root = value
-            return
-        }
-        var current = self.root
-        
-        var less = true
-        while current != nil {
-            if value < current {
-                current = current?.left
-                less = true
-            } else if value > current {
-                current = current?.right
-                less = false
-            }
-        }
-        */
         guard var current = self.root else {
             self.root = value
             return

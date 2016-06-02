@@ -19,6 +19,7 @@
 		DC11AF6A1CFFC338001439BA /* VoronoiCellEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */; };
 		DC11AF741CFFCC72001439BA /* VoronoiSiteEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */; };
 		DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */; };
+		DC11AF801CFFCF97001439BA /* Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF7F1CFFCF97001439BA /* Circle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 		DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCellEdge.swift; sourceTree = "<group>"; };
 		DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiSiteEvent.swift; sourceTree = "<group>"; };
 		DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCircleEvent.swift; sourceTree = "<group>"; };
+		DC11AF7F1CFFCF97001439BA /* Circle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Circle.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -102,6 +104,7 @@
 			isa = PBXGroup;
 			children = (
 				DC11AF341CFFAC3D001439BA /* ExposedBinarySearchTree.swift */,
+				DC11AF7F1CFFCF97001439BA /* Circle.swift */,
 				DC11AF351CFFAC3D001439BA /* SwiftPriorityQueue.swift */,
 				DC11AF361CFFAC3D001439BA /* VoronoiCell.swift */,
 				DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */,
@@ -247,6 +250,7 @@
 				DC11AF3B1CFFAC3D001439BA /* ExposedBinarySearchTree.swift in Sources */,
 				DC11AF3C1CFFAC3D001439BA /* SwiftPriorityQueue.swift in Sources */,
 				DC11AF741CFFCC72001439BA /* VoronoiSiteEvent.swift in Sources */,
+				DC11AF801CFFCF97001439BA /* Circle.swift in Sources */,
 				DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */,
 				DC11AF401CFFAC3D001439BA /* VoronoiEvent.swift in Sources */,
 				DC11AF6A1CFFC338001439BA /* VoronoiCellEdge.swift in Sources */,

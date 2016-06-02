@@ -10,40 +10,47 @@ import Foundation
 import UIKit
 import OmniSwift
 
-public enum ErrorErrorError: ErrorType {
-    case InvalidIntersection
-}
+// TODO: Make VoronoiDiagram initializer handle duplicates and out of bounds points.
 
-public struct Circle {
-    
-    public var center = CGPoint.zero
-    public var radius:CGFloat = 0.0
-    
-    public init() {
-        
-    }
-    
-    public init(center:CGPoint, radius:CGFloat) {
-        self.center = center
-        self.radius = radius
-    }
-    
-}
-
+/**
+ Given a set of voronoi points and the boundaries of the diagram, uses Fortune's
+ algorithm to calculate the edges between the voronoi points.
+ */
 public class VoronoiDiagram: NSObject {
     
+    ///An array of voronoi points.
     public let points:[CGPoint]
+    ///The size of the boundary rect.
     public let size:CGSize
+    ///The tree used to store the beach line and search when new parabolas are added.
     private var parabolaTree = ExposedBinarySearchTree<VoronoiParabola>()
+    ///The number of parabolas on the beach line
+    ///(the parabolaTree property does not store this, so we have to store it here).
     private var parabolaCount = 0
+    ///The edges between two voronoi points, formed by the intersection of
+    ///two parabolas on the beach line.
     private var edges:[VoronoiEdge] = []
+    ///The events (ordered by minimum y-coordinate, then minimum x-coordinate) that
+    ///cause changes in the beach line.
     private var events = PriorityQueue<VoronoiEvent>(ascending: true, startingValues: [])
-    /* private */ let cells:[VoronoiCell]
+    ///The cells that correspond to each voronoi point and encapsulate the edges / vertices around it.
+    private let cells:[VoronoiCell]
+    ///The position of the sweep line. Formula: ```y = sweepLine```.
     public internal(set) var sweepLine:CGFloat = 0.0
+    ///The result of sweeping (calculated by ```sweep```). Since the array of points is
+    ///constant, ```sweep``` returns this value immediately if it already has been calculated.
     private var result:VoronoiResult? = nil
     
+    ///The circle events that have been calculated.
+    ///Used to make sure the same circle event is not processed twice.
     private var circleEvents:[VoronoiCircleEvent] = []
     
+    /**
+     Initializes a VoronoiDiagram with voronoi points and boundaries.
+     - parameter points: An array of voronoi points. Currently doesn't check for duplicates or out of bounds points.
+     - parameter size: The size of the the boundaries of the diagram.
+     - returns: A VoronoiDiagram (that has **not** yet calculated the edges).
+     */
     public init(points:[CGPoint], size:CGSize) {
         self.points = points
         self.size   = size
@@ -52,11 +59,14 @@ public class VoronoiDiagram: NSObject {
         super.init()
         
         for cell in self.cells {
-            self.addEvent(VoronoiSiteEvent(cell: cell))
+            self.events.push(VoronoiSiteEvent(cell: cell))
         }
         
     }
     
+    ///Calculates the edges of the VoronoiDiagram. Returns a VoronoiResult that exposes
+    ///access to the diagram in different formats. If the result has already been calculated,
+    ///it returns immediately rather than recalculating.
     public func sweep() -> VoronoiResult {
         if let result = self.result {
             return result
@@ -80,6 +90,7 @@ public class VoronoiDiagram: NSObject {
         return result
     }
     
+    ///Performs one iteration (processes one event).
     private func sweepOnce() {
         
         if let event = self.events.pop() {
@@ -97,10 +108,12 @@ public class VoronoiDiagram: NSObject {
 
     }
 
-    private func addEvent(event:VoronoiEvent) {
-        self.events.push(event)
-    }
-    
+    /**
+     Determines the parabola on the beach line directly above a given x-coordinate.
+     - parameter x: An x-coordinate.
+     - returns: The parabola above the given x-coordinate
+     (this always exists if there is a parabola in the beach line).
+     */
     private func findParabolaAtX(x:CGFloat) -> VoronoiParabola? {
         var lastParabola:VoronoiParabola? = nil
         var currentParabola = self.parabolaTree.root
@@ -125,6 +138,7 @@ public class VoronoiDiagram: NSObject {
         return lastParabola
     }
     
+    ///Adds a parabola corresponding to a VoronoiCell's underlying voronoi point to the beach line.
     internal func addPoint(cell:VoronoiCell) {
         let point = cell.voronoiPoint
         guard self.parabolaCount > 0 else {
@@ -190,6 +204,7 @@ public class VoronoiDiagram: NSObject {
         self.checkCircleEventForParabola(rightParab)
     }
     
+    ///Removes a parabola from the beach line corresponding to a circle event's parabola.
     internal func removeParabolaFromCircleEvent(event:VoronoiCircleEvent) {
         guard let parabola = event.parabola else {
             return
@@ -258,6 +273,8 @@ public class VoronoiDiagram: NSObject {
         }
     }
     
+    ///Determines if a parabola has a circle event (it eventually
+    ///becomes "squeezed" out of the beach line by its neighbors)
     private func checkCircleEventForParabola(parabola:VoronoiParabola) {
 
         guard let leftChild     = parabola.getParabolaToLeft() else {
@@ -288,6 +305,14 @@ public class VoronoiDiagram: NSObject {
         self.circleEvents.append(event)
     }
     
+    /**
+     Determines if two edges actually will intersect. Just because the two lines
+     intersect, doesn't mean the edges will, because they might be pointing away from each other.
+     - parameter left: The VoronoiEdge on the left.
+     - paramater right: The VoronoiEdge on the right.
+     - returns: The intersection of the edge (which is the same as the center of a circle event),
+     or nil if no such intersection exists.
+     */
     private func calculateCollisionOfEdges(left:VoronoiEdge, right:VoronoiEdge) -> CGPoint? {
         let x = (left.yIntercept - right.yIntercept) / (right.slope - left.slope)
         let y = left.slope * x + left.yIntercept
@@ -308,6 +333,7 @@ public class VoronoiDiagram: NSObject {
         return CGPoint(x: x, y: y)
     }
     
+    ///Extends all edges that have not yet ended to the boundaries of the diagram.
     private func finishEdges() {
         for edge in self.edges {
             guard !edge.hasSetEnd else {
@@ -323,6 +349,12 @@ public class VoronoiDiagram: NSObject {
         }
     }
     
+    /**
+     Given three points, determines the circle that has intersects all three points.
+     - parameter points: An array of points. Must contain 3 points.
+     - returns: The circle that intersects all 3 points, or nil if no such
+     circle exists (which occurs when three points lie on a line).
+     */
     private static func calculateCircle(points:[CGPoint]) -> Circle? {
         guard points.count >= 3 else {
             return nil
