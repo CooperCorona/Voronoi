@@ -14,10 +14,10 @@ import OmniSwift
  a specific cell. It can be connected to other VoronoiCellEdges
  to form the path that winds around the cell.
  */
-public  class VoronoiCellEdge {
+internal class VoronoiCellEdge {
     
     ///The VoronoiCellEdge connected to this one at this one's start point.
-    public  weak var startNeighbor:VoronoiCellEdge? = nil {
+    internal weak var startNeighbor:VoronoiCellEdge? = nil {
         didSet {
             if oldValue != nil {
                 self.endNeighbor = self.startNeighbor
@@ -26,7 +26,7 @@ public  class VoronoiCellEdge {
         }
     }
     ///The VoronoiCellEdge connected to this one at this one's end point.
-    public  weak var endNeighbor:VoronoiCellEdge?   = nil {
+    internal weak var endNeighbor:VoronoiCellEdge?   = nil {
         didSet {
             if oldValue != nil {
                 self.startNeighbor = self.endNeighbor
@@ -35,22 +35,22 @@ public  class VoronoiCellEdge {
         }
     }
     ///The point where this edge starts.
-    public  var startPoint:CGPoint             = CGPoint.zero
+    internal var startPoint:CGPoint             = CGPoint.zero
     ///THe point where this edge ends. It is set by the VoronoiEdge that owns it.
-    public  var endPoint:CGPoint               = CGPoint.zero {
+    internal var endPoint:CGPoint               = CGPoint.zero {
         didSet {
             self.hasSetEnd = true
         }
     }
     ///Determines if this object has a valid value for endPoint.
-    public  var hasSetEnd                      = false
+    internal var hasSetEnd                      = false
     ///The VoronoiCell this edge is associated with.
-    public  weak var owner:VoronoiCell?        = nil
+    internal weak var owner:VoronoiCell?        = nil
     ///A unit vector pointing in the same direction as the line this edge lies on.
-    public  var directionVector:CGPoint { return (self.endPoint - self.startPoint).unit() }
+    internal var directionVector:CGPoint { return (self.endPoint - self.startPoint).unit() }
     
     ///Initializes the edge with a given start point.
-    public  init(start:CGPoint) {
+    internal init(start:CGPoint) {
         self.startPoint = start
     }
     
@@ -60,7 +60,7 @@ public  class VoronoiCellEdge {
      or end-to-end, they can also connect start-to-end.
      - parameter cellEdge: The edge to connect this edge with.
      */
-    public  func makeNeighbor(cellEdge:VoronoiCellEdge) {
+    internal func makeNeighbor(cellEdge:VoronoiCellEdge) {
         
         if self.startPoint ~= cellEdge.startPoint {
             self.startNeighbor = cellEdge
@@ -85,7 +85,7 @@ public  class VoronoiCellEdge {
      - returns: The VoronoiCellEdge that neighbors this one but is not the given one, and the
      vertex at which the edges connect (either startPoint or endPoint).
      */
-    public  func getNextFrom(cellEdge:VoronoiCellEdge) -> (edge:VoronoiCellEdge?, vertex:CGPoint) {
+    internal func getNextFrom(cellEdge:VoronoiCellEdge) -> (edge:VoronoiCellEdge?, vertex:CGPoint) {
         if self.startNeighbor === cellEdge {
             return (self.endNeighbor, self.endPoint)
         } else {
@@ -100,7 +100,7 @@ public  class VoronoiCellEdge {
      - parameter boundaries: The size of the VoronoiDiagram.
      - returns: The point at which this edge intersects with the boundaries, or nil if it does not.
      */
-    public  func intersectionWith(boundaries:CGSize) -> CGPoint? {
+    internal func intersectionWith(boundaries:CGSize) -> CGPoint? {
         let vector = self.endPoint - self.startPoint
         //Horizontal boundaries
         if (self.startPoint.x <= 0.0) == (0.0 <= self.endPoint.x) {

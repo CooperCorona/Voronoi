@@ -21,7 +21,7 @@ public class VoronoiCell {
     ///The vertices that form the edges of this cell.
     private var vertices:[CGPoint]
     ///The actual edges that form the boundaries of this cell.
-    public var cellEdges:[VoronoiCellEdge] = []
+    internal var cellEdges:[VoronoiCellEdge] = []
     
     ///These are needed because sometimes I need to connect
     ///2 corners but I need to disallow the same corner from
@@ -55,7 +55,6 @@ public class VoronoiCell {
         }
         let endVertices = self.seekToEndOfEdges(start, nextEdge: (start.endNeighbor, start.endPoint))
         var verts = startVertices.reverse() + endVertices
-//        return verts
         if let first = verts.first, last = verts.last, let corner = self.connectToCornerFirst(first, last: last) {
             verts.append(corner)
             //Sometimes, you need to connect two corners.
@@ -85,18 +84,6 @@ public class VoronoiCell {
         guard let first = vertices.first, last = vertices.last where vertices.count > 1 else {
             return false
         }
-        /*if first ~= last {
-            return true
-        } else if first.x ~= 0.0 && last.x ~= 0.0 {
-            return true
-        } else if first.y ~= 0.0 && last.y ~= 0.0 {
-            return true
-        } else if first.x ~= self.boundaries.width && last.x ~= self.boundaries.width {
-            return true
-        } else if first.y ~= self.boundaries.height && last.y ~= self.boundaries.height {
-            return true
-        }
-        return false*/
         return first.liesOnAxisWith(last)
     }
     
@@ -136,9 +123,6 @@ public class VoronoiCell {
      */
     private func seekToEndOfEdges(prev:VoronoiCellEdge, nextEdge:(edge:VoronoiCellEdge?, vertex:CGPoint)) -> [CGPoint] {
         let frame = CGRect(size: self.boundaries)
-        /*if !frame.contains(nextEdge.vertex) {
-            return []
-        }*/
         let first       = prev
         var vertices:[CGPoint] = []
         var previous    = prev
@@ -158,17 +142,9 @@ public class VoronoiCell {
             }
         }
         while let after = next {
-            /*if !(frame.contains(after.startPoint) && frame.contains(after.endPoint)) {
-                if let boundaryVertex = after.intersectionWith(self.boundaries) {
-                    vertices.append(boundaryVertex)
-                    return vertices
-                }
-                return vertices
-            }*/
             let successor = after.getNextFrom(previous)
             next = successor.edge
             previous = after
-            
             
             if !frame.contains(after.startPoint) && frame.contains(after.endPoint) {
                 if let boundaryVertex = after.intersectionWith(self.boundaries) {
@@ -188,7 +164,7 @@ public class VoronoiCell {
                 //If both vertices are outside the frame, we want to keep going, because
                 //it's valid for an entire edge to lie outside the frame; we just won't
                 //add the out-of-bounds vertices.
-//                return vertices
+                return vertices
             }
             
             if after === first {

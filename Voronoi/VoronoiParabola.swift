@@ -15,20 +15,20 @@ import OmniSwift
  Stores the edges connected to this parabola and the cell associated with its focus.
  Also acts as a node for a binary search tree.
  */
-public  final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
+internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
     
     ///The cell associated with this parabola's focus.
-    public  let cell:VoronoiCell
+    internal let cell:VoronoiCell
     
     ///The focus of the parabola (the actual voronoi point).
-    public  let focus:CGPoint
+    internal let focus:CGPoint
     
     ///The directrix of the parabola (VoronoiDiagram sets this to its sweepLine property).
-    public  var directix:CGFloat = 0.0
+    internal var directix:CGFloat = 0.0
     
     ///The circle event associated with this parabola. When the circle event is
     ///processed, this parabola is removed from the tree.
-    public  var circleEvent:VoronoiCircleEvent? = nil {
+    internal var circleEvent:VoronoiCircleEvent? = nil {
         didSet {
             if oldValue?.parabola === self {
                 oldValue?.parabola = nil
@@ -36,34 +36,30 @@ public  final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
         }
     }
     ///The edge formed by the left intersection of this parabola.
-    public  var leftEdge:VoronoiEdge?    = nil
+    internal var leftEdge:VoronoiEdge?    = nil
     ///The edge formed by the right intersection of this parabola.
-    public  var rightEdge:VoronoiEdge?   = nil
+    internal var rightEdge:VoronoiEdge?   = nil
     
     ///The left child of this parabola (as a node in a binary search tree).
-    public  var left:VoronoiParabola?    = nil {
+    internal var left:VoronoiParabola?    = nil {
         didSet {
             self.left?.parent = self
         }
     }
     ///The right child of this parabola (as a node in a binary search tree).
-    public  var right:VoronoiParabola?   = nil {
+    internal var right:VoronoiParabola?   = nil {
         didSet {
             self.right?.parent = self
         }
     }
     ///The parent of this parabola (as a node in a binary search tree).
-    public  var parent:VoronoiParabola?  = nil
+    internal var parent:VoronoiParabola?  = nil
 
     ///Initializes a parabola with an associated cell (and underlying VoronoiPoint).
-    public  init(cell:VoronoiCell) {
+    internal init(cell:VoronoiCell) {
         self.cell       = cell
         self.focus      = cell.voronoiPoint
         self.directix   = cell.voronoiPoint.y
-        
-        if self.focus.x ~= 330.9807 && self.focus.y ~= 864.01934 {
-            print("f")
-        }
     }
     
     /**
@@ -72,7 +68,7 @@ public  final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
      - parameter x: The x-value.
      - returns: The y-value corresponding to the x-value.
      */
-    public  func yForX(x:CGFloat) -> CGFloat {
+    internal func yForX(x:CGFloat) -> CGFloat {
         let xMinusH = (x - self.focus.x) * (x - self.focus.x)
         let p = (self.focus.y - self.directix) / 2.0
         return xMinusH / (4.0 * p) + (self.focus.y + self.directix) / 2.0
@@ -85,7 +81,7 @@ public  final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
      - returns: The points at which the two parabolas collide. There will always be two points,
      unless the parabolas don't collide, in which case an empty array is returned.
      */
-    public  class func parabolaCollisions(focus1:CGPoint, focus2:CGPoint, directrix:CGFloat) -> [CGPoint] {
+    internal class func parabolaCollisions(focus1:CGPoint, focus2:CGPoint, directrix:CGFloat) -> [CGPoint] {
         let p1 = (focus1.y - directrix) / 2.0
         let p2 = (focus2.y - directrix) / 2.0
         let h1 = focus1.x
@@ -128,12 +124,12 @@ public  final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
     }
 
     ///Gets the parabola that is to the left of this parabola on the beach line.
-    public  func getParabolaToLeft() -> VoronoiParabola? {
+    internal func getParabolaToLeft() -> VoronoiParabola? {
         return self.getLeftmostParent()?.getNearestLeftChild()
     }
     
     ///Gets the parabola that is to the right of this parabola on the beach line.
-    public  func getParabolaToRight() -> VoronoiParabola? {
+    internal func getParabolaToRight() -> VoronoiParabola? {
         return self.getRightmostParent()?.getNearestRightChild()
     }
     
@@ -141,22 +137,22 @@ public  final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
 
 // MARK: - Comparable Protocol / ExposedBinarySearchTreeProtocol
 
-public  func ==(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
+internal func ==(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
     return lhs.focus == rhs.focus
 }
 
-public  func <(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
+internal func <(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
     return lhs.focus.y < rhs.focus.y
 }
 
-public  func >(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
+internal func >(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
     return lhs.focus.y > rhs.focus.y
 }
 
-public  func <=(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
+internal func <=(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
     return lhs.focus.y <= rhs.focus.y
 }
 
-public  func >=(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
+internal func >=(lhs:VoronoiParabola, rhs:VoronoiParabola) -> Bool {
     return lhs.focus.y >= rhs.focus.y
 }
