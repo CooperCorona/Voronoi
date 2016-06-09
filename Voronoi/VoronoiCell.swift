@@ -21,7 +21,7 @@ public class VoronoiCell {
     ///The vertices that form the edges of this cell.
     private var vertices:[CGPoint]
     ///The actual edges that form the boundaries of this cell.
-    internal var cellEdges:[VoronoiCellEdge] = []
+    public var cellEdges:[VoronoiCellEdge] = []
     
     ///These are needed because sometimes I need to connect
     ///2 corners but I need to disallow the same corner from
@@ -50,11 +50,12 @@ public class VoronoiCell {
         }
         let startVertices = self.seekToEndOfEdges(start, nextEdge: (start.startNeighbor, start.startPoint))
         //Inner point, we already have a loop.
-        if startVertices.count == self.cellEdges.count + 1 {
+        if self.verticesAreComplete(startVertices) {
             return startVertices
         }
         let endVertices = self.seekToEndOfEdges(start, nextEdge: (start.endNeighbor, start.endPoint))
         var verts = startVertices.reverse() + endVertices
+//        return verts
         if let first = verts.first, last = verts.last, let corner = self.connectToCornerFirst(first, last: last) {
             verts.append(corner)
             //Sometimes, you need to connect two corners.
@@ -78,6 +79,25 @@ public class VoronoiCell {
             }
         }
         return verts
+    }
+    
+    private func verticesAreComplete(vertices:[CGPoint]) -> Bool {
+        guard let first = vertices.first, last = vertices.last where vertices.count > 1 else {
+            return false
+        }
+        /*if first ~= last {
+            return true
+        } else if first.x ~= 0.0 && last.x ~= 0.0 {
+            return true
+        } else if first.y ~= 0.0 && last.y ~= 0.0 {
+            return true
+        } else if first.x ~= self.boundaries.width && last.x ~= self.boundaries.width {
+            return true
+        } else if first.y ~= self.boundaries.height && last.y ~= self.boundaries.height {
+            return true
+        }
+        return false*/
+        return first.liesOnAxisWith(last)
     }
     
     /**
@@ -115,39 +135,66 @@ public class VoronoiCell {
      - parameters nextEdge: The neighbor pair of prev determining which direction (start or end) to search in.
      */
     private func seekToEndOfEdges(prev:VoronoiCellEdge, nextEdge:(edge:VoronoiCellEdge?, vertex:CGPoint)) -> [CGPoint] {
-        let frame = CGRect(width: 1024.0, height: 1366.0)
-//        if let nEdge = nextEdge.edge where !(frame.contains(nEdge.startPoint) && frame.contains(nEdge.endPoint)) {
-        if !frame.contains(nextEdge.vertex) {
+        let frame = CGRect(size: self.boundaries)
+        /*if !frame.contains(nextEdge.vertex) {
             return []
-        }
+        }*/
         let first       = prev
-        var vertices    = [nextEdge.vertex]
+        var vertices:[CGPoint] = []
         var previous    = prev
         var next        = nextEdge.edge
-        if let boundaryVertex = prev.intersectionWith(self.boundaries) {
+        var prevVertex  = nextEdge.vertex//(nextEdge.edge === prev.startNeighbor ? prev.startPoint : prev.endPoint)
+        if let boundaryVertex = prev.intersectionWith(self.boundaries) where !(boundaryVertex ~= nextEdge.vertex) {
             //The vertex out of bounds will always be the start vertex,
             //so I don't have to worry about the end vertex (I think)!
-            vertices = [boundaryVertex, nextEdge.vertex]
+            if frame.contains(nextEdge.vertex) {
+                vertices = [boundaryVertex, nextEdge.vertex]
+            } else {
+                vertices = [boundaryVertex]
+            }
+        } else {
+            if frame.contains(nextEdge.vertex) {
+                vertices = [nextEdge.vertex]
+            }
         }
         while let after = next {
-            if !(frame.contains(after.startPoint) && frame.contains(after.endPoint)) {
+            /*if !(frame.contains(after.startPoint) && frame.contains(after.endPoint)) {
                 if let boundaryVertex = after.intersectionWith(self.boundaries) {
                     vertices.append(boundaryVertex)
                     return vertices
                 }
                 return vertices
-            }
+            }*/
             let successor = after.getNextFrom(previous)
             next = successor.edge
             previous = after
-            vertices.append(successor.vertex)
-            if let boundaryVertex = after.intersectionWith(self.boundaries) {
-                vertices.append(boundaryVertex)
-                return vertices
+            
+            
+            if !frame.contains(after.startPoint) && frame.contains(after.endPoint) {
+                if let boundaryVertex = after.intersectionWith(self.boundaries) {
+                    vertices.append(boundaryVertex)
+                }
+            } else if frame.contains(after.startPoint) && !frame.contains(after.endPoint) {
+                if let boundaryVertex = after.intersectionWith(self.boundaries) {
+                    vertices.append(boundaryVertex)
+                }
             }
+            
+            if frame.contains(successor.vertex) {
+                vertices.append(successor.vertex)
+            } else if frame.contains(prevVertex) {
+                //If the frame contains the last vertex but not the next vertex,
+                //it means we were in the frame but no longer are, so we want to return.
+                //If both vertices are outside the frame, we want to keep going, because
+                //it's valid for an entire edge to lie outside the frame; we just won't
+                //add the out-of-bounds vertices.
+//                return vertices
+            }
+            
             if after === first {
                 return vertices
             }
+            prevVertex = successor.vertex
         }
         return vertices
     }

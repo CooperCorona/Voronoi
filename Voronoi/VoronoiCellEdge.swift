@@ -14,29 +14,43 @@ import OmniSwift
  a specific cell. It can be connected to other VoronoiCellEdges
  to form the path that winds around the cell.
  */
-internal class VoronoiCellEdge {
+public  class VoronoiCellEdge {
     
     ///The VoronoiCellEdge connected to this one at this one's start point.
-    internal weak var startNeighbor:VoronoiCellEdge? = nil
+    public  weak var startNeighbor:VoronoiCellEdge? = nil {
+        didSet {
+            if oldValue != nil {
+                self.endNeighbor = self.startNeighbor
+                self.startNeighbor = oldValue
+            }
+        }
+    }
     ///The VoronoiCellEdge connected to this one at this one's end point.
-    internal weak var endNeighbor:VoronoiCellEdge?   = nil
+    public  weak var endNeighbor:VoronoiCellEdge?   = nil {
+        didSet {
+            if oldValue != nil {
+                self.startNeighbor = self.endNeighbor
+                self.endNeighbor = oldValue
+            }
+        }
+    }
     ///The point where this edge starts.
-    internal var startPoint:CGPoint             = CGPoint.zero
+    public  var startPoint:CGPoint             = CGPoint.zero
     ///THe point where this edge ends. It is set by the VoronoiEdge that owns it.
-    internal var endPoint:CGPoint               = CGPoint.zero {
+    public  var endPoint:CGPoint               = CGPoint.zero {
         didSet {
             self.hasSetEnd = true
         }
     }
     ///Determines if this object has a valid value for endPoint.
-    internal var hasSetEnd                      = false
+    public  var hasSetEnd                      = false
     ///The VoronoiCell this edge is associated with.
-    internal weak var owner:VoronoiCell?        = nil
+    public  weak var owner:VoronoiCell?        = nil
     ///A unit vector pointing in the same direction as the line this edge lies on.
-    internal var directionVector:CGPoint { return (self.endPoint - self.startPoint).unit() }
+    public  var directionVector:CGPoint { return (self.endPoint - self.startPoint).unit() }
     
     ///Initializes the edge with a given start point.
-    internal init(start:CGPoint) {
+    public  init(start:CGPoint) {
         self.startPoint = start
     }
     
@@ -46,7 +60,8 @@ internal class VoronoiCellEdge {
      or end-to-end, they can also connect start-to-end.
      - parameter cellEdge: The edge to connect this edge with.
      */
-    internal func makeNeighbor(cellEdge:VoronoiCellEdge) {
+    public  func makeNeighbor(cellEdge:VoronoiCellEdge) {
+        
         if self.startPoint ~= cellEdge.startPoint {
             self.startNeighbor = cellEdge
             cellEdge.startNeighbor = self
@@ -70,7 +85,7 @@ internal class VoronoiCellEdge {
      - returns: The VoronoiCellEdge that neighbors this one but is not the given one, and the
      vertex at which the edges connect (either startPoint or endPoint).
      */
-    internal func getNextFrom(cellEdge:VoronoiCellEdge) -> (edge:VoronoiCellEdge?, vertex:CGPoint) {
+    public  func getNextFrom(cellEdge:VoronoiCellEdge) -> (edge:VoronoiCellEdge?, vertex:CGPoint) {
         if self.startNeighbor === cellEdge {
             return (self.endNeighbor, self.endPoint)
         } else {
@@ -85,7 +100,7 @@ internal class VoronoiCellEdge {
      - parameter boundaries: The size of the VoronoiDiagram.
      - returns: The point at which this edge intersects with the boundaries, or nil if it does not.
      */
-    internal func intersectionWith(boundaries:CGSize) -> CGPoint? {
+    public  func intersectionWith(boundaries:CGSize) -> CGPoint? {
         let vector = self.endPoint - self.startPoint
         //Horizontal boundaries
         if (self.startPoint.x <= 0.0) == (0.0 <= self.endPoint.x) {
@@ -126,6 +141,14 @@ internal class VoronoiCellEdge {
         }
         
         return nil
+    }
+    
+    internal func edgeIsStartNeighbor(edge:VoronoiCellEdge) -> Bool {
+        return self.startNeighbor === edge
+    }
+    
+    internal func edgeIsEndNeighbor(edge:VoronoiCellEdge) -> Bool {
+        return self.endNeighbor === edge
     }
     
 }
