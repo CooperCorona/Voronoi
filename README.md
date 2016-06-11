@@ -35,8 +35,3 @@ Once all events are processed (and incomplete edges are extended to the boundari
 
 ### To-Dos:
 * Add images of completed voronoi diagrams.
-
-### Potential Bugs
-* If all points on a VoronoiDiagram have the same y-coordinate, it might not connect each point's edges to the correct corner
-of the diagram. But the VoronoiDiagram of points with the same y-coordinates are just rectangles equidistant from the
-x-coordinates of those points, so a VoronoiDiagram isn't really needed to calculate them.
