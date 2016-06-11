@@ -48,18 +48,7 @@ internal class VoronoiCellEdge {
     internal weak var owner:VoronoiCell?        = nil
     ///A unit vector pointing in the same direction as the line this edge lies on.
     internal var directionVector:CGPoint { return (self.endPoint - self.startPoint).unit() }
-    ///The slope of the line that this edge lies on.
-    internal var slope:CGFloat {
-        //Negative recipricol to get the actual slope perpendicular to the focii.
-        return (self.endPoint.y - self.startPoint.y) / (self.endPoint.x - self.startPoint.x)
-    }
-    ///The y-intercept of the line that this edge lies on.
-    internal var yIntercept:CGFloat {
-        return self.startPoint.y - self.slope * self.startPoint.x
-    }
-    internal var isVertical:Bool { return self.directionVector.x ~= 0.0 }
-    internal private(set) var voronoiPointLiesAbove:Bool = false
-    
+
     ///Initializes the edge with a given start point.
     internal init(start:CGPoint) {
         self.startPoint = start
@@ -164,17 +153,5 @@ internal class VoronoiCellEdge {
     internal func edgeIsEndNeighbor(edge:VoronoiCellEdge) -> Bool {
         return self.endNeighbor === edge
     }
-    
-    internal func setVoronoiPointLiesAbove(point:CGPoint) {
-        self.voronoiPointLiesAbove = self.pointLiesAbove(point)
-    }
-    
-    internal func pointLiesAbove(point:CGPoint) -> Bool {
-        if self.isVertical {
-            return point.x < self.startPoint.x
-        } else {
-            return point.y - self.slope * point.x > self.yIntercept
-        }
-    }
-    
+
 }
