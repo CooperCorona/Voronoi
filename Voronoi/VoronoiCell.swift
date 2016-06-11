@@ -56,8 +56,15 @@ public class VoronoiCell {
         if complete || self.verticesAreComplete(startVertices) {
             return startVertices
         }
-        let (_, endVertices) = self.seekToEndOfEdges(start, nextEdge: (start.endNeighbor, start.endPoint))
-        var verts = startVertices.reverse() + endVertices
+        
+        var verts:[CGPoint] = startVertices.reverse()
+        if !self.verticesAreOnEdges(startVertices) {
+            //If the start vertices already connect edges, we don't want
+            //to calculate the end vertices because that introduces duplicates
+            //that are not necessarily adjacent, so they won't be caught by removeDuplicates.
+            let (_, endVertices) = self.seekToEndOfEdges(start, nextEdge: (start.endNeighbor, start.endPoint))
+            verts += endVertices
+        }
         verts = self.removeDuplicates(verts)
         let connector = VoronoiCornerConnector(voronoiPoint: self.voronoiPoint, boundaries: self.boundaries)
         verts += connector.connectToCorners(verts)
@@ -74,7 +81,35 @@ public class VoronoiCell {
         guard let first = vertices.first, last = vertices.last where vertices.count > 1 else {
             return false
         }
-        return first.liesOnAxisWith(last) && !(first ~= last)
+        if first.x ~= 0.0 && last.x ~= 0.0 {
+            return true
+        } else if first.x ~= self.boundaries.width && last.x ~= self.boundaries.width {
+            return true
+        } else  if first.y ~= 0.0 && last.y ~= 0.0 {
+            return true
+        } else if first.y ~= self.boundaries.height && last.y ~= self.boundaries.height {
+            return true
+        }
+        return false
+    }
+    
+    /**
+     Determines if the given vertices already touch separate edges (if the
+     vertices touch edges after walking the start vertices, there
+     is no point in walking the end vertices; in fact, it's actively harmful).
+     - parameter vertices: The vertices to check if the first and last elements
+     both lie on edges.
+     - returns: true if the vertices already touch separate edges, false otherwise
+     */
+    private func verticesAreOnEdges(vertices:[CGPoint]) -> Bool {
+        guard let first = vertices.first, last = vertices.last where vertices.count > 1 else {
+            return false
+        }
+        return self.pointIsOnEdge(first) && self.pointIsOnEdge(last)
+    }
+    
+    private func pointIsOnEdge(point:CGPoint) -> Bool {
+        return point.x ~= 0.0 || point.x ~= self.boundaries.width || point.y ~= 0.0 || point.y ~= self.boundaries.height
     }
 
     /**
@@ -113,7 +148,7 @@ public class VoronoiCell {
         var prevVertex  = nextEdge.vertex
         let boundaryVertices = prev.intersectionWith(self.boundaries)
         vertices += boundaryVertices
-        if frame.contains(nextEdge.vertex) {
+        if frame.contains(nextEdge.vertex) && !vertices.contains({ $0 ~= nextEdge.vertex }) {
             vertices.append(nextEdge.vertex)
         }
 

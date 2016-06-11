@@ -114,7 +114,8 @@ internal class VoronoiCellEdge {
                 //Point crosses the edge that actually lies on the boundaries
                 intersections.append(CGPoint(x: 0.0, y: y))
             }
-        } else if (startPoint.x <= boundaries.width) == (boundaries.width <= endPoint.x) {
+        }
+        if (startPoint.x <= boundaries.width) == (boundaries.width <= endPoint.x) {
             //Edge crosses line x = boundaries.width
             let t = (boundaries.width - startPoint.x) / vector.x
             let y = vector.y * t + startPoint.y
@@ -133,7 +134,8 @@ internal class VoronoiCellEdge {
                 //Point crosses the edge that actually lies on the boundaries
                 intersections.append(CGPoint(x: x, y: 0.0))
             }
-        } else if (startPoint.y <= boundaries.height) == (boundaries.height <= endPoint.y) {
+        }
+        if (startPoint.y <= boundaries.height) == (boundaries.height <= endPoint.y) {
             //Edge crosses line y = boundaries.height
             let t = (boundaries.height - startPoint.y) / vector.y
             let x = vector.x * t + startPoint.x
