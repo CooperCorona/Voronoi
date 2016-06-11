@@ -20,6 +20,7 @@
 		DC11AF741CFFCC72001439BA /* VoronoiSiteEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */; };
 		DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */; };
 		DC11AF801CFFCF97001439BA /* Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF7F1CFFCF97001439BA /* Circle.swift */; };
+		DCEDF54B1D0B98F8000E7D05 /* VoronoiCornerConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEDF54A1D0B98F8000E7D05 /* VoronoiCornerConnector.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +70,7 @@
 		DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiSiteEvent.swift; sourceTree = "<group>"; };
 		DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCircleEvent.swift; sourceTree = "<group>"; };
 		DC11AF7F1CFFCF97001439BA /* Circle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Circle.swift; sourceTree = "<group>"; };
+		DCEDF54A1D0B98F8000E7D05 /* VoronoiCornerConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCornerConnector.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,6 +111,7 @@
 				DC11AF361CFFAC3D001439BA /* VoronoiCell.swift */,
 				DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */,
 				DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */,
+				DCEDF54A1D0B98F8000E7D05 /* VoronoiCornerConnector.swift */,
 				DC11AF371CFFAC3D001439BA /* VoronoiDiagram.swift */,
 				DC11AF381CFFAC3D001439BA /* VoronoiEdge.swift */,
 				DC11AF391CFFAC3D001439BA /* VoronoiEvent.swift */,
@@ -252,6 +255,7 @@
 				DC11AF741CFFCC72001439BA /* VoronoiSiteEvent.swift in Sources */,
 				DC11AF801CFFCF97001439BA /* Circle.swift in Sources */,
 				DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */,
+				DCEDF54B1D0B98F8000E7D05 /* VoronoiCornerConnector.swift in Sources */,
 				DC11AF401CFFAC3D001439BA /* VoronoiEvent.swift in Sources */,
 				DC11AF6A1CFFC338001439BA /* VoronoiCellEdge.swift in Sources */,
 				DC11AF411CFFAC3D001439BA /* VoronoiParabola.swift in Sources */,

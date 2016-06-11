@@ -48,6 +48,17 @@ internal class VoronoiCellEdge {
     internal weak var owner:VoronoiCell?        = nil
     ///A unit vector pointing in the same direction as the line this edge lies on.
     internal var directionVector:CGPoint { return (self.endPoint - self.startPoint).unit() }
+    ///The slope of the line that this edge lies on.
+    internal var slope:CGFloat {
+        //Negative recipricol to get the actual slope perpendicular to the focii.
+        return (self.endPoint.y - self.startPoint.y) / (self.endPoint.x - self.startPoint.x)
+    }
+    ///The y-intercept of the line that this edge lies on.
+    internal var yIntercept:CGFloat {
+        return self.startPoint.y - self.slope * self.startPoint.x
+    }
+    internal var isVertical:Bool { return self.directionVector.x ~= 0.0 }
+    internal private(set) var voronoiPointLiesAbove:Bool = false
     
     ///Initializes the edge with a given start point.
     internal init(start:CGPoint) {
@@ -100,47 +111,50 @@ internal class VoronoiCellEdge {
      - parameter boundaries: The size of the VoronoiDiagram.
      - returns: The point at which this edge intersects with the boundaries, or nil if it does not.
      */
-    internal func intersectionWith(boundaries:CGSize) -> CGPoint? {
-        let vector = self.endPoint - self.startPoint
+    internal func intersectionWith(boundaries:CGSize, invert:Bool = false) -> [CGPoint] {
+        let startPoint = invert ? self.endPoint : self.startPoint
+        let endPoint = invert ? self.startPoint : self.endPoint
+        let vector = (endPoint - startPoint)
+        var intersections:[CGPoint] = []
         //Horizontal boundaries
-        if (self.startPoint.x <= 0.0) == (0.0 <= self.endPoint.x) {
+        if (startPoint.x <= 0.0) == (0.0 <= endPoint.x) {
             //Edge crosses line x = 0
-            let t = -self.startPoint.x / vector.x
-            let y = vector.y * t + self.startPoint.y
+            let t = -startPoint.x / vector.x
+            let y = vector.y * t + startPoint.y
             if 0.0 <= y && y <= boundaries.height {
                 //Point crosses the edge that actually lies on the boundaries
-                return CGPoint(x: 0.0, y: y)
+                intersections.append(CGPoint(x: 0.0, y: y))
             }
-        } else if (self.startPoint.x <= boundaries.width) == (boundaries.width <= self.endPoint.x) {
+        } else if (startPoint.x <= boundaries.width) == (boundaries.width <= endPoint.x) {
             //Edge crosses line x = boundaries.width
-            let t = (boundaries.width - self.startPoint.x) / vector.x
-            let y = vector.y * t + self.startPoint.y
+            let t = (boundaries.width - startPoint.x) / vector.x
+            let y = vector.y * t + startPoint.y
             if 0.0 <= y && y <= boundaries.height {
                 //Point crosses the edge that actually lies on the boundaries
-                return CGPoint(x: boundaries.width, y: y)
+                intersections.append(CGPoint(x: boundaries.width, y: y))
             }
         }
         
         //Vertical boundaries
-        if (self.startPoint.y <= 0.0) == (0.0 <= self.endPoint.y) {
+        if (startPoint.y <= 0.0) == (0.0 <= endPoint.y) {
             //Edge crosses line x = 0
-            let t = -self.startPoint.y / vector.y
-            let x = vector.x * t + self.startPoint.x
+            let t = -startPoint.y / vector.y
+            let x = vector.x * t + startPoint.x
             if 0.0 <= x && x <= boundaries.width {
                 //Point crosses the edge that actually lies on the boundaries
-                return CGPoint(x: x, y: 0.0)
+                intersections.append(CGPoint(x: x, y: 0.0))
             }
-        } else if (self.startPoint.y <= boundaries.height) == (boundaries.height <= self.endPoint.y) {
+        } else if (startPoint.y <= boundaries.height) == (boundaries.height <= endPoint.y) {
             //Edge crosses line y = boundaries.height
-            let t = (boundaries.height - self.startPoint.y) / vector.y
-            let x = vector.x * t + self.startPoint.x
+            let t = (boundaries.height - startPoint.y) / vector.y
+            let x = vector.x * t + startPoint.x
             if 0.0 <= x && x <= boundaries.width {
                 //Point crosses the edge that actually lies on the boundaries
-                return CGPoint(x: x, y: boundaries.height)
+                intersections.append(CGPoint(x: x, y: boundaries.height))
             }
         }
         
-        return nil
+        return intersections
     }
     
     internal func edgeIsStartNeighbor(edge:VoronoiCellEdge) -> Bool {
@@ -149,6 +163,18 @@ internal class VoronoiCellEdge {
     
     internal func edgeIsEndNeighbor(edge:VoronoiCellEdge) -> Bool {
         return self.endNeighbor === edge
+    }
+    
+    internal func setVoronoiPointLiesAbove(point:CGPoint) {
+        self.voronoiPointLiesAbove = self.pointLiesAbove(point)
+    }
+    
+    internal func pointLiesAbove(point:CGPoint) -> Bool {
+        if self.isVertical {
+            return point.x < self.startPoint.x
+        } else {
+            return point.y - self.slope * point.x > self.yIntercept
+        }
     }
     
 }

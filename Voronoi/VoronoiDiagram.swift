@@ -380,6 +380,7 @@ public class VoronoiDiagram: NSObject {
             edge.rightParabola = rightChild
             self.edges.append(edge)
             
+//            if CGRect(size: self.size).contains(event.center) {
             if let leftEdge = parabola.leftEdge, rightEdge = parabola.rightEdge {
                 VoronoiEdge.makeNeighborsFirst(leftEdge, second: rightEdge, third: edge)
             } else if let leftEdge = parabola.leftEdge {
@@ -387,6 +388,7 @@ public class VoronoiDiagram: NSObject {
             } else if let rightEdge = parabola.rightEdge {
                 rightEdge.makeNeighborsWith(edge)
             }
+//            }
         }
         //I've made sure that only leaves get processed with circle events.
         //Here we're just seeing which node the parent was, so we can
