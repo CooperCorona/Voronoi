@@ -21,6 +21,8 @@
 		DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */; };
 		DC11AF801CFFCF97001439BA /* Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF7F1CFFCF97001439BA /* Circle.swift */; };
 		DC8F110C1D0CB33800353DFB /* VoronoiLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F110B1D0CB33800353DFB /* VoronoiLine.swift */; };
+		DC8F11191D0CD19B00353DFB /* GLSVoronoiSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F11181D0CD19B00353DFB /* GLSVoronoiSprite.swift */; };
+		DC8F111F1D0CD21700353DFB /* VoronoiDiagram+Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F111E1D0CD21700353DFB /* VoronoiDiagram+Factory.swift */; };
 		DCEDF54B1D0B98F8000E7D05 /* VoronoiCornerConnector.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCEDF54A1D0B98F8000E7D05 /* VoronoiCornerConnector.swift */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +74,8 @@
 		DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCircleEvent.swift; sourceTree = "<group>"; };
 		DC11AF7F1CFFCF97001439BA /* Circle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Circle.swift; sourceTree = "<group>"; };
 		DC8F110B1D0CB33800353DFB /* VoronoiLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiLine.swift; sourceTree = "<group>"; };
+		DC8F11181D0CD19B00353DFB /* GLSVoronoiSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLSVoronoiSprite.swift; sourceTree = "<group>"; };
+		DC8F111E1D0CD21700353DFB /* VoronoiDiagram+Factory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VoronoiDiagram+Factory.swift"; sourceTree = "<group>"; };
 		DCEDF54A1D0B98F8000E7D05 /* VoronoiCornerConnector.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCornerConnector.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -107,14 +111,16 @@
 		DC11AF2B1CFFA232001439BA /* Voronoi */ = {
 			isa = PBXGroup;
 			children = (
-				DC11AF341CFFAC3D001439BA /* ExposedBinarySearchTree.swift */,
 				DC11AF7F1CFFCF97001439BA /* Circle.swift */,
+				DC11AF341CFFAC3D001439BA /* ExposedBinarySearchTree.swift */,
+				DC8F11181D0CD19B00353DFB /* GLSVoronoiSprite.swift */,
 				DC11AF351CFFAC3D001439BA /* SwiftPriorityQueue.swift */,
 				DC11AF361CFFAC3D001439BA /* VoronoiCell.swift */,
 				DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */,
 				DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */,
 				DCEDF54A1D0B98F8000E7D05 /* VoronoiCornerConnector.swift */,
 				DC11AF371CFFAC3D001439BA /* VoronoiDiagram.swift */,
+				DC8F111E1D0CD21700353DFB /* VoronoiDiagram+Factory.swift */,
 				DC11AF381CFFAC3D001439BA /* VoronoiEdge.swift */,
 				DC11AF391CFFAC3D001439BA /* VoronoiEvent.swift */,
 				DC8F110B1D0CB33800353DFB /* VoronoiLine.swift */,
@@ -257,10 +263,12 @@
 				DC11AF3C1CFFAC3D001439BA /* SwiftPriorityQueue.swift in Sources */,
 				DC11AF741CFFCC72001439BA /* VoronoiSiteEvent.swift in Sources */,
 				DC11AF801CFFCF97001439BA /* Circle.swift in Sources */,
+				DC8F11191D0CD19B00353DFB /* GLSVoronoiSprite.swift in Sources */,
 				DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */,
 				DCEDF54B1D0B98F8000E7D05 /* VoronoiCornerConnector.swift in Sources */,
 				DC8F110C1D0CB33800353DFB /* VoronoiLine.swift in Sources */,
 				DC11AF401CFFAC3D001439BA /* VoronoiEvent.swift in Sources */,
+				DC8F111F1D0CD21700353DFB /* VoronoiDiagram+Factory.swift in Sources */,
 				DC11AF6A1CFFC338001439BA /* VoronoiCellEdge.swift in Sources */,
 				DC11AF411CFFAC3D001439BA /* VoronoiParabola.swift in Sources */,
 				DC11AF3F1CFFAC3D001439BA /* VoronoiEdge.swift in Sources */,

@@ -106,11 +106,6 @@ public class VoronoiDiagram: NSObject {
             self.finishEdges()
         }
         
-        self.parabolaTree.iterateLeaves() {
-            if $0.focus.x ~= 330.9807 && $0.focus.y ~= 864.01934 && $0.leftEdge == nil {
-                print("e")
-            }
-        }
     }
 
     /**
@@ -444,16 +439,6 @@ public class VoronoiDiagram: NSObject {
         let event = VoronoiCircleEvent(point: circle.center, radius: circle.radius, parabola: parabola)
         if self.circleEvents.contains({ $0.isEqualTo(event) }) {
             return
-        }
-        
-        if let lEdge = leftChild.rightEdge where self.edges.indexOf({ $0 === lEdge }) == 4 {
-            print("")
-        } else if let lEdge = rightChild.leftEdge where self.edges.indexOf({ $0 === lEdge }) == 4 {
-            print("")
-        } else if let lEdge = parabola.rightEdge where self.edges.indexOf({ $0 === lEdge }) == 4 {
-            print("")
-        } else if let lEdge = parabola.leftEdge where self.edges.indexOf({ $0 === lEdge }) == 4 {
-            print("")
         }
 
         parabola.circleEvent = event
