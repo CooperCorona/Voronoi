@@ -42,12 +42,14 @@ internal struct VoronoiDiagramEdgeValidator {
     }
     
     internal let boundaries:CGSize
+    ///The boundaries of the diagram
+    ///crossed by the edges of the cell.
     private var touchedEdges = Edge.None
+    ///The last point checked for validation.
     private var previousPoint:CGPoint? = nil
     
     internal init(boundaries:CGSize) {
         self.boundaries = boundaries
-        print("**********")
     }
     
     /**
@@ -64,15 +66,24 @@ internal struct VoronoiDiagramEdgeValidator {
         return (self.touchedEdges.rawValue & edge.rawValue) != 0
     }
     
+    /**
+     Checks if a point is contained in the voronoi diagram
+     (CGRect.contains does not return true if the point lies
+     exactly on the edge of the rectangle, which is undesired behaviour).
+     - parameter point: The point to check.
+     - returns: true if the point lies inside the boundaries, false otherwise.
+     */
     private func containsPoint(point:CGPoint) -> Bool {
         return 0.0 <= point.x && point.x <= self.boundaries.width
             && 0.0 <= point.y && point.y <= self.boundaries.height
     }
     
-    private func pointIsOnEdge(point:CGPoint) -> Bool {
-        return point.x ~= 0.0 || point.x ~= self.boundaries.width || point.y ~= 0.0 || point.y ~= self.boundaries.height
-    }
-    
+    /**
+     Determines if the previous point lied in the boundaries
+     of the diagram.
+     - returns: true if the previous point lied in the boundaries
+     or if there was no previous point, false otherwise.
+     */
     private func previousPointLiedInBoundaries() -> Bool {
         guard let previousPoint = self.previousPoint else {
             return true
@@ -99,7 +110,6 @@ internal struct VoronoiDiagramEdgeValidator {
         //We have to account for the case in which
         //a point lies exactly on a corner (and thus
         //lies on two edges)
-        let previousTouchedEdges = self.touchedEdges
         var shouldAdd = true
         if point.x ~= 0.0 {
             if !self.contains(.Left) && self.contains(.AllButLeft) {
@@ -125,18 +135,11 @@ internal struct VoronoiDiagramEdgeValidator {
             self.touchedEdges.unionInPlace(.Top)
         }
         
-        let liedInBoundaries = self.previousPointLiedInBoundaries()
-        /*if self.boundariesRect.contains(point) && !liedInBoundaries {
-            //If the edges have not changed but the point is valid,
-            //that means we're adding a point on the same edge, so we
-            //should reset so we don't interfere with exits on other boundaries.
-            self.reset()
-        }*/
         self.previousPoint = point
-        print("Point: \(point.clampDecimals(1))")
-        return shouldAdd// || liedInBoundaries
+        return shouldAdd
     }
     
+    ///Removes all touched edges.
     internal mutating func reset() {
         self.touchedEdges = Edge.None
     }

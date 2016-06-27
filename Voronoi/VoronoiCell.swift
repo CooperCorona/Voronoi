@@ -35,18 +35,6 @@ public class VoronoiCell {
     ///The actual edges that form the boundaries of this cell.
     internal var cellEdges:[VoronoiCellEdge] = []
     
-    ///These are needed because sometimes I need to connect
-    ///2 corners but I need to disallow the same corner from
-    ///being considered twice. No cell will need to connect
-    ///more than 2 corners, so this is more than sufficient.
-    private var usedLeftSide    = false
-    ///See docs for ```usedLeftSide```.
-    private var usedRightSide   = false
-    ///See docs for ```usedLeftSide```.
-    private var usedTopSide     = false
-    ///See docs for ```usedLeftSide```.
-    private var usedBottomSide  = false
-    
     ///Initializes a VoronoiCell with a voronoi point and the boundaries of a VoronoiDiagram.
     public init(point:CGPoint, boundaries:CGSize) {
         self.voronoiPoint   = point
@@ -70,12 +58,11 @@ public class VoronoiCell {
         }
         
         var verts:[CGPoint] = startVertices.reverse()
-//        var verts:[CGPoint] = []
         if !self.verticesAreOnEdges(startVertices) && complete == .DeadEnd {
             //If the start vertices already connect edges, we don't want
             //to calculate the end vertices because that introduces duplicates
             //that are not necessarily adjacent, so they won't be caught by removeDuplicates.
-            let (complete, endVertices) = self.seekToEndOfEdges(start, nextEdge: (start.endNeighbor, start.endPoint))
+            let (_, endVertices) = self.seekToEndOfEdges(start, nextEdge: (start.endNeighbor, start.endPoint))
             verts += endVertices
         }
         verts = self.removeDuplicates(verts)
@@ -175,11 +162,6 @@ public class VoronoiCell {
             edgeValidator.validatePoint(v)
         }
 
-        
-        func hasEnteredDiagram() -> Bool {
-            return vertices.count > 0
-        }
-        
         while let after = next {
             let successor = after.getNextFrom(previous)
             next = successor.edge
@@ -200,7 +182,6 @@ public class VoronoiCell {
                     if edgeValidator.validatePoint(bv) {
                         vertices.append(bv)
                     } else {
-//                        vertices.append(bv)
                         return (.DeadEnd, vertices)
                     }
                 }
@@ -209,7 +190,6 @@ public class VoronoiCell {
                     if edgeValidator.validatePoint(bv) {
                         vertices.append(bv)
                     } else {
-//                        vertices.append(bv)
                         return (.DeadEnd, vertices)
                     }
                 }
@@ -220,33 +200,12 @@ public class VoronoiCell {
                 }
             }
             
-            /*if let last = last where last ~= successor.vertex {
-                //We don't technically consider this case to be finished,
-                //because it only occurs when two arrays combined form
-                //a complete loop. However, this is only called in one
-                //instance, and it doesn't even check the first field
-                //in the tuple, so it doesn't matter what we return.
-                return (false, vertices)
-            }*/
-            
             if !edgeValidator.validatePoint(successor.vertex) {
                 return (.DeadEnd, vertices)
             }
+            
             if frame.contains(successor.vertex) {
                 vertices.append(successor.vertex)
-            } else if frame.contains(prevVertex) {
-//                vertices.append(successor.vertex)
-                //If the frame contains the last vertex but not the next vertex,
-                //it means we were in the frame but no longer are, so we want to return.
-                //If both vertices are outside the frame, we want to keep going, because
-                //it's valid for an entire edge to lie outside the frame; we just won't
-                //add the out-of-bounds vertices.
-                
-                //Reset the edge validator, that way, if we exit the diagram
-                //and enter it on the same boundary (which is valid), the
-                //validator doesn't consider that edge in case the cell's
-                //edges exit and enter on another boundary.
-//                return (false, vertices)
             }
             
             prevVertex = successor.vertex
