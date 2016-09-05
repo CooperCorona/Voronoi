@@ -33,5 +33,8 @@ where two edges meet and a new one begins.
 
 Once all events are processed (and incomplete edges are extended to the boundaries), the voronoi diagram is complete.
 
+## Voronoi Cells
+In some cases, you want to know more than the edges of a voronoi diagram. After the voronoi diagram is complete, you can calculate the vertices associated with each individual voronoi point. This is useful, for example, if you're trying to render a filled-in voronoi diagram and you need to know the vertices of a cell to form triangles. The ```VoronoiResult``` class exposes an array of ```VoronoiCell``` objects, which themselves allow you to calculate the vertices of a given cell (because the vertices are not calculated until you explicitly invoke the method, there is no performance penalty if you do not need to access them).
+
 ### To-Dos:
 * Add images of completed voronoi diagrams.
