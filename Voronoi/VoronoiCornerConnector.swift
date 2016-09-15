@@ -6,8 +6,10 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
-import Foundation
-import OmniSwift
+import UIKit
+import CoronaConvenience
+import CoronaStructures
+import CoronaGL
 
 /**
  Exposes methods that connect the ends of a cell's array of vertices

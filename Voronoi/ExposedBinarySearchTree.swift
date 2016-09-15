@@ -7,7 +7,9 @@
 //
 
 import Foundation
-import OmniSwift
+import CoronaConvenience
+import CoronaStructures
+import CoronaGL
 
 public protocol ExposedBinarySearchTreeProtocol: class, Comparable {
     

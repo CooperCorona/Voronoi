@@ -7,7 +7,9 @@
 //
 
 import UIKit
-import OmniSwift
+import CoronaConvenience
+import CoronaStructures
+import CoronaGL
 
 /**
  Handles cases where portions of edges of a VoronoiCell lie

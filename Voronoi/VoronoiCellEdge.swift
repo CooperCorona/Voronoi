@@ -7,7 +7,9 @@
 //
 
 import UIKit
-import OmniSwift
+import CoronaConvenience
+import CoronaStructures
+import CoronaGL
 
 /**
  Represents an edge of a voronoi diagram that's associated with

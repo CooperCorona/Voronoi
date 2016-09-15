@@ -7,7 +7,9 @@
 //
 
 import UIKit
-import OmniSwift
+import CoronaConvenience
+import CoronaStructures
+import CoronaGL
 
 /**
  An extremely lightweight struct that represents a line segment.

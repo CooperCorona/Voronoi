@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import OmniSwift
+import CoronaConvenience
+import CoronaStructures
+import CoronaGL
 
 ///Represents an event that happens when the sweep line crosses a specific point.
 internal class VoronoiEvent: Comparable {

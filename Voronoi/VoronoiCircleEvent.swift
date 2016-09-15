@@ -7,7 +7,9 @@
 //
 
 import UIKit
-import OmniSwift
+import CoronaConvenience
+import CoronaStructures
+import CoronaGL
 
 /**
  A VoronoiEvent that occurs when the sweep line crosses the top

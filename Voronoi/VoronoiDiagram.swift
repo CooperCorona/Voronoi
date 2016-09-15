@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import OmniSwift
+import CoronaConvenience
+import CoronaStructures
+import CoronaGL
 
 // TODO: Make VoronoiDiagram initializer handle duplicates and out of bounds points.
 

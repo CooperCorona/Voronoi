@@ -8,7 +8,9 @@
 
 import Foundation
 import UIKit
-import OmniSwift
+import CoronaConvenience
+import CoronaStructures
+import CoronaGL
 
 /**
  Represents a parabola that is part of the beach line for Fortune's algorithm.

@@ -14,13 +14,15 @@
 		DC11AF3F1CFFAC3D001439BA /* VoronoiEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF381CFFAC3D001439BA /* VoronoiEdge.swift */; };
 		DC11AF401CFFAC3D001439BA /* VoronoiEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF391CFFAC3D001439BA /* VoronoiEvent.swift */; };
 		DC11AF411CFFAC3D001439BA /* VoronoiParabola.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF3A1CFFAC3D001439BA /* VoronoiParabola.swift */; };
-		DC11AF511CFFAC5B001439BA /* OmniSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC11AF4A1CFFAC46001439BA /* OmniSwift.framework */; };
 		DC11AF631CFFB32A001439BA /* VoronoiResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF621CFFB32A001439BA /* VoronoiResult.swift */; };
 		DC11AF6A1CFFC338001439BA /* VoronoiCellEdge.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */; };
 		DC11AF741CFFCC72001439BA /* VoronoiSiteEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */; };
 		DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */; };
 		DC11AF801CFFCF97001439BA /* Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF7F1CFFCF97001439BA /* Circle.swift */; };
 		DC2332221D204AC90013C3A9 /* VoronoiDiagramEdgeValidator.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC2332211D204AC90013C3A9 /* VoronoiDiagramEdgeValidator.swift */; };
+		DC33F9BD1D88840B0089AA5D /* CoronaConvenience.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC33F9AD1D8883FA0089AA5D /* CoronaConvenience.framework */; };
+		DC33F9BE1D88840B0089AA5D /* CoronaGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC33F9BC1D8884010089AA5D /* CoronaGL.framework */; };
+		DC33F9BF1D88840B0089AA5D /* CoronaStructures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC33F9B41D8883FE0089AA5D /* CoronaStructures.framework */; };
 		DC8F110C1D0CB33800353DFB /* VoronoiLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F110B1D0CB33800353DFB /* VoronoiLine.swift */; };
 		DC8F11191D0CD19B00353DFB /* GLSVoronoiSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F11181D0CD19B00353DFB /* GLSVoronoiSprite.swift */; };
 		DC8F111F1D0CD21700353DFB /* VoronoiDiagram+Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F111E1D0CD21700353DFB /* VoronoiDiagram+Factory.swift */; };
@@ -28,33 +30,26 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		DC11AF491CFFAC46001439BA /* PBXContainerItemProxy */ = {
+		DC33F9AC1D8883FA0089AA5D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */;
+			containerPortal = DC33F9A81D8883FA0089AA5D /* CoronaConvenience.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = DC72AA3B1B166C7D0035BF49;
-			remoteInfo = OmniSwift;
+			remoteGlobalIDString = DC4D07951D7D233A00862432;
+			remoteInfo = CoronaConvenience;
 		};
-		DC11AF4B1CFFAC46001439BA /* PBXContainerItemProxy */ = {
+		DC33F9B31D8883FE0089AA5D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */;
+			containerPortal = DC33F9AE1D8883FE0089AA5D /* CoronaStructures.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = DC72AA461B166C7D0035BF49;
-			remoteInfo = OmniSwiftTests;
+			remoteGlobalIDString = DC7428CE1D7F4446001AF8E1;
+			remoteInfo = CoronaStructures;
 		};
-		DC11AF4D1CFFAC46001439BA /* PBXContainerItemProxy */ = {
+		DC33F9BB1D8884010089AA5D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */;
+			containerPortal = DC33F9B51D8884010089AA5D /* CoronaGL.xcodeproj */;
 			proxyType = 2;
-			remoteGlobalIDString = DC37E8B61BB740D700313B10;
-			remoteInfo = OmniSwiftShapes;
-		};
-		DC11AF4F1CFFAC46001439BA /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = DC37E8BF1BB740D700313B10;
-			remoteInfo = OmniSwiftShapesTests;
+			remoteGlobalIDString = DC5CDC891D80B30F008C2A8D;
+			remoteInfo = CoronaGL;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -68,13 +63,15 @@
 		DC11AF381CFFAC3D001439BA /* VoronoiEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiEdge.swift; sourceTree = "<group>"; };
 		DC11AF391CFFAC3D001439BA /* VoronoiEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiEvent.swift; sourceTree = "<group>"; };
 		DC11AF3A1CFFAC3D001439BA /* VoronoiParabola.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiParabola.swift; sourceTree = "<group>"; };
-		DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = OmniSwift.xcodeproj; path = ../OmniSwift/OmniSwift.xcodeproj; sourceTree = "<group>"; };
 		DC11AF621CFFB32A001439BA /* VoronoiResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiResult.swift; sourceTree = "<group>"; };
 		DC11AF691CFFC338001439BA /* VoronoiCellEdge.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCellEdge.swift; sourceTree = "<group>"; };
 		DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiSiteEvent.swift; sourceTree = "<group>"; };
 		DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCircleEvent.swift; sourceTree = "<group>"; };
 		DC11AF7F1CFFCF97001439BA /* Circle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Circle.swift; sourceTree = "<group>"; };
 		DC2332211D204AC90013C3A9 /* VoronoiDiagramEdgeValidator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiDiagramEdgeValidator.swift; sourceTree = "<group>"; };
+		DC33F9A81D8883FA0089AA5D /* CoronaConvenience.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaConvenience.xcodeproj; path = "../Refactored Dependencies/CoronaConvenience/CoronaConvenience.xcodeproj"; sourceTree = "<group>"; };
+		DC33F9AE1D8883FE0089AA5D /* CoronaStructures.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaStructures.xcodeproj; path = "../Refactored Dependencies/CoronaStructures/CoronaStructures.xcodeproj"; sourceTree = "<group>"; };
+		DC33F9B51D8884010089AA5D /* CoronaGL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaGL.xcodeproj; path = "../Refactored Dependencies/CoronaGL/CoronaGL.xcodeproj"; sourceTree = "<group>"; };
 		DC8F110B1D0CB33800353DFB /* VoronoiLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiLine.swift; sourceTree = "<group>"; };
 		DC8F11181D0CD19B00353DFB /* GLSVoronoiSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLSVoronoiSprite.swift; sourceTree = "<group>"; };
 		DC8F111E1D0CD21700353DFB /* VoronoiDiagram+Factory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VoronoiDiagram+Factory.swift"; sourceTree = "<group>"; };
@@ -86,7 +83,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DC11AF511CFFAC5B001439BA /* OmniSwift.framework in Frameworks */,
+				DC33F9BD1D88840B0089AA5D /* CoronaConvenience.framework in Frameworks */,
+				DC33F9BE1D88840B0089AA5D /* CoronaGL.framework in Frameworks */,
+				DC33F9BF1D88840B0089AA5D /* CoronaStructures.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,7 +95,9 @@
 		DC11AF1F1CFFA232001439BA = {
 			isa = PBXGroup;
 			children = (
-				DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */,
+				DC33F9A81D8883FA0089AA5D /* CoronaConvenience.xcodeproj */,
+				DC33F9AE1D8883FE0089AA5D /* CoronaStructures.xcodeproj */,
+				DC33F9B51D8884010089AA5D /* CoronaGL.xcodeproj */,
 				DC11AF2B1CFFA232001439BA /* Voronoi */,
 				DC11AF2A1CFFA232001439BA /* Products */,
 			);
@@ -135,13 +136,26 @@
 			path = Voronoi;
 			sourceTree = "<group>";
 		};
-		DC11AF431CFFAC46001439BA /* Products */ = {
+		DC33F9A91D8883FA0089AA5D /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DC11AF4A1CFFAC46001439BA /* OmniSwift.framework */,
-				DC11AF4C1CFFAC46001439BA /* OmniSwiftTests.xctest */,
-				DC11AF4E1CFFAC46001439BA /* OmniSwiftShapes.framework */,
-				DC11AF501CFFAC46001439BA /* OmniSwiftShapesTests.xctest */,
+				DC33F9AD1D8883FA0089AA5D /* CoronaConvenience.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DC33F9AF1D8883FE0089AA5D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DC33F9B41D8883FE0089AA5D /* CoronaStructures.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		DC33F9B61D8884010089AA5D /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DC33F9BC1D8884010089AA5D /* CoronaGL.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -203,8 +217,16 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = DC11AF431CFFAC46001439BA /* Products */;
-					ProjectRef = DC11AF421CFFAC46001439BA /* OmniSwift.xcodeproj */;
+					ProductGroup = DC33F9A91D8883FA0089AA5D /* Products */;
+					ProjectRef = DC33F9A81D8883FA0089AA5D /* CoronaConvenience.xcodeproj */;
+				},
+				{
+					ProductGroup = DC33F9B61D8884010089AA5D /* Products */;
+					ProjectRef = DC33F9B51D8884010089AA5D /* CoronaGL.xcodeproj */;
+				},
+				{
+					ProductGroup = DC33F9AF1D8883FE0089AA5D /* Products */;
+					ProjectRef = DC33F9AE1D8883FE0089AA5D /* CoronaStructures.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -215,32 +237,25 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DC11AF4A1CFFAC46001439BA /* OmniSwift.framework */ = {
+		DC33F9AD1D8883FA0089AA5D /* CoronaConvenience.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = OmniSwift.framework;
-			remoteRef = DC11AF491CFFAC46001439BA /* PBXContainerItemProxy */;
+			path = CoronaConvenience.framework;
+			remoteRef = DC33F9AC1D8883FA0089AA5D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DC11AF4C1CFFAC46001439BA /* OmniSwiftTests.xctest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OmniSwiftTests.xctest;
-			remoteRef = DC11AF4B1CFFAC46001439BA /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		DC11AF4E1CFFAC46001439BA /* OmniSwiftShapes.framework */ = {
+		DC33F9B41D8883FE0089AA5D /* CoronaStructures.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
-			path = OmniSwiftShapes.framework;
-			remoteRef = DC11AF4D1CFFAC46001439BA /* PBXContainerItemProxy */;
+			path = CoronaStructures.framework;
+			remoteRef = DC33F9B31D8883FE0089AA5D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DC11AF501CFFAC46001439BA /* OmniSwiftShapesTests.xctest */ = {
+		DC33F9BC1D8884010089AA5D /* CoronaGL.framework */ = {
 			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = OmniSwiftShapesTests.xctest;
-			remoteRef = DC11AF4F1CFFAC46001439BA /* PBXContainerItemProxy */;
+			fileType = wrapper.framework;
+			path = CoronaGL.framework;
+			remoteRef = DC33F9BB1D8884010089AA5D /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
