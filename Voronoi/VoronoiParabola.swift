@@ -70,7 +70,7 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
      - parameter x: The x-value.
      - returns: The y-value corresponding to the x-value.
      */
-    internal func yForX(x:CGFloat) -> CGFloat {
+    internal func yForX(_ x:CGFloat) -> CGFloat {
         let xMinusH = (x - self.focus.x) * (x - self.focus.x)
         let p = (self.focus.y - self.directix) / 2.0
         return xMinusH / (4.0 * p) + (self.focus.y + self.directix) / 2.0
@@ -83,7 +83,7 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
      - returns: The points at which the two parabolas collide. There will always be two points,
      unless the parabolas don't collide, in which case an empty array is returned.
      */
-    internal class func parabolaCollisions(focus1:CGPoint, focus2:CGPoint, directrix:CGFloat) -> [CGPoint] {
+    internal class func parabolaCollisions(_ focus1:CGPoint, focus2:CGPoint, directrix:CGFloat) -> [CGPoint] {
         let p1 = (focus1.y - directrix) / 2.0
         let p2 = (focus2.y - directrix) / 2.0
         let h1 = focus1.x

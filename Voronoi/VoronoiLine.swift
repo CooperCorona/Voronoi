@@ -34,7 +34,7 @@ internal struct VoronoiLine {
     ///true if this line is vertical (the start and end points have the same x-coordinate), false otherwise.
     internal var isVertical:Bool { return self.directionVector.x ~= 0.0 }
     ///true if the voronoi point associated with this line lies above this line, false if below.
-    internal private(set) var voronoiPointLiesAbove:Bool = false
+    internal fileprivate(set) var voronoiPointLiesAbove:Bool = false
     
     internal init(start:CGPoint, end:CGPoint, voronoi:CGPoint) {
         self.startPoint = start
@@ -43,7 +43,7 @@ internal struct VoronoiLine {
     }
     
     ///Returns whether a point lies above this line or not.
-    internal func pointLiesAbove(point:CGPoint) -> Bool {
+    internal func pointLiesAbove(_ point:CGPoint) -> Bool {
         if self.isVertical {
             return point.x < self.startPoint.x
         } else {

@@ -18,17 +18,17 @@ import CoronaGL
  Given a set of voronoi points and the boundaries of the diagram, uses Fortune's
  algorithm to calculate the edges between the voronoi points.
  */
-public class VoronoiDiagram: NSObject {
+open class VoronoiDiagram: NSObject {
     
     ///An array of voronoi points.
-    public let points:[CGPoint]
+    open let points:[CGPoint]
     ///The size of the boundary rect.
-    public let size:CGSize
+    open let size:CGSize
     ///The tree used to store the beach line and search when new parabolas are added.
     internal var parabolaTree = ExposedBinarySearchTree<VoronoiParabola>()
     ///The number of parabolas on the beach line
     ///(the parabolaTree property does not store this, so we have to store it here).
-    private var parabolaCount = 0
+    fileprivate var parabolaCount = 0
     ///The edges between two voronoi points, formed by the intersection of
     ///two parabolas on the beach line.
     internal var edges:[VoronoiEdge] = []
@@ -36,16 +36,16 @@ public class VoronoiDiagram: NSObject {
     ///cause changes in the beach line.
     internal var events = PriorityQueue<VoronoiEvent>(ascending: true, startingValues: [])
     ///The cells that correspond to each voronoi point and encapsulate the edges / vertices around it.
-    public let cells:[VoronoiCell]
+    open let cells:[VoronoiCell]
     ///The position of the sweep line. Formula: ```y = sweepLine```.
     internal var sweepLine:CGFloat = 0.0
     ///The result of sweeping (calculated by ```sweep```). Since the array of points is
     ///constant, ```sweep``` returns this value immediately if it already has been calculated.
-    private var result:VoronoiResult? = nil
+    fileprivate var result:VoronoiResult? = nil
     
     ///The circle events that have been calculated.
     ///Used to make sure the same circle event is not processed twice.
-    private var circleEvents:[VoronoiCircleEvent] = []
+    fileprivate var circleEvents:[VoronoiCircleEvent] = []
     
     /**
      Initializes a VoronoiDiagram with voronoi points and boundaries.
@@ -69,7 +69,7 @@ public class VoronoiDiagram: NSObject {
     ///Calculates the edges of the VoronoiDiagram. Returns a VoronoiResult that exposes
     ///access to the diagram in different formats. If the result has already been calculated,
     ///it returns immediately rather than recalculating.
-    public func sweep() -> VoronoiResult {
+    open func sweep() -> VoronoiResult {
         if let result = self.result {
             return result
         }
@@ -93,10 +93,10 @@ public class VoronoiDiagram: NSObject {
     }
     
     ///Performs one iteration (processes one event).
-    public func sweepOnce() {
+    open func sweepOnce() {
 
         if let event = self.events.pop() {
-            if let circleEvent = event as? VoronoiCircleEvent where circleEvent.parabola == nil/* || (event.point.y < self.sweepLine && !(event.point.y ~= self.sweepLine))*/ {
+            if let circleEvent = event as? VoronoiCircleEvent , circleEvent.parabola == nil/* || (event.point.y < self.sweepLine && !(event.point.y ~= self.sweepLine))*/ {
                 self.sweepOnce()
                 return
             }
@@ -116,20 +116,20 @@ public class VoronoiDiagram: NSObject {
      - returns: The parabola above the given x-coordinate
      (this always exists if there is a parabola in the beach line).
      */
-    internal func findParabolaAtX(x:CGFloat) -> VoronoiParabola? {
+    internal func findParabolaAtX(_ x:CGFloat) -> VoronoiParabola? {
         var lastParabola:VoronoiParabola? = nil
         var currentParabola = self.parabolaTree.root
         while let parab = currentParabola {
             lastParabola = currentParabola
-            guard let left = parab.getNearestLeftChild(), right = parab.getNearestRightChild() else {
+            guard let left = parab.getNearestLeftChild(), let right = parab.getNearestRightChild() else {
                 break
             }
             let intersections = VoronoiParabola.parabolaCollisions(left.focus, focus2: right.focus, directrix: self.sweepLine)
             let xIntersection:CGFloat
             if left.focus.y < right.focus.y {
-                xIntersection = intersections.minElement({ $0.x < $1.x })!.x
+                xIntersection = intersections.min(by: { $0.x < $1.x })!.x
             } else {
-                xIntersection = intersections.maxElement({ $0.x < $1.x })!.x
+                xIntersection = intersections.max(by: { $0.x < $1.x })!.x
             }
             if xIntersection > x {
                 currentParabola = parab.left
@@ -141,7 +141,7 @@ public class VoronoiDiagram: NSObject {
     }
     
     ///Adds a parabola corresponding to a VoronoiCell's underlying voronoi point to the beach line.
-    internal func addPoint(cell:VoronoiCell) {
+    internal func addPoint(_ cell:VoronoiCell) {
         let point = cell.voronoiPoint
         guard self.parabolaCount > 0 else {
             let parab = VoronoiParabola(cell: cell)
@@ -177,7 +177,7 @@ public class VoronoiDiagram: NSObject {
             return
         }
         
-        if let lParab = parab.getParabolaToLeft() where VoronoiParabola.parabolaCollisions(lParab.focus, focus2: parab.focus, directrix: self.sweepLine).contains({ $0.x ~= point.x }) {
+        if let lParab = parab.getParabolaToLeft() , VoronoiParabola.parabolaCollisions(lParab.focus, focus2: parab.focus, directrix: self.sweepLine).contains(where: { $0.x ~= point.x }) {
             let rParab      = parab
             let leftParab   = VoronoiParabola(cell: lParab.cell)
             let newParab    = VoronoiParabola(cell: cell)
@@ -232,7 +232,7 @@ public class VoronoiDiagram: NSObject {
             self.checkCircleEventForParabola(lParab)
             self.checkCircleEventForParabola(rParab)
             return;
-        } else if let rParab = parab.getParabolaToRight() where VoronoiParabola.parabolaCollisions(parab.focus, focus2: rParab.focus, directrix: self.sweepLine).contains({ $0.x ~= point.x }) {
+        } else if let rParab = parab.getParabolaToRight() , VoronoiParabola.parabolaCollisions(parab.focus, focus2: rParab.focus, directrix: self.sweepLine).contains(where: { $0.x ~= point.x }) {
             let lParab      = parab
             let rightParab   = VoronoiParabola(cell: rParab.cell)
             let newParab    = VoronoiParabola(cell: cell)
@@ -342,7 +342,7 @@ public class VoronoiDiagram: NSObject {
     }
     
     ///Removes a parabola from the beach line corresponding to a circle event's parabola.
-    internal func removeParabolaFromCircleEvent(event:VoronoiCircleEvent) {
+    internal func removeParabolaFromCircleEvent(_ event:VoronoiCircleEvent) {
         guard let parabola = event.parabola else {
             return
         }
@@ -378,7 +378,7 @@ public class VoronoiDiagram: NSObject {
             self.edges.append(edge)
             
 //            if CGRect(size: self.size).contains(event.center) {
-            if let leftEdge = parabola.leftEdge, rightEdge = parabola.rightEdge {
+            if let leftEdge = parabola.leftEdge, let rightEdge = parabola.rightEdge {
                 VoronoiEdge.makeNeighborsFirst(leftEdge, second: rightEdge, third: edge)
             } else if let leftEdge = parabola.leftEdge {
                 leftEdge.makeNeighborsWith(edge)
@@ -418,7 +418,7 @@ public class VoronoiDiagram: NSObject {
     
     ///Determines if a parabola has a circle event (it eventually
     ///becomes "squeezed" out of the beach line by its neighbors)
-    private func checkCircleEventForParabola(parabola:VoronoiParabola) {
+    fileprivate func checkCircleEventForParabola(_ parabola:VoronoiParabola) {
 
         guard let leftChild     = parabola.getParabolaToLeft() else {
             return
@@ -434,12 +434,12 @@ public class VoronoiDiagram: NSObject {
             return
         }
         
-        guard let leftEdge = leftChild.rightEdge, rightEdge = rightChild.leftEdge, let _ = self.calculateCollisionOfEdges(leftEdge, right: rightEdge)/* where p ~= circle.center*/ else {
+        guard let leftEdge = leftChild.rightEdge, let rightEdge = rightChild.leftEdge, let _ = self.calculateCollisionOfEdges(leftEdge, right: rightEdge)/* where p ~= circle.center*/ else {
             return
         }
         
         let event = VoronoiCircleEvent(point: circle.center, radius: circle.radius, parabola: parabola)
-        if self.circleEvents.contains({ $0.isEqualTo(event) }) {
+        if self.circleEvents.contains(where: { $0.isEqualTo(event) }) {
             return
         }
 
@@ -456,7 +456,7 @@ public class VoronoiDiagram: NSObject {
      - returns: The intersection of the edge (which is the same as the center of a circle event),
      or nil if no such intersection exists.
      */
-    private func calculateCollisionOfEdges(left:VoronoiEdge, right:VoronoiEdge) -> CGPoint? {
+    fileprivate func calculateCollisionOfEdges(_ left:VoronoiEdge, right:VoronoiEdge) -> CGPoint? {
         if left.directionVector.x ~= 0.0 {
 
             let x = left.startPoint.x
@@ -507,7 +507,7 @@ public class VoronoiDiagram: NSObject {
     }
     
     ///Extends all edges that have not yet ended to the boundaries of the diagram.
-    private func finishEdges() {
+    fileprivate func finishEdges() {
         for edge in self.edges {
             guard !edge.hasSetEnd else {
                 continue
@@ -542,7 +542,7 @@ public class VoronoiDiagram: NSObject {
      - returns: The circle that intersects all 3 points, or nil if no such
      circle exists (which occurs when three points lie on a line).
      */
-    private static func calculateCircle(points:[CGPoint]) -> Circle? {
+    fileprivate static func calculateCircle(_ points:[CGPoint]) -> Circle? {
         guard points.count >= 3 else {
             return nil
         }

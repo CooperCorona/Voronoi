@@ -62,7 +62,7 @@ internal class VoronoiCellEdge {
      or end-to-end, they can also connect start-to-end.
      - parameter cellEdge: The edge to connect this edge with.
      */
-    internal func makeNeighbor(cellEdge:VoronoiCellEdge) {
+    internal func makeNeighbor(_ cellEdge:VoronoiCellEdge) {
         
         if self.startPoint ~= cellEdge.startPoint {
             self.startNeighbor = cellEdge
@@ -87,7 +87,7 @@ internal class VoronoiCellEdge {
      - returns: The VoronoiCellEdge that neighbors this one but is not the given one, and the
      vertex at which the edges connect (either startPoint or endPoint).
      */
-    internal func getNextFrom(cellEdge:VoronoiCellEdge) -> (edge:VoronoiCellEdge?, vertex:CGPoint) {
+    internal func getNextFrom(_ cellEdge:VoronoiCellEdge) -> (edge:VoronoiCellEdge?, vertex:CGPoint) {
         if self.startNeighbor === cellEdge {
             return (self.endNeighbor, self.endPoint)
         } else {
@@ -102,7 +102,7 @@ internal class VoronoiCellEdge {
      - parameter boundaries: The size of the VoronoiDiagram.
      - returns: The point at which this edge intersects with the boundaries, or nil if it does not.
      */
-    internal func intersectionWith(boundaries:CGSize, invert:Bool = false) -> [CGPoint] {
+    internal func intersectionWith(_ boundaries:CGSize, invert:Bool = false) -> [CGPoint] {
         let startPoint = invert ? self.endPoint : self.startPoint
         let endPoint = invert ? self.startPoint : self.endPoint
         let vector = (endPoint - startPoint)
@@ -150,11 +150,11 @@ internal class VoronoiCellEdge {
         return intersections
     }
     
-    internal func edgeIsStartNeighbor(edge:VoronoiCellEdge) -> Bool {
+    internal func edgeIsStartNeighbor(_ edge:VoronoiCellEdge) -> Bool {
         return self.startNeighbor === edge
     }
     
-    internal func edgeIsEndNeighbor(edge:VoronoiCellEdge) -> Bool {
+    internal func edgeIsEndNeighbor(_ edge:VoronoiCellEdge) -> Bool {
         return self.endNeighbor === edge
     }
 

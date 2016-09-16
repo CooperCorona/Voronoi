@@ -14,26 +14,26 @@ import CoronaGL
 /**
  Combines a voronoi point and the edges / vertices around it.
  */
-public class VoronoiCell {
+open class VoronoiCell {
     
-    private enum TraversalResult {
+    fileprivate enum TraversalResult {
         ///This is for when the start vertices need
         ///to be combined with the end vertices
-        case DeadEnd
+        case deadEnd
         ///This is for when the vertices have
         ///already formed a loop.
-        case CompleteLoop
+        case completeLoop
         ///This is for when the vertices only
         ///need the corners to be added.
-        case IncompleteLoop
+        case incompleteLoop
     }
     
     ///The original voronoi point.
-    public let voronoiPoint:CGPoint
+    open let voronoiPoint:CGPoint
     ///The boundaries of the VoronoiDiagram.
-    public let boundaries:CGSize
+    open let boundaries:CGSize
     ///The vertices that form the edges of this cell.
-    private var vertices:[CGPoint]? = nil
+    fileprivate var vertices:[CGPoint]? = nil
     ///The actual edges that form the boundaries of this cell.
     internal var cellEdges:[VoronoiCellEdge] = []
     
@@ -45,7 +45,7 @@ public class VoronoiCell {
     
     ///Calculates the vertices in the correct order so they can be
     ///combined to form the edges of this cell.
-    public func makeVertexLoop() -> [CGPoint] {
+    open func makeVertexLoop() -> [CGPoint] {
         if let vertices = self.vertices {
             return vertices
         }
@@ -55,12 +55,12 @@ public class VoronoiCell {
         
         let (complete, startVertices) = self.seekToEndOfEdges(start, nextEdge: (start.startNeighbor, start.startPoint))
         //Inner cell, we already have a loop.
-        if complete == .CompleteLoop || self.verticesAreComplete(startVertices) {
+        if complete == .completeLoop || self.verticesAreComplete(startVertices) {
             return startVertices
         }
         
-        var verts:[CGPoint] = startVertices.reverse()
-        if !self.verticesAreOnEdges(startVertices) && complete == .DeadEnd {
+        var verts:[CGPoint] = startVertices.reversed()
+        if !self.verticesAreOnEdges(startVertices) && complete == .deadEnd {
             //If the start vertices already connect edges, we don't want
             //to calculate the end vertices because that introduces duplicates
             //that are not necessarily adjacent, so they won't be caught by removeDuplicates.
@@ -79,8 +79,8 @@ public class VoronoiCell {
      - parameter vertices: The vertices of the potential loop.
      - returns: true if the vertices already form a complete loop, false if not.
      */
-    private func verticesAreComplete(vertices:[CGPoint]) -> Bool {
-        guard let first = vertices.first, last = vertices.last where vertices.count > 1 else {
+    fileprivate func verticesAreComplete(_ vertices:[CGPoint]) -> Bool {
+        guard let first = vertices.first, let last = vertices.last , vertices.count > 1 else {
             return false
         }
         if first.x ~= 0.0 && last.x ~= 0.0 {
@@ -103,14 +103,14 @@ public class VoronoiCell {
      both lie on edges.
      - returns: true if the vertices already touch separate edges, false otherwise
      */
-    private func verticesAreOnEdges(vertices:[CGPoint]) -> Bool {
-        guard let first = vertices.first, last = vertices.last where vertices.count > 1 else {
+    fileprivate func verticesAreOnEdges(_ vertices:[CGPoint]) -> Bool {
+        guard let first = vertices.first, let last = vertices.last , vertices.count > 1 else {
             return false
         }
         return self.pointIsOnEdge(first) && self.pointIsOnEdge(last)
     }
     
-    private func pointIsOnEdge(point:CGPoint) -> Bool {
+    fileprivate func pointIsOnEdge(_ point:CGPoint) -> Bool {
         return point.x ~= 0.0 || point.x ~= self.boundaries.width || point.y ~= 0.0 || point.y ~= self.boundaries.height
     }
 
@@ -122,12 +122,12 @@ public class VoronoiCell {
      - parameter vertices: An array of points.
      - returns: The array of points with duplicate (and adjacent) vertices removed.
      */
-    private func removeDuplicates(vertices:[CGPoint]) -> [CGPoint] {
+    fileprivate func removeDuplicates(_ vertices:[CGPoint]) -> [CGPoint] {
         var i = 0
         var filteredVertices = vertices
         while i < filteredVertices.count - 1 {
             if filteredVertices[i] ~= filteredVertices[i + 1] {
-                filteredVertices.removeAtIndex(i + 1)
+                filteredVertices.remove(at: i + 1)
             } else {
                 i += 1
             }
@@ -142,11 +142,11 @@ public class VoronoiCell {
      - returns: A tuple. The first element is true if the vertex loop has already been completed (whether the last
      point connects to the first point). The second element is the vertices of this side of the loop, in order.
      */
-    private func seekToEndOfEdges(prev:VoronoiCellEdge, nextEdge:(edge:VoronoiCellEdge?, vertex:CGPoint)) -> (complete:TraversalResult, points:[CGPoint]) {
+    fileprivate func seekToEndOfEdges(_ prev:VoronoiCellEdge, nextEdge:(edge:VoronoiCellEdge?, vertex:CGPoint)) -> (complete:TraversalResult, points:[CGPoint]) {
         
         var edgeValidator = VoronoiDiagramEdgeValidator(boundaries: self.boundaries)
         
-        let frame = CGRect(size: self.boundaries)
+        let frame = CGRect(dictionaryRepresentation: self.boundaries as! CFDictionary)
         let first       = prev
         var vertices:[CGPoint] = []
         var previous    = prev
@@ -154,7 +154,7 @@ public class VoronoiCell {
         var prevVertex  = nextEdge.vertex
         let boundaryVertices = prev.intersectionWith(self.boundaries)
         vertices += boundaryVertices
-        if frame.contains(nextEdge.vertex) && !vertices.contains({ $0 ~= nextEdge.vertex }) {
+        if (frame?.contains(nextEdge.vertex))! && !vertices.contains(where: { $0 ~= nextEdge.vertex }) {
             vertices.append(nextEdge.vertex)
         }
         //We're not actually going to restrict added points here,
@@ -170,7 +170,7 @@ public class VoronoiCell {
             previous = after
             
             if after === first {
-                return (edgeValidator.validatePoint(successor.vertex) ? .IncompleteLoop : .CompleteLoop, vertices)
+                return (edgeValidator.validatePoint(successor.vertex) ? .incompleteLoop : .completeLoop, vertices)
             }
             
             //The reason we calculate an array of intersections is that
@@ -179,23 +179,23 @@ public class VoronoiCell {
             //case there are 2 intersections with the boundaries we need to account for.
             //The last else-if statement is the only case in which there will by multiple
             //elements in the array, though. The first two are guaranteed to have < 2.
-            if !frame.contains(after.startPoint) && frame.contains(after.endPoint) {
+            if !(frame?.contains(after.startPoint))! && (frame?.contains(after.endPoint))! {
                 for bv in after.intersectionWith(self.boundaries) {
                     if edgeValidator.validatePoint(bv) {
                         vertices.append(bv)
                     } else {
-                        return (.DeadEnd, vertices)
+                        return (.deadEnd, vertices)
                     }
                 }
-            } else if frame.contains(after.startPoint) && !frame.contains(after.endPoint) {
+            } else if (frame?.contains(after.startPoint))! && !(frame?.contains(after.endPoint))! {
                 for bv in after.intersectionWith(self.boundaries) {
                     if edgeValidator.validatePoint(bv) {
                         vertices.append(bv)
                     } else {
-                        return (.DeadEnd, vertices)
+                        return (.deadEnd, vertices)
                     }
                 }
-            } else if !frame.contains(after.startPoint) && !frame.contains(after.endPoint) {
+            } else if !(frame?.contains(after.startPoint))! && !(frame?.contains(after.endPoint))! {
                 let intersections = after.intersectionWith(self.boundaries)
                 for bv in intersections {
                     vertices.append(bv)
@@ -203,16 +203,16 @@ public class VoronoiCell {
             }
             
             if !edgeValidator.validatePoint(successor.vertex) {
-                return (.DeadEnd, vertices)
+                return (.deadEnd, vertices)
             }
             
-            if frame.contains(successor.vertex) {
+            if frame!.contains(successor.vertex) {
                 vertices.append(successor.vertex)
             }
             
             prevVertex = successor.vertex
         }
-        return (.DeadEnd, vertices)
+        return (.deadEnd, vertices)
     }
 
 }

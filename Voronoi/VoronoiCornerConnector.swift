@@ -18,57 +18,57 @@ import CoronaGL
 internal struct VoronoiCornerConnector {
     
     internal enum Corner {
-        case BottomLeft
-        case BottomRight
-        case TopLeft
-        case TopRight
+        case bottomLeft
+        case bottomRight
+        case topLeft
+        case topRight
         
         internal static let allElements = [
-            Corner.BottomLeft,
-            Corner.BottomRight,
-            Corner.TopRight,
-            Corner.TopLeft
+            Corner.bottomLeft,
+            Corner.bottomRight,
+            Corner.topRight,
+            Corner.topLeft
         ]
         
         ///Gets the coordinates of self in a given rectangle (represented by size).
-        internal func get(boundaries:CGSize) -> CGPoint {
+        internal func get(_ boundaries:CGSize) -> CGPoint {
             switch self {
-            case .BottomLeft:
+            case .bottomLeft:
                 return CGPoint.zero
-            case .BottomRight:
-                return CGPoint(x: boundaries.width)
-            case .TopRight:
+            case .bottomRight:
+                return CGPoint(dictionaryRepresentation: boundaries.width as! CFDictionary)!
+            case .topRight:
                 return CGPoint(x: boundaries.width, y: boundaries.height)
-            case .TopLeft:
-                return CGPoint(y: boundaries.height)
+            case .topLeft:
+                return CGPoint(dictionaryRepresentation: boundaries.height as! CFDictionary)!
             }
         }
         
         ///Gets the next corner in the clockwise direction.
         internal func nextClockwise() -> Corner {
             switch self {
-            case .BottomLeft:
-                return .TopLeft
-            case .BottomRight:
-                return .BottomLeft
-            case .TopRight:
-                return .BottomRight
-            case .TopLeft:
-                return .TopRight
+            case .bottomLeft:
+                return .topLeft
+            case .bottomRight:
+                return .bottomLeft
+            case .topRight:
+                return .bottomRight
+            case .topLeft:
+                return .topRight
             }
         }
         
         ///Gets the next corner in the counterclockwise direction.
         internal func nextCounterClockwise() -> Corner {
             switch self {
-            case .TopLeft:
-                return .BottomLeft
-            case .BottomLeft:
-                return .BottomRight
-            case .BottomRight:
-                return .TopRight
-            case .TopRight:
-                return .TopLeft
+            case .topLeft:
+                return .bottomLeft
+            case .bottomLeft:
+                return .bottomRight
+            case .bottomRight:
+                return .topRight
+            case .topRight:
+                return .topLeft
             }
         }
     }
@@ -89,8 +89,8 @@ internal struct VoronoiCornerConnector {
      - parameter vertices: The current vertices of the cell you're connecting.
      - returns: The coordinates of the corner that, when added to the end of
      */
-    internal func connectToCorners(vertices:[CGPoint]) -> [CGPoint] {
-        guard let first = vertices.first, second = vertices.objectAtIndex(1), nextToLast = vertices.objectAtIndex(vertices.count - 2), last = vertices.last else {
+    internal func connectToCorners(_ vertices:[CGPoint]) -> [CGPoint] {
+        guard let first = vertices.first, let second = vertices.objectAtIndex(1), let nextToLast = vertices.objectAtIndex(vertices.count - 2), let last = vertices.last else {
             return []
         }
         
@@ -103,28 +103,28 @@ internal struct VoronoiCornerConnector {
         }
         
         if last.x ~= 0.0 {
-            if validCorners.contains(.BottomLeft) {
-                return self.walkCorners(validCorners, startingAt: .BottomLeft, clockwise: false)
-            } else if validCorners.contains(.TopLeft) {
-                return self.walkCorners(validCorners, startingAt: .TopLeft, clockwise: true)
+            if validCorners.contains(.bottomLeft) {
+                return self.walkCorners(validCorners, startingAt: .bottomLeft, clockwise: false)
+            } else if validCorners.contains(.topLeft) {
+                return self.walkCorners(validCorners, startingAt: .topLeft, clockwise: true)
             }
         } else if last.x ~= self.boundaries.width {
-            if validCorners.contains(.BottomRight) {
-                return self.walkCorners(validCorners, startingAt: .BottomRight, clockwise: true)
-            } else if validCorners.contains(.TopRight) {
-                return self.walkCorners(validCorners, startingAt: .TopRight, clockwise: false)
+            if validCorners.contains(.bottomRight) {
+                return self.walkCorners(validCorners, startingAt: .bottomRight, clockwise: true)
+            } else if validCorners.contains(.topRight) {
+                return self.walkCorners(validCorners, startingAt: .topRight, clockwise: false)
             }
         } else if last.y ~= 0.0 {
-            if validCorners.contains(.BottomLeft) {
-                return self.walkCorners(validCorners, startingAt: .BottomLeft, clockwise: true)
-            } else if validCorners.contains(.BottomRight) {
-                return self.walkCorners(validCorners, startingAt: .BottomRight, clockwise: false)
+            if validCorners.contains(.bottomLeft) {
+                return self.walkCorners(validCorners, startingAt: .bottomLeft, clockwise: true)
+            } else if validCorners.contains(.bottomRight) {
+                return self.walkCorners(validCorners, startingAt: .bottomRight, clockwise: false)
             }
         } else if last.y ~= self.boundaries.height {
-            if validCorners.contains(.TopLeft) {
-                return self.walkCorners(validCorners, startingAt: .TopLeft, clockwise: false)
-            } else if validCorners.contains(.TopRight) {
-                return self.walkCorners(validCorners, startingAt: .TopRight, clockwise: true)
+            if validCorners.contains(.topLeft) {
+                return self.walkCorners(validCorners, startingAt: .topLeft, clockwise: false)
+            } else if validCorners.contains(.topRight) {
+                return self.walkCorners(validCorners, startingAt: .topRight, clockwise: true)
             }
         }
         return []
@@ -138,7 +138,7 @@ internal struct VoronoiCornerConnector {
      - parameter clockwise: True to move in a clockwise direction, false for counterclockwise.
      - returns: Coordinates corresponding to the corners that, when connected to, complete the vertex loop.
      */
-    private func walkCorners(validCorners:[Corner], startingAt startCorner:Corner, clockwise:Bool) -> [CGPoint] {
+    fileprivate func walkCorners(_ validCorners:[Corner], startingAt startCorner:Corner, clockwise:Bool) -> [CGPoint] {
         var corner = startCorner
         var corners:[Corner] = []
         while validCorners.contains(corner) {

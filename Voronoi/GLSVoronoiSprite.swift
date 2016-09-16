@@ -11,10 +11,10 @@ import CoronaConvenience
 import CoronaStructures
 import CoronaGL
 
-public class GLSVoronoiSprite: GLSSprite {
+open class GLSVoronoiSprite: GLSSprite {
 
-    private var textureAnchors:[CGPoint] = []
-    public override var texture: CCTexture? {
+    fileprivate var textureAnchors:[CGPoint] = []
+    open override var texture: CCTexture? {
         didSet {
             self.textureChanged()
         }
@@ -25,7 +25,7 @@ public class GLSVoronoiSprite: GLSSprite {
         let vertices = cell.makeVertexLoop()
         let centerPosition = vertices.reduce(CGPoint.zero) { $0 + $1 } / CGFloat(vertices.count)
         
-        func generateVertex(point:CGPoint) -> UVertex {
+        func generateVertex(_ point:CGPoint) -> UVertex {
             var v = UVertex()
             v.position = (point - centerPosition).getGLTuple()
             v.texture = (GLfloat(point.x / boundaries.width), GLfloat(point.y / boundaries.height))
@@ -42,7 +42,7 @@ public class GLSVoronoiSprite: GLSSprite {
             let v3 = generateVertex(next)
             self.vertices += [center, v2, v3]
         }
-        if let first = vertices.first, last = vertices.last {
+        if let first = vertices.first, let last = vertices.last {
             let f = generateVertex(first)
             let l = generateVertex(last)
             self.vertices += [center, l, f]
@@ -50,14 +50,14 @@ public class GLSVoronoiSprite: GLSSprite {
         self.textureAnchors = self.vertices.map() { CGPoint(tupleGL: $0.texture) }
     }
     
-    private func textureChanged() {
+    fileprivate func textureChanged() {
         guard let frame = self.texture?.frame else {
             return
         }
         //textureAnchors is guaranteed to have the same length
         //as vertices, unless the user screws with the vertices
         //for some reason, which is a user error.
-        for (i, anchor) in self.textureAnchors.enumerate() {
+        for (i, anchor) in self.textureAnchors.enumerated() {
             self.vertices[i].texture = frame.interpolate(anchor).getGLTuple()
         }
     }

@@ -94,7 +94,7 @@ internal class VoronoiEdge {
     ///Connects the start/end points of VoronoiCellEdge properties
     ///that are associated with the same cell (so they can be used
     ///to form a loop at the end of the sweep).
-    internal func makeNeighborsWith(edge:VoronoiEdge) {
+    internal func makeNeighborsWith(_ edge:VoronoiEdge) {
         if self.leftCell === edge.leftCell {
             self.leftCellEdge.makeNeighbor(edge.leftCellEdge)
         } else if self.leftCell === edge.rightCell {
@@ -109,7 +109,7 @@ internal class VoronoiEdge {
     }
     
     ///Invokes ```makeNeighborsWith``` for all three combinations of the given edges.
-    internal class func makeNeighborsFirst(first:VoronoiEdge, second:VoronoiEdge, third:VoronoiEdge) {
+    internal class func makeNeighborsFirst(_ first:VoronoiEdge, second:VoronoiEdge, third:VoronoiEdge) {
         first.makeNeighborsWith(second)
         first.makeNeighborsWith(third)
         second.makeNeighborsWith(third)

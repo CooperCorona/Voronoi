@@ -19,7 +19,7 @@ import CoronaGL
  */
 internal struct VoronoiDiagramEdgeValidator {
     
-    internal struct Edge: OptionSetType {
+    internal struct Edge: OptionSet {
         
         internal let rawValue:Int
         
@@ -46,9 +46,9 @@ internal struct VoronoiDiagramEdgeValidator {
     internal let boundaries:CGSize
     ///The boundaries of the diagram
     ///crossed by the edges of the cell.
-    private var touchedEdges = Edge.None
+    fileprivate var touchedEdges = Edge.None
     ///The last point checked for validation.
-    private var previousPoint:CGPoint? = nil
+    fileprivate var previousPoint:CGPoint? = nil
     
     internal init(boundaries:CGSize) {
         self.boundaries = boundaries
@@ -64,7 +64,7 @@ internal struct VoronoiDiagramEdgeValidator {
      Edge.right is not equal to Edge.All, but I want to
      consider that true.
      */
-    private func contains(edge:Edge) -> Bool {
+    fileprivate func contains(_ edge:Edge) -> Bool {
         return (self.touchedEdges.rawValue & edge.rawValue) != 0
     }
     
@@ -75,7 +75,7 @@ internal struct VoronoiDiagramEdgeValidator {
      - parameter point: The point to check.
      - returns: true if the point lies inside the boundaries, false otherwise.
      */
-    private func containsPoint(point:CGPoint) -> Bool {
+    fileprivate func containsPoint(_ point:CGPoint) -> Bool {
         return 0.0 <= point.x && point.x <= self.boundaries.width
             && 0.0 <= point.y && point.y <= self.boundaries.height
     }
@@ -86,7 +86,7 @@ internal struct VoronoiDiagramEdgeValidator {
      - returns: true if the previous point lied in the boundaries
      or if there was no previous point, false otherwise.
      */
-    private func previousPointLiedInBoundaries() -> Bool {
+    fileprivate func previousPointLiedInBoundaries() -> Bool {
         guard let previousPoint = self.previousPoint else {
             return true
         }
@@ -103,7 +103,7 @@ internal struct VoronoiDiagramEdgeValidator {
      boundary, that means we will have skipped a corner, so
      we do not add the vertex.
      */
-    internal mutating func validatePoint(point:CGPoint) -> Bool {
+    internal mutating func validatePoint(_ point:CGPoint) -> Bool {
         
         if self.previousPointLiedInBoundaries() && self.containsPoint(point) {
             self.reset()
@@ -117,24 +117,24 @@ internal struct VoronoiDiagramEdgeValidator {
             if !self.contains(.Left) && self.contains(.AllButLeft) {
                 shouldAdd = false
             }
-            self.touchedEdges.unionInPlace(.Left)
+            self.touchedEdges.formUnion(.Left)
         } else if point.x ~= self.boundaries.width {
             if !self.contains(.Right) && self.contains(.AllButRight) {
                 shouldAdd = false
             }
-            self.touchedEdges.unionInPlace(.Right)
+            self.touchedEdges.formUnion(.Right)
         }
         
         if point.y ~= 0.0 {
             if !self.contains(.Bottom) && self.contains(.AllButBottom) {
                 shouldAdd = false
             }
-            self.touchedEdges.unionInPlace(.Bottom)
+            self.touchedEdges.formUnion(.Bottom)
         } else if point.y ~= self.boundaries.height {
             if !self.contains(.Top) && self.contains(.AllButTop) {
                 shouldAdd = false
             }
-            self.touchedEdges.unionInPlace(.Top)
+            self.touchedEdges.formUnion(.Top)
         }
         
         self.previousPoint = point

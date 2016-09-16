@@ -24,7 +24,7 @@ internal class VoronoiEvent: Comparable {
     }
     
     ///Triggers the event on the VoronoiDiagram.
-    internal func performEvent(diagram:VoronoiDiagram) {
+    internal func performEvent(_ diagram:VoronoiDiagram) {
         
     }
 

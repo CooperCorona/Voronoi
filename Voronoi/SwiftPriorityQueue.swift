@@ -31,8 +31,8 @@
 /// at the time of initialization.
 public struct PriorityQueue<T: Comparable> {
     
-    private var heap = [T]()
-    private let ordered: (T, T) -> Bool
+    fileprivate var heap = [T]()
+    fileprivate let ordered: (T, T) -> Bool
     
     public init(ascending: Bool = false, startingValues: [T] = []) {
         
@@ -54,7 +54,7 @@ public struct PriorityQueue<T: Comparable> {
     /// Add a new element onto the Priority Queue. O(lg n)
     ///
     /// - parameter element: The element to be inserted into the Priority Queue.
-    public mutating func push(element: T) {
+    public mutating func push(_ element: T) {
         heap.append(element)
         swim(heap.count - 1)
     }
@@ -83,11 +83,11 @@ public struct PriorityQueue<T: Comparable> {
     
     /// Eliminate all of the elements from the Priority Queue.
     public mutating func clear() {
-        heap.removeAll(keepCapacity: false)
+        heap.removeAll(keepingCapacity: false)
     }
     
     // Based on example from Sedgewick p 316
-    private mutating func sink(initialIndex: Int) {
+    fileprivate mutating func sink(_ initialIndex: Int) {
         var index = initialIndex
         while 2 * index + 1 < heap.count {
             
@@ -102,7 +102,7 @@ public struct PriorityQueue<T: Comparable> {
     }
     
     // Based on example from Sedgewick p 316
-    private mutating func swim(initialIndex: Int) {
+    fileprivate mutating func swim(_ initialIndex: Int) {
         var index = initialIndex
         while index > 0 && ordered(heap[(index - 1) / 2], heap[index]) {
             swap(&heap[(index - 1) / 2], &heap[index])
@@ -112,21 +112,25 @@ public struct PriorityQueue<T: Comparable> {
 }
 
 // MARK: - GeneratorType
-extension PriorityQueue: GeneratorType {
+extension PriorityQueue: IteratorProtocol {
     
     public typealias Element = T
     mutating public func next() -> Element? { return pop() }
 }
 
 // MARK: - SequenceType
-extension PriorityQueue: SequenceType {
+extension PriorityQueue: Sequence {
     
-    public typealias Generator = PriorityQueue
-    public func generate() -> Generator { return self }
+    public typealias Iterator = PriorityQueue
+    public func makeIterator() -> Iterator { return self }
 }
 
 // MARK: - CollectionType
-extension PriorityQueue: CollectionType {
+extension PriorityQueue: Collection {
+    
+    public func index(after i: Int) -> Int {
+        return self.heap.index(after: i)
+    }
     
     public typealias Index = Int
     

@@ -21,7 +21,7 @@ extension VoronoiDiagram {
      points can be generated at.
      - returns: A VoronoiDiagram object with randomly generated voronoi points.
      */
-    public class func createWithSize(size:CGSize, points:Int, buffer:CGFloat = 0.0) -> VoronoiDiagram {
+    public class func createWithSize(_ size:CGSize, points:Int, buffer:CGFloat = 0.0) -> VoronoiDiagram {
         let frame = CGRect(x: buffer, y: buffer, width: size.width - 2.0 * buffer, height: size.height - 2.0 * buffer)
         var voronoiPoints:[CGPoint] = []
         while voronoiPoints.count < points {
@@ -45,7 +45,7 @@ extension VoronoiDiagram {
      to constrain the position of the voronoi points.
      - returns: A VoronoiDiagram object with randomly generated (but constrained) voronoi points.
      */
-    public class func createWithSize(size:CGSize, rows:Int, columns:Int, range:CGFloat) -> VoronoiDiagram {
+    public class func createWithSize(_ size:CGSize, rows:Int, columns:Int, range:CGFloat) -> VoronoiDiagram {
         let pointRange = CGSize(width: size.width / CGFloat(rows), height: size.height / CGFloat(columns))
         var voronoiPoints:[CGPoint] = []
         for j in 0..<columns {

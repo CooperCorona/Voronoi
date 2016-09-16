@@ -35,7 +35,7 @@ internal class VoronoiCircleEvent: VoronoiEvent {
     }
     
     ///Moves the sweep line to the top of the circle and removes the associated parabola.
-    internal override func performEvent(diagram: VoronoiDiagram) {
+    internal override func performEvent(_ diagram: VoronoiDiagram) {
         diagram.sweepLine = self.point.y
         diagram.removeParabolaFromCircleEvent(self)
     }
@@ -43,7 +43,7 @@ internal class VoronoiCircleEvent: VoronoiEvent {
     ///Determines if two circle events are the same circle.
     ///Needed because sometimes the same circle event is created
     ///twice but should not be processed twice.
-    internal func isEqualTo(event:VoronoiCircleEvent) -> Bool {
+    internal func isEqualTo(_ event:VoronoiCircleEvent) -> Bool {
         return self.center ~= event.center && self.radius ~= event.radius && self.parabola?.focus == event.parabola?.focus
     }
 }

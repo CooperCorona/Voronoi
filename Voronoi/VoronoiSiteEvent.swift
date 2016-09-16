@@ -14,7 +14,7 @@ import UIKit
 internal class VoronoiSiteEvent: VoronoiEvent {
     
     ///The cell containing the given voronoi point.
-    private let cell:VoronoiCell
+    fileprivate let cell:VoronoiCell
     
     ///Initializes the event with a cell containing the given voronoi point.
     internal init(cell:VoronoiCell) {
@@ -23,7 +23,7 @@ internal class VoronoiSiteEvent: VoronoiEvent {
     }
     
     ///Sets the VoronoiDiagram's sweep line and adds the corresponding parabola to the beach line.
-    internal override func performEvent(diagram: VoronoiDiagram) {
+    internal override func performEvent(_ diagram: VoronoiDiagram) {
         diagram.sweepLine = self.point.y
         diagram.addPoint(self.cell)
     }
