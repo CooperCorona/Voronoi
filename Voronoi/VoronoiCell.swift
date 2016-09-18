@@ -6,7 +6,12 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
+#else
+import Cocoa
+#endif
+
 import CoronaConvenience
 import CoronaStructures
 import CoronaGL
@@ -146,7 +151,7 @@ open class VoronoiCell {
         
         var edgeValidator = VoronoiDiagramEdgeValidator(boundaries: self.boundaries)
         
-        let frame = CGRect(dictionaryRepresentation: self.boundaries as! CFDictionary)
+        let frame = CGRect(size: self.boundaries)
         let first       = prev
         var vertices:[CGPoint] = []
         var previous    = prev
@@ -154,7 +159,7 @@ open class VoronoiCell {
         var prevVertex  = nextEdge.vertex
         let boundaryVertices = prev.intersectionWith(self.boundaries)
         vertices += boundaryVertices
-        if (frame?.contains(nextEdge.vertex))! && !vertices.contains(where: { $0 ~= nextEdge.vertex }) {
+        if (frame.contains(nextEdge.vertex)) && !vertices.contains(where: { $0 ~= nextEdge.vertex }) {
             vertices.append(nextEdge.vertex)
         }
         //We're not actually going to restrict added points here,
@@ -179,7 +184,7 @@ open class VoronoiCell {
             //case there are 2 intersections with the boundaries we need to account for.
             //The last else-if statement is the only case in which there will by multiple
             //elements in the array, though. The first two are guaranteed to have < 2.
-            if !(frame?.contains(after.startPoint))! && (frame?.contains(after.endPoint))! {
+            if !(frame.contains(after.startPoint)) && (frame.contains(after.endPoint)) {
                 for bv in after.intersectionWith(self.boundaries) {
                     if edgeValidator.validatePoint(bv) {
                         vertices.append(bv)
@@ -187,7 +192,7 @@ open class VoronoiCell {
                         return (.deadEnd, vertices)
                     }
                 }
-            } else if (frame?.contains(after.startPoint))! && !(frame?.contains(after.endPoint))! {
+            } else if (frame.contains(after.startPoint)) && !(frame.contains(after.endPoint)) {
                 for bv in after.intersectionWith(self.boundaries) {
                     if edgeValidator.validatePoint(bv) {
                         vertices.append(bv)
@@ -195,7 +200,7 @@ open class VoronoiCell {
                         return (.deadEnd, vertices)
                     }
                 }
-            } else if !(frame?.contains(after.startPoint))! && !(frame?.contains(after.endPoint))! {
+            } else if !(frame.contains(after.startPoint)) && !(frame.contains(after.endPoint)) {
                 let intersections = after.intersectionWith(self.boundaries)
                 for bv in intersections {
                     vertices.append(bv)
@@ -206,7 +211,7 @@ open class VoronoiCell {
                 return (.deadEnd, vertices)
             }
             
-            if frame!.contains(successor.vertex) {
+            if frame.contains(successor.vertex) {
                 vertices.append(successor.vertex)
             }
             

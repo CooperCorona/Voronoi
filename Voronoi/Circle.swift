@@ -6,7 +6,12 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
+#else
+import Cocoa
+#endif
+
 
 ///Represents a circle defined by its center and radius. Used to 
 ///calculate VoronoiCircleEvents.

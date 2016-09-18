@@ -6,7 +6,12 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
+#else
+import Cocoa
+#endif
+
 
 //TODO: Make edges contain only points lying in the diagram.
 //TODO: Make vertices contain only points lying in the diagram.

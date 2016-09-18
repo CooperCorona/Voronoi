@@ -6,7 +6,12 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
+#if os(iOS)
 import UIKit
+#else
+import Cocoa
+#endif
+
 import CoronaConvenience
 import CoronaStructures
 import CoronaGL
@@ -36,11 +41,11 @@ internal struct VoronoiCornerConnector {
             case .bottomLeft:
                 return CGPoint.zero
             case .bottomRight:
-                return CGPoint(dictionaryRepresentation: boundaries.width as! CFDictionary)!
+                return CGPoint(x: boundaries.width)
             case .topRight:
                 return CGPoint(x: boundaries.width, y: boundaries.height)
             case .topLeft:
-                return CGPoint(dictionaryRepresentation: boundaries.height as! CFDictionary)!
+                return CGPoint(y: boundaries.height)
             }
         }
         
