@@ -55,7 +55,7 @@ internal class VoronoiCellEdge {
     internal weak var owner:VoronoiCell?        = nil
     ///A unit vector pointing in the same direction as the line this edge lies on.
     internal var directionVector:CGPoint { return (self.endPoint - self.startPoint).unit() }
-
+    
     ///Initializes the edge with a given start point.
     internal init(start:CGPoint) {
         self.startPoint = start
@@ -97,6 +97,20 @@ internal class VoronoiCellEdge {
             return (self.endNeighbor, self.endPoint)
         } else {
             return (self.startNeighbor, self.startPoint)
+        }
+    }
+    
+    /**
+     Returns the vertex opposite this one. If the vertex corresponds
+     to the start vertex, this method returns the end vertex and vice-versa.
+     - parameter vertex: The vertex opposite the desired vertex.
+     - returns: The vertex of this edge that is NOT the passed in vertex
+     */
+    internal func opposite(vertex:CGPoint) -> CGPoint {
+        if self.startPoint ~= vertex {
+            return self.endPoint
+        } else {
+            return self.startPoint
         }
     }
     
@@ -153,6 +167,37 @@ internal class VoronoiCellEdge {
         }
         
         return intersections
+    }
+    
+    /**
+     Sorts an array of points according to how far
+     they are from the current point. For example, if the
+     algorithm is walking from (0, 3) -> (8, 3), we want
+     to make sure that (0, 3) appears in the vertex array
+     before (8, 3). We do this by treating the line as a
+     parametric function and ordering the points by their "time"
+     (making sure to take into account axis-aligned points which
+     would result in division by zero errors).
+    
+     - parameter intersections: An array of points that intersects with the boundaries of a VoronoiDiagram.
+     - parameter start: The point you are currently walking from.
+     - returns: The intersections array sorted according to how close
+     each point is to the start point.
+     */
+    internal func sort(intersections:[CGPoint], byStart start:CGPoint) -> [CGPoint] {
+        //p(t) = start + vector * t
+        //t = (p(t) - start) / vector
+        let vector = (self.endPoint - self.startPoint).unit()
+        let mapped = intersections.map() { (point:CGPoint) -> (CGPoint, CGFloat) in
+            if vector.x ~= 0.0 {
+                return (point, (point.y - start.y) / vector.y)
+            } else if vector.y ~= 0.0 {
+                return (point, (point.x - start.x) / vector.x)
+            } else {
+                return (point, ((point - start) / vector).length())
+            }
+        }
+        return mapped .filter() { $1 >= 0.0 } .sorted() { $0.1 < $1.1 } .map() { $0.0 }
     }
     
     internal func edgeIsStartNeighbor(_ edge:VoronoiCellEdge) -> Bool {

@@ -92,6 +92,7 @@ open class VoronoiDiagram: NSObject {
                 vertices.append(edge.endPoint)
             }
         }
+        
         let result = VoronoiResult(cells: self.cells, edges: self.edges, vertices: vertices)
         self.result = result
         return result
@@ -171,7 +172,11 @@ open class VoronoiDiagram: NSObject {
                 leftParab = VoronoiParabola(cell: parab.cell)
                 rightParab = VoronoiParabola(cell: cell)
             }
-            let y = (self.sweepLine ~= parab.focus.y ? 0.0 : parab.yForX(point.x))
+            //The negative one million is semi-arbitrary but important. If we have
+            //2 consecutive points with the same y-value, we create a vertical line.
+            //If another point is added later in between those 2, the arbitrary y-value
+            //needs to be low enough that the new edge connects ABOVE the old one.
+            let y = (self.sweepLine ~= parab.focus.y ? -1_000_000.0 : parab.yForX(point.x))
             let edge = VoronoiEdge(start: CGPoint(x: (parab.focus.x + cell.voronoiPoint.x) / 2.0, y: y), left: leftParab.cell, right: rightParab.cell)
             edge.leftParabola = leftParab
             edge.rightParabola = rightParab
@@ -382,7 +387,6 @@ open class VoronoiDiagram: NSObject {
             edge.rightParabola = rightChild
             self.edges.append(edge)
             
-//            if CGRect(size: self.size).contains(event.center) {
             if let leftEdge = parabola.leftEdge, let rightEdge = parabola.rightEdge {
                 VoronoiEdge.makeNeighborsFirst(leftEdge, second: rightEdge, third: edge)
             } else if let leftEdge = parabola.leftEdge {
@@ -390,7 +394,7 @@ open class VoronoiDiagram: NSObject {
             } else if let rightEdge = parabola.rightEdge {
                 rightEdge.makeNeighborsWith(edge)
             }
-//            }
+
         }
         //I've made sure that only leaves get processed with circle events.
         //Here we're just seeing which node the parent was, so we can
