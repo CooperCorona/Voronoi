@@ -47,14 +47,26 @@ open class VoronoiCell {
         return vertices
     }
     
+    /**
+     Generates all the vertices associated with this cell,
+     and then sorts them according to their angle from the
+     voronoi point.
+    */
     fileprivate func windVertices() -> [CGPoint] {
         let frame = CGRect(size: self.boundaries)
-        var corners = VoronoiCornerConnector.Corner.allElements.map() { $0.get(self.boundaries) }
+        var corners = [
+            CGPoint(x: 0.0, y: 0.0),
+            CGPoint(x: self.boundaries.width, y: 0.0),
+            CGPoint(x: self.boundaries.width, y: self.boundaries.height),
+            CGPoint(x: 0.0, y: self.boundaries.height),
+        ]
         var vertices:[CGPoint] = []
         for cellEdge in self.cellEdges {
             let line = VoronoiLine(start: cellEdge.startPoint, end: cellEdge.endPoint, voronoi: self.voronoiPoint)
             corners = corners.filter() { line.pointLiesAbove($0) == line.voronoiPointLiesAbove }
+            
             vertices += cellEdge.intersectionWith(self.boundaries)
+            
             if frame.contains(cellEdge.startPoint) {
                 vertices.append(cellEdge.startPoint)
             }

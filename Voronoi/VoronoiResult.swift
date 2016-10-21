@@ -31,10 +31,9 @@ public struct VoronoiResult {
     ///some edges can start or end outside the diagram.
     public let edges:[(start:CGPoint, end:CGPoint)]
     
-    ///The vertices of the edges of the diagram. Note that not all
-    ///edges are guaranteed to lie inside the diagram. Note that
-    ///the vertices are obtained from the edges, so some vertices
-    ///lie outside the diagram.
+    ///The vertices of the edges of the diagram. Note
+    ///that the vertices are obtained from the edges,
+    ///so some lie outside the diagram.
     public let vertices:[CGPoint]
     
     ///Used by VoronoiDiagram to store the result of Fortune's algorithm.
