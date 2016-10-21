@@ -31,9 +31,6 @@ open class VoronoiDiagram: NSObject {
     open let size:CGSize
     ///The tree used to store the beach line and search when new parabolas are added.
     internal var parabolaTree = ExposedBinarySearchTree<VoronoiParabola>()
-    ///The number of parabolas on the beach line
-    ///(the parabolaTree property does not store this, so we have to store it here).
-    fileprivate var parabolaCount = 0
     ///The edges between two voronoi points, formed by the intersection of
     ///two parabolas on the beach line.
     internal var edges:[VoronoiEdge] = []
@@ -41,7 +38,7 @@ open class VoronoiDiagram: NSObject {
     ///cause changes in the beach line.
     internal var events = PriorityQueue<VoronoiEvent>(ascending: true, startingValues: [])
     ///The cells that correspond to each voronoi point and encapsulate the edges / vertices around it.
-    open let cells:[VoronoiCell]
+    internal let cells:[VoronoiCell]
     ///The position of the sweep line. Formula: ```y = sweepLine```.
     internal var sweepLine:CGFloat = 0.0
     ///The result of sweeping (calculated by ```sweep```). Since the array of points is
@@ -70,7 +67,7 @@ open class VoronoiDiagram: NSObject {
         }
         
     }
-    
+
     ///Calculates the edges of the VoronoiDiagram. Returns a VoronoiResult that exposes
     ///access to the diagram in different formats. If the result has already been calculated,
     ///it returns immediately rather than recalculating.
@@ -102,7 +99,7 @@ open class VoronoiDiagram: NSObject {
     open func sweepOnce() {
 
         if let event = self.events.pop() {
-            if let circleEvent = event as? VoronoiCircleEvent , circleEvent.parabola == nil/* || (event.point.y < self.sweepLine && !(event.point.y ~= self.sweepLine))*/ {
+            if let circleEvent = event as? VoronoiCircleEvent , circleEvent.parabola == nil {
                 self.sweepOnce()
                 return
             }
@@ -113,7 +110,6 @@ open class VoronoiDiagram: NSObject {
         if self.events.count == 0 {
             self.finishEdges()
         }
-        
     }
 
     /**
@@ -149,10 +145,11 @@ open class VoronoiDiagram: NSObject {
     ///Adds a parabola corresponding to a VoronoiCell's underlying voronoi point to the beach line.
     internal func addPoint(_ cell:VoronoiCell) {
         let point = cell.voronoiPoint
-        guard self.parabolaCount > 0 else {
+        //Guarantee that there exists a parabola.
+        //If not, initialize the first parabola.
+        guard self.parabolaTree.root != nil else {
             let parab = VoronoiParabola(cell: cell)
             self.parabolaTree.insert(parab)
-            self.parabolaCount += 1
             return
         }
         guard let parab = self.findParabolaAtX(point.x) else {
@@ -184,6 +181,11 @@ open class VoronoiDiagram: NSObject {
             
             parab.left = leftParab
             parab.right = rightParab
+            
+            if let leftEdge = parab.leftEdge {
+                leftParab.leftEdge = leftEdge
+                parab.leftEdge = nil
+            }
             return
         }
         
@@ -194,7 +196,7 @@ open class VoronoiDiagram: NSObject {
             lParab.left     = leftParab
             lParab.right    = newParab
             leftParab.leftEdge = lParab.leftEdge
-            lParab.leftEdge?.rightParabola  = leftParab
+            lParab.leftEdge?.rightParabola = leftParab
             lParab.rightEdge?.leftParabola = newParab
             
             let edgeToFinish = parab.leftEdge
@@ -204,7 +206,7 @@ open class VoronoiDiagram: NSObject {
                 if ce.center.x > parab.focus.x {
                     //This if statement might not be necessary.
                     //Because we're inserting between the parabola and the
-                    //adjacent left parabola, it might always be the case
+                    //adjacent left parabola, it might always be the case.
                     //that the else-statement executes, I just didn't want
                     //to screw anything up if I wasn't sure!
                 } else {
@@ -220,7 +222,7 @@ open class VoronoiDiagram: NSObject {
             lParab.directix = self.sweepLine
             let y = lParab.yForX(cell.voronoiPoint.x)
             let p = CGPoint(x: cell.voronoiPoint.x, y: y)
-            let leftEdge = VoronoiEdge(start: p, left: leftParab.cell, right: newParab.cell)
+            let leftEdge = VoronoiEdge(start: p, left: lParab.cell, right: newParab.cell)
             let rightEdge = VoronoiEdge(start: p, left: newParab.cell, right: rParab.cell)
             
             self.edges.append(leftEdge)
@@ -230,18 +232,14 @@ open class VoronoiDiagram: NSObject {
             //Other edge not needed, because the left parabola's right edge
             //and the right parabola's left edge reference the same edge.
             
-            leftEdge.leftParabola   = leftParab // leftParab.rightEdge
-            leftEdge.rightParabola  = newParab  // newParab.leftEdge
-            rightEdge.leftParabola  = newParab  // newParab.rightEdge
-            rightEdge.rightParabola = rParab    // rightParab.leftEdge
-            
-            if let etf = edgeToFinish {
-                VoronoiEdge.makeNeighborsFirst(rightEdge, second: leftEdge, third: etf)
-            }
+            leftEdge.leftParabola   = leftParab
+            leftEdge.rightParabola  = newParab  
+            rightEdge.leftParabola  = newParab  
+            rightEdge.rightParabola = rParab
             
             self.checkCircleEventForParabola(lParab)
             self.checkCircleEventForParabola(rParab)
-            return;
+            return
         } else if let rParab = parab.getParabolaToRight() , VoronoiParabola.parabolaCollisions(parab.focus, focus2: rParab.focus, directrix: self.sweepLine).contains(where: { $0.x ~= point.x }) {
             let lParab      = parab
             let rightParab   = VoronoiParabola(cell: rParab.cell)
@@ -275,77 +273,59 @@ open class VoronoiDiagram: NSObject {
             rParab.directix = self.sweepLine
             let y = rParab.yForX(cell.voronoiPoint.x)
             let p = CGPoint(x: cell.voronoiPoint.x, y: y)
-            let leftEdge = VoronoiEdge(start: p, left: newParab.cell, right: rParab.cell)
-            let rightEdge = VoronoiEdge(start: p, left: rParab.cell, right: newParab.cell)
+            let leftEdge = VoronoiEdge(start: p, left: lParab.cell, right: newParab.cell)
+            let rightEdge = VoronoiEdge(start: p, left: newParab.cell, right: rParab.cell)
             
             self.edges.append(leftEdge)
             self.edges.append(rightEdge)
             
             edgeToFinish?.endPoint = p
             
-            leftEdge.leftParabola   = lParab    // leftParab.rightEdge
-            leftEdge.rightParabola  = newParab  // newParab.leftEdge
-            rightEdge.leftParabola  = newParab  // newParab.rightEdge
-            rightEdge.rightParabola = rightParab// rightParab.leftEdge
-            
-            if let etf = edgeToFinish {
-                VoronoiEdge.makeNeighborsFirst(rightEdge, second: leftEdge, third: etf)
-            }
+            leftEdge.leftParabola   = lParab
+            leftEdge.rightParabola  = newParab  
+            rightEdge.leftParabola  = newParab  
+            rightEdge.rightParabola = rightParab
             
             self.checkCircleEventForParabola(lParab)
-            self.checkCircleEventForParabola(rParab)
+            self.checkCircleEventForParabola(newParab)
+            self.checkCircleEventForParabola(rightParab)
+            return
         }
         
         let rightParab  = VoronoiParabola(cell: parab.cell)
         let leftParab   = VoronoiParabola(cell: rightParab.cell)
         let newParab    = VoronoiParabola(cell: cell)
         parab.left      = leftParab
-        parab.right     = VoronoiParabola(cell: VoronoiCell(point: CGPoint.zero, boundaries: CGSize.zero)) // Dummy parabola, needs two childern
+        //Dummy parabola, needs two children
+        parab.right     = VoronoiParabola(cell: VoronoiCell(point: CGPoint.zero, boundaries: CGSize.zero))
         parab.right?.left  = newParab
         parab.right?.right = rightParab
         
         let y = parab.yForX(point.x)
-        //I'm checking for a count of 3 because it means
-        //there was only one parabola in the original array
-        if self.parabolaCount == 1 && parab.focus.y ~= point.y {
-            let start           = CGPoint(x: (parab.focus.x + point.x) / 2.0, y: 0.0)
-            let edge            = VoronoiEdge(start: start, left: parab.cell, right: cell)
-            edge.leftParabola   = leftParab
-            edge.rightParabola  = newParab
-            self.edges.append(edge)
-        } else {
-            
-            if let ce = parab.circleEvent {
-                if ce.center.x > parab.focus.x {
-                    rightParab.circleEvent = parab.circleEvent
-                    rightParab.circleEvent?.parabola = rightParab
-                } else {
-                    leftParab.circleEvent = parab.circleEvent
-                    leftParab.circleEvent?.parabola = leftParab
-                }
-                parab.circleEvent = nil
+        
+        if let ce = parab.circleEvent {
+            if ce.center.x > parab.focus.x {
+                rightParab.circleEvent = parab.circleEvent
+                rightParab.circleEvent?.parabola = rightParab
+            } else {
+                leftParab.circleEvent = parab.circleEvent
+                leftParab.circleEvent?.parabola = leftParab
             }
-            
-            let start           = CGPoint(x: point.x, y: y)
-            let leftEdge        = VoronoiEdge(start: start, left: parab.cell, right: cell)
-            let rightEdge       = VoronoiEdge(start: start, left: cell, right: parab.cell)
-            self.edges.append(leftEdge)
-            self.edges.append(rightEdge)
-            
-            leftParab.leftEdge      = parab.leftEdge
-            rightParab.rightEdge    = parab.rightEdge
-            leftEdge.leftParabola   = leftParab
-            leftEdge.rightParabola  = newParab
-            rightEdge.leftParabola  = newParab
-            rightEdge.rightParabola = rightParab
-            
-            //Make left-left and right-right neighbors because
-            //we flip the left right orientation on the edges
-            leftEdge.leftCellEdge.makeNeighbor(rightEdge.rightCellEdge)
-            leftEdge.rightCellEdge.makeNeighbor(rightEdge.leftCellEdge)
+            parab.circleEvent = nil
         }
         
-        self.parabolaCount += 3
+        let start           = CGPoint(x: point.x, y: y)
+        let leftEdge        = VoronoiEdge(start: start, left: parab.cell, right: cell)
+        let rightEdge       = VoronoiEdge(start: start, left: cell, right: parab.cell)
+        self.edges.append(leftEdge)
+        self.edges.append(rightEdge)
+        
+        leftParab.leftEdge      = parab.leftEdge 
+        rightParab.rightEdge    = parab.rightEdge
+        leftEdge.leftParabola   = leftParab
+        leftEdge.rightParabola  = newParab
+        rightEdge.leftParabola  = newParab
+        rightEdge.rightParabola = rightParab
         
         self.checkCircleEventForParabola(leftParab)
         self.checkCircleEventForParabola(rightParab)
@@ -360,8 +340,6 @@ open class VoronoiDiagram: NSObject {
         let rightChild = parabola.getParabolaToRight()
         var addNewEdge = false
         if let lChild  = leftChild {
-//            lChild.circleEvent?.parabola    = nil
-//            lChild.circleEvent              = nil
             if let edge = lChild.rightEdge {
                 edge.endPoint  = event.center
                 edge.leftParabola = nil
@@ -370,9 +348,6 @@ open class VoronoiDiagram: NSObject {
             }
         }
         if let rChild = rightChild {
-//            rChild.circleEvent             = nil
-//            rChild.circleEvent?.parabola   = nil
-            
             if let edge = rChild.leftEdge {
                 edge.endPoint  = event.center
                 edge.leftParabola = nil
@@ -386,17 +361,8 @@ open class VoronoiDiagram: NSObject {
             edge.leftParabola = leftChild
             edge.rightParabola = rightChild
             self.edges.append(edge)
-            
-            if let leftEdge = parabola.leftEdge, let rightEdge = parabola.rightEdge {
-                VoronoiEdge.makeNeighborsFirst(leftEdge, second: rightEdge, third: edge)
-            } else if let leftEdge = parabola.leftEdge {
-                leftEdge.makeNeighborsWith(edge)
-            } else if let rightEdge = parabola.rightEdge {
-                rightEdge.makeNeighborsWith(edge)
-            }
-
         }
-        //I've made sure that only leaves get processed with circle events.
+        //Only leaves get processed with circle events.
         //Here we're just seeing which node the parent was, so we can
         //remove it by replacing it with its other child.
         if let parent = parabola.parent, let grandParent = parent.parent {
@@ -414,8 +380,6 @@ open class VoronoiDiagram: NSObject {
                 }
             }
         }
-        
-        self.parabolaCount -= 1
         
         if let lChild = leftChild {
             self.checkCircleEventForParabola(lChild)
@@ -443,12 +407,15 @@ open class VoronoiDiagram: NSObject {
             return
         }
         
-        guard let leftEdge = leftChild.rightEdge, let rightEdge = rightChild.leftEdge, let _ = self.calculateCollisionOfEdges(leftEdge, right: rightEdge)/* where p ~= circle.center*/ else {
+        guard let leftEdge = leftChild.rightEdge, let rightEdge = rightChild.leftEdge, let _ = self.calculateCollisionOfEdges(leftEdge, right: rightEdge) else {
             return
         }
-        
+ 
         let event = VoronoiCircleEvent(point: circle.center, radius: circle.radius, parabola: parabola)
-        if self.circleEvents.contains(where: { $0.isEqualTo(event) }) {
+        guard !self.circleEvents.contains(where: { $0.isEqualTo(event) }) else {
+            return
+        }
+        guard !(self.sweepLine ~= parabola.focus.y) else {
             return
         }
 
@@ -551,6 +518,7 @@ open class VoronoiDiagram: NSObject {
      - returns: The circle that intersects all 3 points, or nil if no such
      circle exists (which occurs when three points lie on a line).
      */
+    var doLog = false
     fileprivate static func calculateCircle(_ points:[CGPoint]) -> Circle? {
         guard points.count >= 3 else {
             return nil

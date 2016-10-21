@@ -19,7 +19,7 @@ import CoronaGL
 /**
  Represents an edge formed by the intersection of the parabolas.
  */
-internal class VoronoiEdge {
+internal class VoronoiEdge: CustomStringConvertible {
     
     ///The initial point at which the two parabolas intersected.
     internal let startPoint:CGPoint
@@ -30,8 +30,6 @@ internal class VoronoiEdge {
     internal var endPoint:CGPoint = CGPoint.zero {
         didSet {
             self.hasSetEnd = true
-            self.leftCellEdge.endPoint = self.endPoint
-            self.rightCellEdge.endPoint = self.endPoint
         }
     }
     ///The focus of the left parabola.
@@ -51,13 +49,9 @@ internal class VoronoiEdge {
         }
     }
     ///The left parabola's underlying cell.
-    internal let leftCell:VoronoiCell
+    internal unowned let leftCell:VoronoiCell
     ///The right parabola's underlying cell.
-    internal let rightCell:VoronoiCell
-    ///The left cell's edge that corresponds to this edge.
-    internal let leftCellEdge:VoronoiCellEdge
-    ///The right cell's edge that corresponds to this edge.
-    internal let rightCellEdge:VoronoiCellEdge
+    internal unowned let rightCell:VoronoiCell
     
     ///The slope of the line that this edge lies on.
     internal var slope:CGFloat {
@@ -77,6 +71,14 @@ internal class VoronoiEdge {
     ///When the VoronoiDiagram sets the end point, this is set to true.
     internal var hasSetEnd = false
     
+    internal var description: String {
+        if self.hasSetEnd {
+            return "VoronoiEdge(\(self.startPoint) -> \(self.endPoint))"
+        } else {
+            return "VoronoiEdge(\(self.startPoint) Dir(\(self.directionVector)))"
+        }
+    }
+    
     ///Initializes a VoronoiEdge with a start point and the cells
     ///(which contain the focii/parabola)on either side.
     internal init(start:CGPoint, left:VoronoiCell, right:VoronoiCell) {
@@ -86,39 +88,64 @@ internal class VoronoiEdge {
         self.left       = left.voronoiPoint
         self.right      = right.voronoiPoint
         
-        let leftEdge    = VoronoiCellEdge(start: start)
-        let rightEdge   = VoronoiCellEdge(start: start)
-        leftEdge.owner  = self.leftCell
-        rightEdge.owner = self.rightCell
-        self.leftCell.cellEdges.append(leftEdge)
-        self.rightCell.cellEdges.append(rightEdge)
-        self.leftCellEdge = leftEdge
-        self.rightCellEdge = rightEdge
+        left.cellEdges.append(self)
+        right.cellEdges.append(self)
     }
     
-    ///Connects the start/end points of VoronoiCellEdge properties
-    ///that are associated with the same cell (so they can be used
-    ///to form a loop at the end of the sweep).
-    internal func makeNeighborsWith(_ edge:VoronoiEdge) {
-        if self.leftCell === edge.leftCell {
-            self.leftCellEdge.makeNeighbor(edge.leftCellEdge)
-        } else if self.leftCell === edge.rightCell {
-            self.leftCellEdge.makeNeighbor(edge.rightCellEdge)
+    /**
+     Calculates the point at which this edge connects with the bounding rectangle
+     formed by (0, 0, boundaries.width, boundaries.height). Some edges overshoot
+     the boundaries, so this method is used to clamp them to the edge.
+     - parameter boundaries: The size of the VoronoiDiagram.
+     - returns: The point at which this edge intersects with the boundaries, or nil if it does not.
+     */
+    internal func intersectionWith(_ boundaries:CGSize) -> [CGPoint] {
+        let startPoint = self.startPoint
+        let endPoint = self.endPoint
+        let vector = (endPoint - startPoint)
+        var intersections:[CGPoint] = []
+        //Horizontal boundaries
+        if (startPoint.x <= 0.0) == (0.0 <= endPoint.x) {
+            //Edge crosses line x = 0
+            let t = -startPoint.x / vector.x
+            let y = vector.y * t + startPoint.y
+            if 0.0 <= y && y <= boundaries.height {
+                //Point crosses the edge that actually lies on the boundaries
+                intersections.append(CGPoint(x: 0.0, y: y))
+            }
+        }
+        if (startPoint.x <= boundaries.width) == (boundaries.width <= endPoint.x) {
+            //Edge crosses line x = boundaries.width
+            let t = (boundaries.width - startPoint.x) / vector.x
+            let y = vector.y * t + startPoint.y
+            if 0.0 <= y && y <= boundaries.height {
+                //Point crosses the edge that actually lies on the boundaries
+                intersections.append(CGPoint(x: boundaries.width, y: y))
+            }
         }
         
-        if self.rightCell === edge.leftCell {
-            self.rightCellEdge.makeNeighbor(edge.leftCellEdge)
-        } else if self.rightCell === edge.rightCell {
-            self.rightCellEdge.makeNeighbor(edge.rightCellEdge)
+        //Vertical boundaries
+        if (startPoint.y <= 0.0) == (0.0 <= endPoint.y) {
+            //Edge crosses line x = 0
+            let t = -startPoint.y / vector.y
+            let x = vector.x * t + startPoint.x
+            if 0.0 <= x && x <= boundaries.width {
+                //Point crosses the edge that actually lies on the boundaries
+                intersections.append(CGPoint(x: x, y: 0.0))
+            }
         }
+        if (startPoint.y <= boundaries.height) == (boundaries.height <= endPoint.y) {
+            //Edge crosses line y = boundaries.height
+            let t = (boundaries.height - startPoint.y) / vector.y
+            let x = vector.x * t + startPoint.x
+            if 0.0 <= x && x <= boundaries.width {
+                //Point crosses the edge that actually lies on the boundaries
+                intersections.append(CGPoint(x: x, y: boundaries.height))
+            }
+        }
+        
+        return intersections
     }
-    
-    ///Invokes ```makeNeighborsWith``` for all three combinations of the given edges.
-    internal class func makeNeighborsFirst(_ first:VoronoiEdge, second:VoronoiEdge, third:VoronoiEdge) {
-        first.makeNeighborsWith(second)
-        first.makeNeighborsWith(third)
-        second.makeNeighborsWith(third)
-    }
-    
+
 }
- 
+

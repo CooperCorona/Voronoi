@@ -18,10 +18,12 @@ import CoronaStructures
 import CoronaGL
 
 ///Represents an event that happens when the sweep line crosses a specific point.
-internal class VoronoiEvent: Comparable {
+internal class VoronoiEvent: Comparable, CustomStringConvertible {
     
     ///The point at which the event is triggerred.
     internal let point:CGPoint
+    
+    internal var description: String { return "VoronoiEvent(\(self.point))" }
     
     ///Initializes a VoronoiEvent with a given point.
     internal init(point:CGPoint) {
@@ -43,6 +45,11 @@ internal func ==(lhs:VoronoiEvent, rhs:VoronoiEvent) -> Bool {
 
 internal func <(lhs:VoronoiEvent, rhs:VoronoiEvent) -> Bool {
     if lhs.point.y ~= rhs.point.y {
+        if lhs is VoronoiCircleEvent && rhs is VoronoiSiteEvent {
+            return false
+        } else if lhs is VoronoiSiteEvent && rhs is VoronoiCircleEvent {
+            return true
+        }
         return lhs.point.x < rhs.point.x
     } else {
         return lhs.point.y < rhs.point.y
@@ -50,7 +57,13 @@ internal func <(lhs:VoronoiEvent, rhs:VoronoiEvent) -> Bool {
 }
 
 internal func >(lhs:VoronoiEvent, rhs:VoronoiEvent) -> Bool {
+    
     if lhs.point.y ~= rhs.point.y {
+        if lhs is VoronoiCircleEvent && rhs is VoronoiSiteEvent {
+            return true
+        } else if lhs is VoronoiSiteEvent && rhs is VoronoiCircleEvent {
+            return false
+        }
         return lhs.point.x > rhs.point.x
     } else {
         return lhs.point.y > rhs.point.y

@@ -31,11 +31,14 @@ internal class VoronoiCircleEvent: VoronoiEvent {
     ///The parabola that will be removed when the event occurs.
     internal weak var parabola:VoronoiParabola?
     
+    internal override var description: String { return "VoronoiCircleEvent(\(self.point))" }
+    
     ///Initializes the event with a given circle and associated parabola.
     internal init(point:CGPoint, radius:CGFloat, parabola:VoronoiParabola) {
         self.center = point
         self.parabola = parabola
         self.radius = radius
+        
         super.init(point: point + CGPoint(y: radius))
     }
     
