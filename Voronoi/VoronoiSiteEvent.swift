@@ -21,6 +21,8 @@ internal class VoronoiSiteEvent: VoronoiEvent {
     ///The cell containing the given voronoi point.
     fileprivate let cell:VoronoiCell
     
+    internal override var description: String { return "VoronoiSiteEvent(\(self.point))" }
+    
     ///Initializes the event with a cell containing the given voronoi point.
     internal init(cell:VoronoiCell) {
         self.cell = cell

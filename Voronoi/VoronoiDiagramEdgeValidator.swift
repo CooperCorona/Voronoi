@@ -130,7 +130,7 @@ internal struct VoronoiDiagramEdgeValidator {
             self.touchedEdges.formUnion(.Right)
         }
         
-        if point.y ~= 0.0 {
+        else if point.y ~= 0.0 {
             if !self.contains(.Bottom) && self.contains(.AllButBottom) {
                 shouldAdd = false
             }

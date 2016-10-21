@@ -21,7 +21,7 @@ import CoronaGL
  a specific cell. It can be connected to other VoronoiCellEdges
  to form the path that winds around the cell.
  */
-internal class VoronoiCellEdge {
+internal class VoronoiCellEdge: Hashable, CustomStringConvertible {
     
     ///The VoronoiCellEdge connected to this one at this one's start point.
     internal weak var startNeighbor:VoronoiCellEdge? = nil {
@@ -51,14 +51,37 @@ internal class VoronoiCellEdge {
     }
     ///Determines if this object has a valid value for endPoint.
     internal var hasSetEnd                      = false
+    internal var startPointString:String { return /*self.startNeighbor == nil ? "nil" :*/ "\(self.startPoint)" }
+    internal var endPointString:String { return /*self.endNeighbor == nil ? "nil" :*/ "\(self.endPoint)" }
     ///The VoronoiCell this edge is associated with.
     internal weak var owner:VoronoiCell?        = nil
     ///A unit vector pointing in the same direction as the line this edge lies on.
     internal var directionVector:CGPoint { return (self.endPoint - self.startPoint).unit() }
     
+    internal var walked = false
+    
+    internal var startPointIndex    = -1
+    internal var endPointIndex      = -1
+    
+    internal static var uIndex = 0
+    internal let index:Int
+    internal var hashValue:Int { return self.index }
+    
+    internal var description: String {
+        return "VoronoiCellEdge(\(self.startPointString) -> \(self.endPointString))"
+    }
+    
     ///Initializes the edge with a given start point.
-    internal init(start:CGPoint) {
+    internal init(start:CGPoint, index:Int) {
         self.startPoint = start
+        self.startPointIndex = index
+        
+        //Used exclusively for hashing.
+        //The amount of voronoi points necessary to cause
+        //overflow and reach 0 again would be so absurdly high
+        //that it is unfeasible to calculate such a diagram.
+        VoronoiCellEdge.uIndex = VoronoiCellEdge.uIndex &+ 1
+        self.index = VoronoiCellEdge.uIndex
     }
     
     /**
@@ -68,7 +91,7 @@ internal class VoronoiCellEdge {
      - parameter cellEdge: The edge to connect this edge with.
      */
     internal func makeNeighbor(_ cellEdge:VoronoiCellEdge) {
-        
+        /*
         if self.startPoint ~= cellEdge.startPoint {
             self.startNeighbor = cellEdge
             cellEdge.startNeighbor = self
@@ -79,6 +102,20 @@ internal class VoronoiCellEdge {
             self.endNeighbor = cellEdge
             cellEdge.startNeighbor = self
         } else if self.endPoint ~= cellEdge.endPoint {
+            self.endNeighbor = cellEdge
+            cellEdge.endNeighbor = self
+        }
+        */
+        if self.startPointIndex == cellEdge.startPointIndex {
+            self.startNeighbor = cellEdge
+            cellEdge.startNeighbor = self
+        } else if self.startPointIndex == cellEdge.endPointIndex {
+            self.startNeighbor = cellEdge
+            cellEdge.endNeighbor = self
+        } else if self.endPointIndex == cellEdge.startPointIndex {
+            self.endNeighbor = cellEdge
+            cellEdge.startNeighbor = self
+        } else if self.endPointIndex == cellEdge.endPointIndex {
             self.endNeighbor = cellEdge
             cellEdge.endNeighbor = self
         }
@@ -208,4 +245,10 @@ internal class VoronoiCellEdge {
         return self.endNeighbor === edge
     }
 
+}
+
+///Used exclusively for hashing. See comment in
+///initializer for further reasoning.
+func ==(lhs:VoronoiCellEdge, rhs:VoronoiCellEdge) -> Bool {
+    return lhs.hashValue == rhs.hashValue
 }

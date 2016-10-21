@@ -103,8 +103,10 @@ internal struct VoronoiCornerConnector {
         let endLine = VoronoiLine(start: nextToLast, end: last, voronoi: self.voronoiPoint)
         
         let validCorners = Corner.allElements.filter() {
-            startLine.pointLiesAbove($0.get(self.boundaries)) == startLine.voronoiPointLiesAbove &&
-                endLine.pointLiesAbove($0.get(self.boundaries)) == endLine.voronoiPointLiesAbove
+            let cornerPoint = $0.get(self.boundaries)
+            return startLine.pointLiesAbove(cornerPoint) == startLine.voronoiPointLiesAbove &&
+                endLine.pointLiesAbove(cornerPoint) == endLine.voronoiPointLiesAbove &&
+                !(cornerPoint ~= first || cornerPoint ~= last)
         }
         
         if last.x ~= 0.0 {
@@ -119,7 +121,8 @@ internal struct VoronoiCornerConnector {
             } else if validCorners.contains(.topRight) {
                 return self.walkCorners(validCorners, startingAt: .topRight, clockwise: false)
             }
-        } else if last.y ~= 0.0 {
+        }
+        if last.y ~= 0.0 {
             if validCorners.contains(.bottomLeft) {
                 return self.walkCorners(validCorners, startingAt: .bottomLeft, clockwise: true)
             } else if validCorners.contains(.bottomRight) {

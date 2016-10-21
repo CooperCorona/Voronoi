@@ -19,7 +19,7 @@ import CoronaGL
 /**
  Represents an edge formed by the intersection of the parabolas.
  */
-internal class VoronoiEdge {
+internal class VoronoiEdge: CustomStringConvertible {
     
     ///The initial point at which the two parabolas intersected.
     internal let startPoint:CGPoint
@@ -77,23 +77,46 @@ internal class VoronoiEdge {
     ///When the VoronoiDiagram sets the end point, this is set to true.
     internal var hasSetEnd = false
     
+    internal var description: String {
+        if self.hasSetEnd {
+            return "VoronoiEdge(\(self.startPoint) -> \(self.endPoint))"
+        } else {
+            return "VoronoiEdge(\(self.startPoint) Dir(\(self.directionVector)))"
+        }
+    }
+    
+    internal static var uIndex = 0
+    internal let index:Int
+    internal var startPointIndex    = -1
+    internal var endPointIndex      = -1
     ///Initializes a VoronoiEdge with a start point and the cells
     ///(which contain the focii/parabola)on either side.
-    internal init(start:CGPoint, left:VoronoiCell, right:VoronoiCell) {
+    internal init(start:CGPoint, left:VoronoiCell, right:VoronoiCell, index:Int) {
         self.startPoint = start
         self.leftCell   = left
         self.rightCell  = right
         self.left       = left.voronoiPoint
         self.right      = right.voronoiPoint
         
-        let leftEdge    = VoronoiCellEdge(start: start)
-        let rightEdge   = VoronoiCellEdge(start: start)
+        self.startPointIndex = index
+        let leftEdge    = VoronoiCellEdge(start: start, index: index)
+        let rightEdge   = VoronoiCellEdge(start: start, index: index)
         leftEdge.owner  = self.leftCell
         rightEdge.owner = self.rightCell
-        self.leftCell.cellEdges.append(leftEdge)
-        self.rightCell.cellEdges.append(rightEdge)
+        self.leftCell.cellEdges.insert(leftEdge)
+        self.rightCell.cellEdges.insert(rightEdge)
         self.leftCellEdge = leftEdge
         self.rightCellEdge = rightEdge
+        
+        self.index = VoronoiEdge.uIndex
+        VoronoiEdge.uIndex += 1
+    }
+    
+    func set(endPoint:CGPoint, index:Int) {
+        self.endPoint = endPoint
+        self.endPointIndex = index
+        self.leftCellEdge.endPointIndex = index
+        self.rightCellEdge.endPointIndex = index
     }
     
     ///Connects the start/end points of VoronoiCellEdge properties

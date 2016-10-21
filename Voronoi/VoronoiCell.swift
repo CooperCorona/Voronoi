@@ -40,7 +40,12 @@ open class VoronoiCell {
     ///The vertices that form the edges of this cell.
     fileprivate var vertices:[CGPoint]? = nil
     ///The actual edges that form the boundaries of this cell.
-    internal var cellEdges:[VoronoiCellEdge] = []
+    internal var cellEdges:Set<VoronoiCellEdge> = []
+    
+    internal var log:Bool { return self.voronoiPoint.x ~= 200.0 && self.voronoiPoint.y ~= 100.0 }
+    internal var walkedAllEdges:Bool {
+        return self.cellEdges.reduce(true) { $0 && $1.walked }
+    }
     
     ///Initializes a VoronoiCell with a voronoi point and the boundaries of a VoronoiDiagram.
     public init(point:CGPoint, boundaries:CGSize) {
@@ -57,6 +62,12 @@ open class VoronoiCell {
         guard let start = self.cellEdges.first else {
             return []
         }
+        
+        if self.log {
+            for ce in self.cellEdges {
+                print("\(ce.startPointString) -> \(ce.endPointString)")
+            }
+        }
 
         let (complete, startVertices) = self.seekToEndOfEdges(start, nextEdge: (start.startNeighbor, start.startPoint))
         //Inner cell, we already have a loop.
@@ -65,6 +76,7 @@ open class VoronoiCell {
         }
         
         var verts:[CGPoint] = startVertices.reversed()
+//        var verts:[CGPoint] = []
 
         if complete == .deadEnd {
             let (_, endVertices) = self.seekToEndOfEdges(start, nextEdge: (start.endNeighbor, start.endPoint))
@@ -80,7 +92,11 @@ open class VoronoiCell {
             } else {
                 verts += endVertices
             }
-        } else if self.cellEdges.count == 2 && (start.directionVector.x ~= 0.0 || start.directionVector.y ~= 0.0) {
+//            verts = self.connect(array: startVertices, to: endVertices)
+//            verts += endVertices
+        } else {
+//            verts = startVertices.reversed()
+        }/* else if self.cellEdges.count == 2 && (start.directionVector.x ~= 0.0 || start.directionVector.y ~= 0.0) {
             //In this case, the cell has edges that are either perfectly horizontal
             //or perfectly vertical. Also, the edges must touch both boundaries because
             //otherwise there would not be 2 of them. Thus, the cell walking algorithm fails, because
@@ -93,14 +109,53 @@ open class VoronoiCell {
                 //the correct diagram.
                 verts += startVertices
             }
+        }*/
+        if let nonConnectedEdge = self.cellEdges.first, !self.walkedAllEdges {
+            var (_, nonConnectedVerts) = self.seekToEndOfEdges(nonConnectedEdge, nextEdge: (nonConnectedEdge.endNeighbor, nonConnectedEdge.endPoint))
+            nonConnectedVerts.reverse()
+            var (_, endNonConnectedVerts) = self.seekToEndOfEdges(nonConnectedEdge, nextEdge: (nonConnectedEdge.startNeighbor, nonConnectedEdge.startPoint))
+            if self.verticesAreOnOppositeEdges(nonConnectedVerts) {
+                nonConnectedVerts = endNonConnectedVerts
+            } else {
+                nonConnectedVerts += endNonConnectedVerts
+            }
+            verts = self.connect(array: verts, to: nonConnectedVerts)
+            /*
+            if let firstVert = verts.first, let lastVert = nonConnectedVerts.last, firstVert.x ~= lastVert.x || firstVert.y ~= lastVert.y {
+                verts += nonConnectedVerts
+            } else {
+                verts += nonConnectedVerts.reversed()
+            }
+            */
+            if log {
+//                print(verts)
+            }
         }
         verts = self.removeDuplicates(verts)
         let connector = VoronoiCornerConnector(voronoiPoint: self.voronoiPoint, boundaries: self.boundaries)
         let corners = connector.connectToCorners(verts)
-
+        
         verts += corners
         self.vertices = verts
+        print("\(self.voronoiPoint): \(self.vertices)")
         return verts
+    }
+    
+    fileprivate func connect(array:[CGPoint], to:[CGPoint]) -> [CGPoint] {
+        //If the first or the second doesn't exist, then the array
+        //is empty. The other array might be empty, but it might not,
+        //so we return it.
+        guard let last = array.last else {
+            return to
+        }
+        guard let first = to.first else {
+            return array
+        }
+        if first.x ~= last.x || first.y ~= last.y {
+            return array + to
+        } else {
+            return array.reversed() + to
+        }
     }
     
     /**
@@ -177,6 +232,9 @@ open class VoronoiCell {
      point connects to the first point). The second element is the vertices of this side of the loop, in order.
      */
     fileprivate func seekToEndOfEdges(_ prev:VoronoiCellEdge, nextEdge:(edge:VoronoiCellEdge?, vertex:CGPoint)) -> (complete:TraversalResult, points:[CGPoint]) {
+        prev.walked = true
+        self.cellEdges.remove(prev)
+        
         var edgeValidator = VoronoiDiagramEdgeValidator(boundaries: self.boundaries)
         
         let frame = CGRect(size: self.boundaries)
@@ -198,6 +256,8 @@ open class VoronoiCell {
         }
 
         while let after = next {
+            after.walked = true
+            self.cellEdges.remove(after)
             let successor = after.getNextFrom(previous)
             next = successor.edge
             previous = after
