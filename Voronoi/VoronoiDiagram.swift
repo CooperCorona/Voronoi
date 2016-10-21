@@ -116,6 +116,7 @@ open class VoronoiDiagram: NSObject {
                 return
             }
             self.sweepLine = event.point.y
+            print(event.point)
             event.performEvent(self)
         }
         
@@ -192,6 +193,11 @@ open class VoronoiDiagram: NSObject {
             
             parab.left = leftParab
             parab.right = rightParab
+            
+            if let leftEdge = parab.leftEdge {
+                leftParab.leftEdge = leftEdge
+                parab.leftEdge = nil
+            }
             return
         }
         

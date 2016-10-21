@@ -42,7 +42,7 @@ open class VoronoiCell {
     ///The actual edges that form the boundaries of this cell.
     internal var cellEdges:Set<VoronoiCellEdge> = []
     
-    internal var log:Bool { return self.voronoiPoint.x ~= 200.0 && self.voronoiPoint.y ~= 100.0 }
+    internal var log:Bool { return self.voronoiPoint.x ~= 250.0 && self.voronoiPoint.y ~= 250.0 }
     internal var walkedAllEdges:Bool {
         return self.cellEdges.reduce(true) { $0 && $1.walked }
     }
@@ -59,6 +59,9 @@ open class VoronoiCell {
         if let vertices = self.vertices {
             return vertices
         }
+        let vertices = self.windVertices()
+        self.vertices = vertices
+        return vertices
         guard let start = self.cellEdges.first else {
             return []
         }
@@ -139,6 +142,30 @@ open class VoronoiCell {
         self.vertices = verts
         print("\(self.voronoiPoint): \(self.vertices)")
         return verts
+    }
+    
+    fileprivate func windVertices() -> [CGPoint] {
+        let frame = CGRect(size: self.boundaries)
+        var corners = VoronoiCornerConnector.Corner.allElements.map() { $0.get(self.boundaries) }
+        var vertices:[CGPoint] = []
+        for cellEdge in self.cellEdges {
+            let line = VoronoiLine(start: cellEdge.startPoint, end: cellEdge.endPoint, voronoi: self.voronoiPoint)
+            corners = corners.filter() { line.pointLiesAbove($0) == line.voronoiPointLiesAbove }
+            vertices += cellEdge.intersectionWith(self.boundaries)
+            if log {
+                print(cellEdge)
+            }
+            if frame.contains(cellEdge.startPoint) {
+                vertices.append(cellEdge.startPoint)
+            }
+            if frame.contains(cellEdge.endPoint) {
+                vertices.append(cellEdge.endPoint)
+            }
+        }
+        vertices += corners
+        vertices = vertices.sorted() { self.voronoiPoint.angleTo($0) < self.voronoiPoint.angleTo($1) }
+        vertices = self.removeDuplicates(vertices)
+        return vertices
     }
     
     fileprivate func connect(array:[CGPoint], to:[CGPoint]) -> [CGPoint] {
