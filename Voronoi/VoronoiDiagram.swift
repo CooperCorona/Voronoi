@@ -51,7 +51,6 @@ open class VoronoiDiagram: NSObject {
     ///The circle events that have been calculated.
     ///Used to make sure the same circle event is not processed twice.
     fileprivate var circleEvents:[VoronoiCircleEvent] = []
-    fileprivate var edgeIndex = 0
     
     /**
      Initializes a VoronoiDiagram with voronoi points and boundaries.
@@ -72,18 +71,11 @@ open class VoronoiDiagram: NSObject {
         }
         
     }
-    
-    fileprivate func incrementEdgeIndex() -> Int {
-        let index = self.edgeIndex
-        self.edgeIndex += 1
-        return index
-    }
-    
+
     ///Calculates the edges of the VoronoiDiagram. Returns a VoronoiResult that exposes
     ///access to the diagram in different formats. If the result has already been calculated,
     ///it returns immediately rather than recalculating.
     open func sweep() -> VoronoiResult {
-        VoronoiEdge.uIndex = 0
         if let result = self.result {
             return result
         }
@@ -186,7 +178,7 @@ open class VoronoiDiagram: NSObject {
             //If another point is added later in between those 2, the arbitrary y-value
             //needs to be low enough that the new edge connects ABOVE the old one.
             let y = (self.sweepLine ~= parab.focus.y ? -1_000_000.0 : parab.yForX(point.x))
-            let edge = VoronoiEdge(start: CGPoint(x: (parab.focus.x + cell.voronoiPoint.x) / 2.0, y: y), left: leftParab.cell, right: rightParab.cell, index: self.incrementEdgeIndex())
+            let edge = VoronoiEdge(start: CGPoint(x: (parab.focus.x + cell.voronoiPoint.x) / 2.0, y: y), left: leftParab.cell, right: rightParab.cell)
             edge.leftParabola = leftParab
             edge.rightParabola = rightParab
             self.edges.append(edge)
@@ -234,26 +226,20 @@ open class VoronoiDiagram: NSObject {
             lParab.directix = self.sweepLine
             let y = lParab.yForX(cell.voronoiPoint.x)
             let p = CGPoint(x: cell.voronoiPoint.x, y: y)
-            let currentEdgeIndex = self.incrementEdgeIndex()
-            let leftEdge = VoronoiEdge(start: p, left: lParab.cell, right: newParab.cell, index: currentEdgeIndex)
-            let rightEdge = VoronoiEdge(start: p, left: newParab.cell, right: rParab.cell, index: currentEdgeIndex)
+            let leftEdge = VoronoiEdge(start: p, left: lParab.cell, right: newParab.cell)
+            let rightEdge = VoronoiEdge(start: p, left: newParab.cell, right: rParab.cell)
             
             self.edges.append(leftEdge)
             self.edges.append(rightEdge)
             
-//            edgeToFinish?.endPoint = p
-            edgeToFinish?.set(endPoint: p, index: currentEdgeIndex)
+            edgeToFinish?.endPoint = p
             //Other edge not needed, because the left parabola's right edge
             //and the right parabola's left edge reference the same edge.
             
-            leftEdge.leftParabola   = leftParab // leftParab.rightEdge
-            leftEdge.rightParabola  = newParab  // newParab.leftEdge
-            rightEdge.leftParabola  = newParab  // newParab.rightEdge
-            rightEdge.rightParabola = rParab    // rightParab.leftEdge
-            
-            if let etf = edgeToFinish {
-                VoronoiEdge.makeNeighborsFirst(rightEdge, second: leftEdge, third: etf)
-            }
+            leftEdge.leftParabola   = leftParab
+            leftEdge.rightParabola  = newParab  
+            rightEdge.leftParabola  = newParab  
+            rightEdge.rightParabola = rParab
             
             self.checkCircleEventForParabola(lParab)
             self.checkCircleEventForParabola(rParab)
@@ -291,26 +277,19 @@ open class VoronoiDiagram: NSObject {
             rParab.directix = self.sweepLine
             let y = rParab.yForX(cell.voronoiPoint.x)
             let p = CGPoint(x: cell.voronoiPoint.x, y: y)
-            let currentEdgeIndex = self.incrementEdgeIndex()
-            let leftEdge = VoronoiEdge(start: p, left: lParab.cell, right: newParab.cell, index: currentEdgeIndex)
-            let rightEdge = VoronoiEdge(start: p, left: newParab.cell, right: rParab.cell, index: currentEdgeIndex)
+            let leftEdge = VoronoiEdge(start: p, left: lParab.cell, right: newParab.cell)
+            let rightEdge = VoronoiEdge(start: p, left: newParab.cell, right: rParab.cell)
             
             self.edges.append(leftEdge)
             self.edges.append(rightEdge)
             
-//            edgeToFinish?.endPoint = p
-            edgeToFinish?.set(endPoint: p, index: currentEdgeIndex)
+            edgeToFinish?.endPoint = p
             
             leftEdge.leftParabola   = lParab
             leftEdge.rightParabola  = newParab  
             rightEdge.leftParabola  = newParab  
             rightEdge.rightParabola = rightParab
             
-            if let etf = edgeToFinish {
-                VoronoiEdge.makeNeighborsFirst(rightEdge, second: leftEdge, third: etf)
-            }
-            
-            doLog = true
             self.checkCircleEventForParabola(lParab)
             self.checkCircleEventForParabola(newParab)
             self.checkCircleEventForParabola(rightParab)
@@ -330,7 +309,7 @@ open class VoronoiDiagram: NSObject {
         //there was only one parabola in the original array
         if self.parabolaCount == 1 && parab.focus.y ~= point.y {
             let start           = CGPoint(x: (parab.focus.x + point.x) / 2.0, y: 0.0)
-            let edge            = VoronoiEdge(start: start, left: parab.cell, right: cell, index: self.incrementEdgeIndex())
+            let edge            = VoronoiEdge(start: start, left: parab.cell, right: cell)
             edge.leftParabola   = leftParab
             edge.rightParabola  = newParab
             self.edges.append(edge)
@@ -348,9 +327,8 @@ open class VoronoiDiagram: NSObject {
             }
             
             let start           = CGPoint(x: point.x, y: y)
-            let currentEdgeIndex = self.incrementEdgeIndex()
-            let leftEdge        = VoronoiEdge(start: start, left: parab.cell, right: cell, index: currentEdgeIndex)
-            let rightEdge       = VoronoiEdge(start: start, left: cell, right: parab.cell, index: currentEdgeIndex)
+            let leftEdge        = VoronoiEdge(start: start, left: parab.cell, right: cell)
+            let rightEdge       = VoronoiEdge(start: start, left: cell, right: parab.cell)
             self.edges.append(leftEdge)
             self.edges.append(rightEdge)
             
@@ -360,11 +338,6 @@ open class VoronoiDiagram: NSObject {
             leftEdge.rightParabola  = newParab
             rightEdge.leftParabola  = newParab
             rightEdge.rightParabola = rightParab
-            
-            //Make left-left and right-right neighbors because
-            //we flip the left right orientation on the edges
-            leftEdge.leftCellEdge.makeNeighbor(rightEdge.rightCellEdge)
-            leftEdge.rightCellEdge.makeNeighbor(rightEdge.leftCellEdge)
         }
         
         self.parabolaCount += 3
@@ -382,23 +355,16 @@ open class VoronoiDiagram: NSObject {
         let rightChild = parabola.getParabolaToRight()
         var addNewEdge = false
         if let lChild  = leftChild {
-//            lChild.circleEvent?.parabola    = nil
-//            lChild.circleEvent              = nil
             if let edge = lChild.rightEdge {
-//                edge.endPoint  = event.center
-                edge.set(endPoint: event.center, index: event.edgeIndex)
+                edge.endPoint  = event.center
                 edge.leftParabola = nil
                 edge.rightParabola = nil
                 addNewEdge = true
             }
         }
         if let rChild = rightChild {
-//            rChild.circleEvent             = nil
-//            rChild.circleEvent?.parabola   = nil
-            
             if let edge = rChild.leftEdge {
-//                edge.endPoint  = event.center
-                edge.set(endPoint: event.center, index: event.edgeIndex)
+                edge.endPoint  = event.center
                 edge.leftParabola = nil
                 edge.rightParabola = nil
                 addNewEdge = true
@@ -406,19 +372,10 @@ open class VoronoiDiagram: NSObject {
         }
         
         if addNewEdge {
-            let edge = VoronoiEdge(start: event.center, left: leftChild!.cell, right: rightChild!.cell, index: event.edgeIndex)
+            let edge = VoronoiEdge(start: event.center, left: leftChild!.cell, right: rightChild!.cell)
             edge.leftParabola = leftChild
             edge.rightParabola = rightChild
             self.edges.append(edge)
-            
-            if let leftEdge = parabola.leftEdge, let rightEdge = parabola.rightEdge {
-                VoronoiEdge.makeNeighborsFirst(leftEdge, second: rightEdge, third: edge)
-            } else if let leftEdge = parabola.leftEdge {
-                leftEdge.makeNeighborsWith(edge)
-            } else if let rightEdge = parabola.rightEdge {
-                rightEdge.makeNeighborsWith(edge)
-            }
-
         }
         //Only leaves get processed with circle events.
         //Here we're just seeing which node the parent was, so we can
@@ -467,11 +424,11 @@ open class VoronoiDiagram: NSObject {
             return
         }
         
-        guard let leftEdge = leftChild.rightEdge, let rightEdge = rightChild.leftEdge, let _ = self.calculateCollisionOfEdges(leftEdge, right: rightEdge)/* where p ~= circle.center*/ else {
+        guard let leftEdge = leftChild.rightEdge, let rightEdge = rightChild.leftEdge, let _ = self.calculateCollisionOfEdges(leftEdge, right: rightEdge) else {
             return
         }
  
-        let event = VoronoiCircleEvent(point: circle.center, radius: circle.radius, parabola: parabola, edgeIndex: self.incrementEdgeIndex())
+        let event = VoronoiCircleEvent(point: circle.center, radius: circle.radius, parabola: parabola)
         guard !self.circleEvents.contains(where: { $0.isEqualTo(event) }) else {
             return
         }
@@ -560,9 +517,7 @@ open class VoronoiDiagram: NSObject {
                 //(vertical edges that connect to the bottom like that can only occur
                 //if the first two points have the same y-value, in which case the START
                 //point is connected to the bottom, preventing this from being an issue).
-//                edge.endPoint = CGPoint(x: edge.startPoint.x, y: self.size.height)
-                let p = CGPoint(x: edge.startPoint.x, y: self.size.height)
-                edge.set(endPoint: p, index: self.incrementEdgeIndex())
+                edge.endPoint = CGPoint(x: edge.startPoint.x, y: self.size.height)
             } else {
                 let mx:CGFloat
                 if edge.directionVector.x < 0.0 {
@@ -570,9 +525,7 @@ open class VoronoiDiagram: NSObject {
                 } else {
                     mx = min(0.0, edge.startPoint.x - 10.0)
                 }
-//                edge.endPoint = CGPoint(x: mx, y: mx * edge.slope + edge.yIntercept)
-                let p = CGPoint(x: mx, y: mx * edge.slope + edge.yIntercept)
-                edge.set(endPoint: p, index: self.incrementEdgeIndex())
+                edge.endPoint = CGPoint(x: mx, y: mx * edge.slope + edge.yIntercept)
             }
         }
     }
