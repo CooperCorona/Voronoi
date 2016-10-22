@@ -43,9 +43,9 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
         }
     }
     ///The edge formed by the left intersection of this parabola.
-    internal var leftEdge:VoronoiEdge?    = nil
+    internal weak var leftEdge:VoronoiEdge?    = nil
     ///The edge formed by the right intersection of this parabola.
-    internal var rightEdge:VoronoiEdge?   = nil
+    internal weak var rightEdge:VoronoiEdge?   = nil
     
     ///The left child of this parabola (as a node in a binary search tree).
     internal var left:VoronoiParabola?    = nil {
@@ -60,7 +60,7 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
         }
     }
     ///The parent of this parabola (as a node in a binary search tree).
-    internal var parent:VoronoiParabola?  = nil
+    internal weak var parent:VoronoiParabola?  = nil
 
     ///Initializes a parabola with an associated cell (and underlying VoronoiPoint).
     internal init(cell:VoronoiCell) {

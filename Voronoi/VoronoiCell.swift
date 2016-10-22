@@ -29,6 +29,10 @@ open class VoronoiCell {
     fileprivate var vertices:[CGPoint]? = nil
     ///The actual edges that form the boundaries of this cell.
     internal var cellEdges:[VoronoiEdge] = []
+    ///The neighboring cells adjacent to this cell.
+    ///They must be weak references because otherwise, we have retain cycles.
+    internal var weakNeighbors:[WeakReference<VoronoiCell>] = []
+    open var neighbors:[VoronoiCell] { return self.weakNeighbors.flatMap() { $0.object } }
     
     ///Initializes a VoronoiCell with a voronoi point and the boundaries of a VoronoiDiagram.
     public init(point:CGPoint, boundaries:CGSize) {
@@ -101,4 +105,36 @@ open class VoronoiCell {
         return filteredVertices
     }
 
+    /**
+     Adds a VoronoiCell as a neighbor to this cell.
+     - parameter neighbor: The cell adjacent to this cell to mark as a neighbor.
+     */
+    internal func add(neighbor:VoronoiCell) {
+        self.weakNeighbors.append(WeakReference(object: neighbor))
+    }
+    
+}
+
+extension VoronoiCell {
+    
+    public func contains(point:CGPoint) -> Bool {
+        //Ideally, the user has already called makeVertexLoop.
+        //If not, we incur the expensive calculations (but
+        //guarantee that the vertices exist).
+        let vertices = self.makeVertexLoop()
+        for (i, vertex) in vertices.enumerateSkipLast() {
+            let line = VoronoiLine(start: vertex, end: vertices[i + 1], voronoi: self.voronoiPoint)
+            if line.pointLiesAbove(point) != line.voronoiPointLiesAbove {
+                return false
+            }
+        }
+        if let last = vertices.last, let first = vertices.first {
+            let lastLine = VoronoiLine(start: last, end: first, voronoi: self.voronoiPoint)
+            if lastLine.pointLiesAbove(point) != lastLine.voronoiPointLiesAbove {
+                return false
+            }
+        }
+        return true
+    }
+    
 }

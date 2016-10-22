@@ -37,13 +37,13 @@ internal class VoronoiEdge: CustomStringConvertible {
     ///The focus of the right parabola.
     internal let right:CGPoint
     ///The left parabola that forms this edge via intersection with another parabola.
-    internal var leftParabola:VoronoiParabola? = nil {
+    internal weak var leftParabola:VoronoiParabola? = nil {
         didSet {
             self.leftParabola?.rightEdge = self
         }
     }
     ///The right parabola that forms this edge via intersection with another parabola.
-    internal var rightParabola:VoronoiParabola? = nil {
+    internal weak var rightParabola:VoronoiParabola? = nil {
         didSet {
             self.rightParabola?.leftEdge = self
         }

@@ -484,7 +484,22 @@ open class VoronoiDiagram: NSObject {
     
     ///Extends all edges that have not yet ended to the boundaries of the diagram.
     fileprivate func finishEdges() {
+
         for edge in self.edges {
+            
+            let containsStart = self.size.contains(point: edge.startPoint)
+            let containsEnd = edge.hasSetEnd && self.size.contains(point: edge.endPoint)
+            //Cells are only considered to be neighbors if ate last 1 of
+            //the end points of the edge connecting them are in the
+            //boundaries of the diagram. If not, then the edge bordering the
+            //two cells occurs entirely outside the diagram, meaning, while
+            //they're technically neighbors, we don't consider them so for the
+            //the purpose of this implementation because the diagram is bounded.
+            if (containsStart && containsEnd) || (containsStart != containsEnd) {
+                edge.leftCell.add(neighbor: edge.rightCell)
+                edge.rightCell.add(neighbor: edge.leftCell)
+            }
+            
             guard !edge.hasSetEnd else {
                 continue
             }
