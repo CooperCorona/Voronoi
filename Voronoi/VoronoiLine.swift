@@ -37,7 +37,7 @@ internal struct VoronoiLine {
         return self.startPoint.y - self.slope * self.startPoint.x
     }
     ///true if this line is vertical (the start and end points have the same x-coordinate), false otherwise.
-    internal var isVertical:Bool { return self.directionVector.x ~= 0.0 }
+    internal var isVertical:Bool { return self.startPoint.x ~= self.endPoint.x }
     ///true if the voronoi point associated with this line lies above this line, false if below.
     internal fileprivate(set) var voronoiPointLiesAbove:Bool = false
     
