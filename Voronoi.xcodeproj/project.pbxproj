@@ -18,32 +18,32 @@
 		DC11AF741CFFCC72001439BA /* VoronoiSiteEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */; };
 		DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */; };
 		DC11AF801CFFCF97001439BA /* Circle.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC11AF7F1CFFCF97001439BA /* Circle.swift */; };
-		DC33F9BD1D88840B0089AA5D /* CoronaConvenience.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC33F9AD1D8883FA0089AA5D /* CoronaConvenience.framework */; };
-		DC33F9BE1D88840B0089AA5D /* CoronaGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC33F9BC1D8884010089AA5D /* CoronaGL.framework */; };
-		DC33F9BF1D88840B0089AA5D /* CoronaStructures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC33F9B41D8883FE0089AA5D /* CoronaStructures.framework */; };
+		DC7DCC861DE261F000318212 /* CoronaConvenience.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCAC32181DD180BF006F85DA /* CoronaConvenience.framework */; };
+		DC7DCC871DE261F000318212 /* CoronaGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCAC32241DD180C8006F85DA /* CoronaGL.framework */; };
+		DC7DCC881DE261F000318212 /* CoronaStructures.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCAC321E1DD180C4006F85DA /* CoronaStructures.framework */; };
 		DC8F110C1D0CB33800353DFB /* VoronoiLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F110B1D0CB33800353DFB /* VoronoiLine.swift */; };
 		DC8F11191D0CD19B00353DFB /* GLSVoronoiSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F11181D0CD19B00353DFB /* GLSVoronoiSprite.swift */; };
 		DC8F111F1D0CD21700353DFB /* VoronoiDiagram+Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F111E1D0CD21700353DFB /* VoronoiDiagram+Factory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		DC33F9AC1D8883FA0089AA5D /* PBXContainerItemProxy */ = {
+		DCAC32171DD180BF006F85DA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DC33F9A81D8883FA0089AA5D /* CoronaConvenience.xcodeproj */;
+			containerPortal = DCAC32131DD180BF006F85DA /* CoronaConvenience.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = DC4D07951D7D233A00862432;
 			remoteInfo = CoronaConvenience;
 		};
-		DC33F9B31D8883FE0089AA5D /* PBXContainerItemProxy */ = {
+		DCAC321D1DD180C4006F85DA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DC33F9AE1D8883FE0089AA5D /* CoronaStructures.xcodeproj */;
+			containerPortal = DCAC32191DD180C4006F85DA /* CoronaStructures.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = DC7428CE1D7F4446001AF8E1;
 			remoteInfo = CoronaStructures;
 		};
-		DC33F9BB1D8884010089AA5D /* PBXContainerItemProxy */ = {
+		DCAC32231DD180C8006F85DA /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = DC33F9B51D8884010089AA5D /* CoronaGL.xcodeproj */;
+			containerPortal = DCAC321F1DD180C8006F85DA /* CoronaGL.xcodeproj */;
 			proxyType = 2;
 			remoteGlobalIDString = DC5CDC891D80B30F008C2A8D;
 			remoteInfo = CoronaGL;
@@ -64,12 +64,12 @@
 		DC11AF731CFFCC72001439BA /* VoronoiSiteEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiSiteEvent.swift; sourceTree = "<group>"; };
 		DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiCircleEvent.swift; sourceTree = "<group>"; };
 		DC11AF7F1CFFCF97001439BA /* Circle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Circle.swift; sourceTree = "<group>"; };
-		DC33F9A81D8883FA0089AA5D /* CoronaConvenience.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaConvenience.xcodeproj; path = "../Refactored Dependencies/CoronaConvenience/CoronaConvenience.xcodeproj"; sourceTree = "<group>"; };
-		DC33F9AE1D8883FE0089AA5D /* CoronaStructures.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaStructures.xcodeproj; path = "../Refactored Dependencies/CoronaStructures/CoronaStructures.xcodeproj"; sourceTree = "<group>"; };
-		DC33F9B51D8884010089AA5D /* CoronaGL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaGL.xcodeproj; path = "../Refactored Dependencies/CoronaGL/CoronaGL.xcodeproj"; sourceTree = "<group>"; };
 		DC8F110B1D0CB33800353DFB /* VoronoiLine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiLine.swift; sourceTree = "<group>"; };
 		DC8F11181D0CD19B00353DFB /* GLSVoronoiSprite.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GLSVoronoiSprite.swift; sourceTree = "<group>"; };
 		DC8F111E1D0CD21700353DFB /* VoronoiDiagram+Factory.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "VoronoiDiagram+Factory.swift"; sourceTree = "<group>"; };
+		DCAC32131DD180BF006F85DA /* CoronaConvenience.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaConvenience.xcodeproj; path = ../CoronaConvenience/CoronaConvenience.xcodeproj; sourceTree = "<group>"; };
+		DCAC32191DD180C4006F85DA /* CoronaStructures.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaStructures.xcodeproj; path = ../CoronaStructures/CoronaStructures.xcodeproj; sourceTree = "<group>"; };
+		DCAC321F1DD180C8006F85DA /* CoronaGL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaGL.xcodeproj; path = ../CoronaGL/CoronaGL.xcodeproj; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,9 +77,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DC33F9BD1D88840B0089AA5D /* CoronaConvenience.framework in Frameworks */,
-				DC33F9BE1D88840B0089AA5D /* CoronaGL.framework in Frameworks */,
-				DC33F9BF1D88840B0089AA5D /* CoronaStructures.framework in Frameworks */,
+				DC7DCC861DE261F000318212 /* CoronaConvenience.framework in Frameworks */,
+				DC7DCC871DE261F000318212 /* CoronaGL.framework in Frameworks */,
+				DC7DCC881DE261F000318212 /* CoronaStructures.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,9 +89,9 @@
 		DC11AF1F1CFFA232001439BA = {
 			isa = PBXGroup;
 			children = (
-				DC33F9A81D8883FA0089AA5D /* CoronaConvenience.xcodeproj */,
-				DC33F9AE1D8883FE0089AA5D /* CoronaStructures.xcodeproj */,
-				DC33F9B51D8884010089AA5D /* CoronaGL.xcodeproj */,
+				DCAC32131DD180BF006F85DA /* CoronaConvenience.xcodeproj */,
+				DCAC32191DD180C4006F85DA /* CoronaStructures.xcodeproj */,
+				DCAC321F1DD180C8006F85DA /* CoronaGL.xcodeproj */,
 				DC11AF2B1CFFA232001439BA /* Voronoi */,
 				DC11AF2A1CFFA232001439BA /* Products */,
 			);
@@ -127,26 +127,26 @@
 			path = Voronoi;
 			sourceTree = "<group>";
 		};
-		DC33F9A91D8883FA0089AA5D /* Products */ = {
+		DCAC32141DD180BF006F85DA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DC33F9AD1D8883FA0089AA5D /* CoronaConvenience.framework */,
+				DCAC32181DD180BF006F85DA /* CoronaConvenience.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		DC33F9AF1D8883FE0089AA5D /* Products */ = {
+		DCAC321A1DD180C4006F85DA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DC33F9B41D8883FE0089AA5D /* CoronaStructures.framework */,
+				DCAC321E1DD180C4006F85DA /* CoronaStructures.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		DC33F9B61D8884010089AA5D /* Products */ = {
+		DCAC32201DD180C8006F85DA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				DC33F9BC1D8884010089AA5D /* CoronaGL.framework */,
+				DCAC32241DD180C8006F85DA /* CoronaGL.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -209,16 +209,16 @@
 			projectDirPath = "";
 			projectReferences = (
 				{
-					ProductGroup = DC33F9A91D8883FA0089AA5D /* Products */;
-					ProjectRef = DC33F9A81D8883FA0089AA5D /* CoronaConvenience.xcodeproj */;
+					ProductGroup = DCAC32141DD180BF006F85DA /* Products */;
+					ProjectRef = DCAC32131DD180BF006F85DA /* CoronaConvenience.xcodeproj */;
 				},
 				{
-					ProductGroup = DC33F9B61D8884010089AA5D /* Products */;
-					ProjectRef = DC33F9B51D8884010089AA5D /* CoronaGL.xcodeproj */;
+					ProductGroup = DCAC32201DD180C8006F85DA /* Products */;
+					ProjectRef = DCAC321F1DD180C8006F85DA /* CoronaGL.xcodeproj */;
 				},
 				{
-					ProductGroup = DC33F9AF1D8883FE0089AA5D /* Products */;
-					ProjectRef = DC33F9AE1D8883FE0089AA5D /* CoronaStructures.xcodeproj */;
+					ProductGroup = DCAC321A1DD180C4006F85DA /* Products */;
+					ProjectRef = DCAC32191DD180C4006F85DA /* CoronaStructures.xcodeproj */;
 				},
 			);
 			projectRoot = "";
@@ -229,25 +229,25 @@
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
-		DC33F9AD1D8883FA0089AA5D /* CoronaConvenience.framework */ = {
+		DCAC32181DD180BF006F85DA /* CoronaConvenience.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = CoronaConvenience.framework;
-			remoteRef = DC33F9AC1D8883FA0089AA5D /* PBXContainerItemProxy */;
+			remoteRef = DCAC32171DD180BF006F85DA /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DC33F9B41D8883FE0089AA5D /* CoronaStructures.framework */ = {
+		DCAC321E1DD180C4006F85DA /* CoronaStructures.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = CoronaStructures.framework;
-			remoteRef = DC33F9B31D8883FE0089AA5D /* PBXContainerItemProxy */;
+			remoteRef = DCAC321D1DD180C4006F85DA /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
-		DC33F9BC1D8884010089AA5D /* CoronaGL.framework */ = {
+		DCAC32241DD180C8006F85DA /* CoronaGL.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
 			path = CoronaGL.framework;
-			remoteRef = DC33F9BB1D8884010089AA5D /* PBXContainerItemProxy */;
+			remoteRef = DCAC32231DD180C8006F85DA /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
