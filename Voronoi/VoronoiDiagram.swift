@@ -90,7 +90,7 @@ open class VoronoiDiagram: NSObject {
             }
         }
         
-        let result = VoronoiResult(cells: self.cells, edges: self.edges, vertices: vertices)
+        let result = VoronoiDiagramResult(cells: self.cells, edges: self.edges, vertices: vertices)
         self.result = result
         return result
     }

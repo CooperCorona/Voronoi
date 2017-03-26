@@ -24,6 +24,8 @@
 		DC8F110C1D0CB33800353DFB /* VoronoiLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F110B1D0CB33800353DFB /* VoronoiLine.swift */; };
 		DC8F11191D0CD19B00353DFB /* GLSVoronoiSprite.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F11181D0CD19B00353DFB /* GLSVoronoiSprite.swift */; };
 		DC8F111F1D0CD21700353DFB /* VoronoiDiagram+Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC8F111E1D0CD21700353DFB /* VoronoiDiagram+Factory.swift */; };
+		DCDD01831E884A910064B461 /* TiledVoronoiResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDD01821E884A910064B461 /* TiledVoronoiResult.swift */; };
+		DCDD01881E884AA90064B461 /* VoronoiDiagramResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCDD01871E884AA90064B461 /* VoronoiDiagramResult.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +72,8 @@
 		DCAC32131DD180BF006F85DA /* CoronaConvenience.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaConvenience.xcodeproj; path = ../CoronaConvenience/CoronaConvenience.xcodeproj; sourceTree = "<group>"; };
 		DCAC32191DD180C4006F85DA /* CoronaStructures.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaStructures.xcodeproj; path = ../CoronaStructures/CoronaStructures.xcodeproj; sourceTree = "<group>"; };
 		DCAC321F1DD180C8006F85DA /* CoronaGL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CoronaGL.xcodeproj; path = ../CoronaGL/CoronaGL.xcodeproj; sourceTree = "<group>"; };
+		DCDD01821E884A910064B461 /* TiledVoronoiResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TiledVoronoiResult.swift; sourceTree = "<group>"; };
+		DCDD01871E884AA90064B461 /* VoronoiDiagramResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VoronoiDiagramResult.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,10 +116,12 @@
 				DC11AF341CFFAC3D001439BA /* ExposedBinarySearchTree.swift */,
 				DC8F11181D0CD19B00353DFB /* GLSVoronoiSprite.swift */,
 				DC11AF351CFFAC3D001439BA /* SwiftPriorityQueue.swift */,
+				DCDD01821E884A910064B461 /* TiledVoronoiResult.swift */,
 				DC11AF361CFFAC3D001439BA /* VoronoiCell.swift */,
 				DC11AF791CFFCC7C001439BA /* VoronoiCircleEvent.swift */,
 				DC11AF371CFFAC3D001439BA /* VoronoiDiagram.swift */,
 				DC8F111E1D0CD21700353DFB /* VoronoiDiagram+Factory.swift */,
+				DCDD01871E884AA90064B461 /* VoronoiDiagramResult.swift */,
 				DC11AF381CFFAC3D001439BA /* VoronoiEdge.swift */,
 				DC11AF391CFFAC3D001439BA /* VoronoiEvent.swift */,
 				DC8F110B1D0CB33800353DFB /* VoronoiLine.swift */,
@@ -272,6 +278,7 @@
 				DC11AF3B1CFFAC3D001439BA /* ExposedBinarySearchTree.swift in Sources */,
 				DC11AF3C1CFFAC3D001439BA /* SwiftPriorityQueue.swift in Sources */,
 				DC11AF741CFFCC72001439BA /* VoronoiSiteEvent.swift in Sources */,
+				DCDD01881E884AA90064B461 /* VoronoiDiagramResult.swift in Sources */,
 				DC11AF801CFFCF97001439BA /* Circle.swift in Sources */,
 				DC8F11191D0CD19B00353DFB /* GLSVoronoiSprite.swift in Sources */,
 				DC11AF7A1CFFCC7C001439BA /* VoronoiCircleEvent.swift in Sources */,
@@ -280,6 +287,7 @@
 				DC8F111F1D0CD21700353DFB /* VoronoiDiagram+Factory.swift in Sources */,
 				DC11AF411CFFAC3D001439BA /* VoronoiParabola.swift in Sources */,
 				DC11AF3F1CFFAC3D001439BA /* VoronoiEdge.swift in Sources */,
+				DCDD01831E884A910064B461 /* TiledVoronoiResult.swift in Sources */,
 				DC11AF3D1CFFAC3D001439BA /* VoronoiCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
