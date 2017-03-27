@@ -11,10 +11,7 @@ import UIKit
 #else
 import Cocoa
 #endif
-
-
-//TODO: Make edges contain only points lying in the diagram.
-//TODO: Make vertices contain only points lying in the diagram.
+import CoronaConvenience
 
 /**
  Enapsulates the result of a voronoi diagram.
@@ -36,12 +33,49 @@ public struct VoronoiResult {
     ///so some lie outside the diagram.
     public let vertices:[CGPoint]
     
+    ///The boundaries of the voronoi diagram.
+    public let boundaries:CGSize
+    
     ///Used by VoronoiDiagram to store the result of Fortune's algorithm.
     ///You should not (and cannot) instantiate this yourself.
-    internal init(cells:[VoronoiCell], edges:[VoronoiEdge], vertices:[CGPoint]) {
+    internal init(cells:[VoronoiCell], edges:[VoronoiEdge], vertices:[CGPoint], boundaries:CGSize) {
         self.cells = cells
         self.edges = edges.map() { (start: $0.startPoint, end: $0.endPoint) }
         self.vertices = vertices
+        self.boundaries = boundaries
     }
     
+    public func tile() -> VoronoiResult {
+        var points:[CGPoint] = []
+        for cell in self.cells {
+            points.append(cell.voronoiPoint)
+            
+            if cell.boundaryEdges.contains(.Right) && cell.boundaryEdges.contains(.Down) {
+                points.append(cell.voronoiPoint + CGPoint(x: -cell.boundaries.width, y: cell.boundaries.height))
+            }
+            if cell.boundaryEdges.contains(.Right) && cell.boundaryEdges.contains(.Up) {
+                points.append(cell.voronoiPoint + CGPoint(x: -cell.boundaries.width, y: -cell.boundaries.height))
+            }
+            if cell.boundaryEdges.contains(.Left) && cell.boundaryEdges.contains(.Down) {
+                points.append(cell.voronoiPoint + CGPoint(x: cell.boundaries.width, y: cell.boundaries.height))
+            }
+            if cell.boundaryEdges.contains(.Left) && cell.boundaryEdges.contains(.Up) {
+                points.append(cell.voronoiPoint + CGPoint(x: cell.boundaries.width, y: -cell.boundaries.height))
+            }
+            
+            if cell.boundaryEdges.contains(.Right) {
+                points.append(cell.voronoiPoint - CGPoint(x: cell.boundaries.width))
+            }
+            if cell.boundaryEdges.contains(.Left) {
+                points.append(cell.voronoiPoint + CGPoint(x: cell.boundaries.width))
+            }
+            if cell.boundaryEdges.contains(.Up) {
+                points.append(cell.voronoiPoint - CGPoint(y: cell.boundaries.height))
+            }
+            if cell.boundaryEdges.contains(.Down) {
+                points.append(cell.voronoiPoint + CGPoint(y: cell.boundaries.height))
+            }
+        }
+        return VoronoiDiagram(points: points, size: self.boundaries).sweep()
+    }
 }

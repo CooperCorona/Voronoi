@@ -34,6 +34,21 @@ open class VoronoiCell {
     internal var weakNeighbors:[WeakReference<VoronoiCell>] = []
     open var neighbors:[VoronoiCell] { return self.weakNeighbors.flatMap() { $0.object } }
     
+    ///The set of the voronoi diagram's boundaries that this
+    ///cell touches. Initialized by makeVertexLoop.
+    private var _boundaryEdges:Set<Direction2D> = []
+    open private(set) lazy var boundaryEdges:Set<Direction2D> = {
+        //We can't initialize boundaryEdges until makeVertexLoop
+        //is called, but we can't use normal lazy loading because
+        //makeVertexLoop initializes it directly. Thus, we have
+        //a private variable that makeVertexLoop initializes.
+        //Then, this public variable just sets itself to the
+        //value of the private variable, first making sure
+        //the private variable is initialized.
+        let _ = self.makeVertexLoop()
+        return self._boundaryEdges
+    }()
+    
     ///Initializes a VoronoiCell with a voronoi point and the boundaries of a VoronoiDiagram.
     public init(point:CGPoint, boundaries:CGSize) {
         self.voronoiPoint   = point
@@ -49,6 +64,21 @@ open class VoronoiCell {
         let vertices = self.windVertices()
         self.vertices = vertices
         return vertices
+    }
+    
+    fileprivate func insertBoundaryEdge(for intersection:CGPoint) {
+        if intersection.x ~= 0.0 {
+            self._boundaryEdges.insert(.Left)
+        }
+        if intersection.x ~= self.boundaries.width {
+            self._boundaryEdges.insert(.Right)
+        }
+        if intersection.y ~= 0.0 {
+            self._boundaryEdges.insert(.Down)
+        }
+        if intersection.y ~= self.boundaries.height {
+            self._boundaryEdges.insert(.Up)
+        }
     }
     
     /**
@@ -69,17 +99,34 @@ open class VoronoiCell {
             let line = VoronoiLine(start: cellEdge.startPoint, end: cellEdge.endPoint, voronoi: self.voronoiPoint)
             corners = corners.filter() { line.pointLiesAbove($0) == line.voronoiPointLiesAbove }
             
-            vertices += cellEdge.intersectionWith(self.boundaries)
+            let intersections = cellEdge.intersectionWith(self.boundaries)
+            vertices += intersections
+            for intersection in intersections {
+                self.insertBoundaryEdge(for: intersection)
+            }
             
             if frame.contains(cellEdge.startPoint) {
                 vertices.append(cellEdge.startPoint)
+                self.insertBoundaryEdge(for: cellEdge.startPoint)
             }
             if frame.contains(cellEdge.endPoint) {
                 vertices.append(cellEdge.endPoint)
+                self.insertBoundaryEdge(for: cellEdge.endPoint)
             }
         }
         vertices += corners
-        vertices = vertices.sorted() { self.voronoiPoint.angleTo($0) < self.voronoiPoint.angleTo($1) }
+        //The sorting approach only works if the voronoi point is inside
+        //all the vertices, which isn't true if the voronoi point is
+        //outside the bounds of the diagram. In that case, we need
+        //to calculate a point inside all the vertices (in this case,
+        //the geometric center). The algorithm proceeds the same,
+        //it just doesn't require the potentially expensive operation.
+        if frame.contains(self.voronoiPoint) {
+            vertices = vertices.sorted() { self.voronoiPoint.angleTo($0) < self.voronoiPoint.angleTo($1) }
+        } else {
+            let center = vertices.reduce(CGPoint.zero) { $0 + $1 } / CGFloat(vertices.count)
+            vertices = vertices.sorted() { center.angleTo($0) < center.angleTo($1) }
+        }
         vertices = self.removeDuplicates(vertices)
         return vertices
     }
