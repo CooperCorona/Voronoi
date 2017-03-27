@@ -115,7 +115,18 @@ open class VoronoiCell {
             }
         }
         vertices += corners
-        vertices = vertices.sorted() { self.voronoiPoint.angleTo($0) < self.voronoiPoint.angleTo($1) }
+        //The sorting approach only works if the voronoi point is inside
+        //all the vertices, which isn't true if the voronoi point is
+        //outside the bounds of the diagram. In that case, we need
+        //to calculate a point inside all the vertices (in this case,
+        //the geometric center). The algorithm proceeds the same,
+        //it just doesn't require the potentially expensive operation.
+        if frame.contains(self.voronoiPoint) {
+            vertices = vertices.sorted() { self.voronoiPoint.angleTo($0) < self.voronoiPoint.angleTo($1) }
+        } else {
+            let center = vertices.reduce(CGPoint.zero) { $0 + $1 } / CGFloat(vertices.count)
+            vertices = vertices.sorted() { center.angleTo($0) < center.angleTo($1) }
+        }
         vertices = self.removeDuplicates(vertices)
         return vertices
     }

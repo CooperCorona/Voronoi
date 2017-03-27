@@ -90,7 +90,7 @@ open class VoronoiDiagram: NSObject {
             }
         }
         
-        let result = VoronoiDiagramResult(cells: self.cells, edges: self.edges, vertices: vertices)
+        let result = VoronoiResult(cells: self.cells, edges: self.edges, vertices: vertices, boundaries: self.size)
         self.result = result
         return result
     }
@@ -489,16 +489,8 @@ open class VoronoiDiagram: NSObject {
             
             let containsStart = self.size.contains(point: edge.startPoint)
             let containsEnd = edge.hasSetEnd && self.size.contains(point: edge.endPoint)
-            //Cells are only considered to be neighbors if ate last 1 of
-            //the end points of the edge connecting them are in the
-            //boundaries of the diagram. If not, then the edge bordering the
-            //two cells occurs entirely outside the diagram, meaning, while
-            //they're technically neighbors, we don't consider them so for the
-            //the purpose of this implementation because the diagram is bounded.
-            if (containsStart && containsEnd) || (containsStart != containsEnd) {
-                edge.leftCell.add(neighbor: edge.rightCell)
-                edge.rightCell.add(neighbor: edge.leftCell)
-            }
+            edge.leftCell.add(neighbor: edge.rightCell)
+            edge.rightCell.add(neighbor: edge.leftCell)
             
             guard !edge.hasSetEnd else {
                 continue
