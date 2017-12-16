@@ -486,9 +486,6 @@ open class VoronoiDiagram: NSObject {
     fileprivate func finishEdges() {
 
         for edge in self.edges {
-            
-            let containsStart = self.size.contains(point: edge.startPoint)
-            let containsEnd = edge.hasSetEnd && self.size.contains(point: edge.endPoint)
             edge.leftCell.add(neighbor: edge.rightCell)
             edge.rightCell.add(neighbor: edge.leftCell)
             
