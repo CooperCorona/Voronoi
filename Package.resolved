@@ -1,0 +1,25 @@
+{
+  "object": {
+    "pins": [
+      {
+        "package": "CoronaErrors",
+        "repositoryURL": "https://github.com/CooperCorona/CoronaErrors.git",
+        "state": {
+          "branch": null,
+          "revision": "c8ea8492151f57b56462cd058aa5281726a68ed3",
+          "version": "2.0.1"
+        }
+      },
+      {
+        "package": "CoronaMath",
+        "repositoryURL": "https://github.com/CooperCorona/CoronaMath.git",
+        "state": {
+          "branch": null,
+          "revision": "6b431ba781eafdefbac4f030c0ab5186d13e9bba",
+          "version": "1.0.0"
+        }
+      }
+    ]
+  },
+  "version": 1
+}
