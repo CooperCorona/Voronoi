@@ -6,12 +6,8 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
-#if os(iOS)
-import UIKit
-#else
-import Cocoa
-#endif
-
+import Foundation
+import CoronaMath
 
 /**
  A VoronoiEvent that occurs when the sweep line crosses a voronoi point.

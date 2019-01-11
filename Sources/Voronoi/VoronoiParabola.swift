@@ -7,15 +7,7 @@
 //
 
 import Foundation
-#if os(iOS)
-import UIKit
-#else
-import Cocoa
-#endif
-
-import CoronaConvenience
-import CoronaStructures
-import CoronaGL
+import CoronaMath
 
 /**
  Represents a parabola that is part of the beach line for Fortune's algorithm.
@@ -28,10 +20,10 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
     internal let cell:VoronoiCell
     
     ///The focus of the parabola (the actual voronoi point).
-    internal let focus:CGPoint
+    internal let focus:Point
     
     ///The directrix of the parabola (VoronoiDiagram sets this to its sweepLine property).
-    internal var directix:CGFloat = 0.0
+    internal var directix:Double = 0.0
     
     ///The circle event associated with this parabola. When the circle event is
     ///processed, this parabola is removed from the tree.
@@ -75,7 +67,7 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
      - parameter x: The x-value.
      - returns: The y-value corresponding to the x-value.
      */
-    internal func yForX(_ x:CGFloat) -> CGFloat {
+    internal func yForX(_ x:Double) -> Double {
         let xMinusH = (x - self.focus.x) * (x - self.focus.x)
         let p = (self.focus.y - self.directix) / 2.0
         return xMinusH / (4.0 * p) + (self.focus.y + self.directix) / 2.0
@@ -88,7 +80,7 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
      - returns: The points at which the two parabolas collide. There will always be two points,
      unless the parabolas don't collide, in which case an empty array is returned.
      */
-    internal class func parabolaCollisions(_ focus1:CGPoint, focus2:CGPoint, directrix:CGFloat) -> [CGPoint] {
+    internal class func parabolaCollisions(_ focus1:Point, focus2:Point, directrix:Double) -> [Point] {
         let p1 = (focus1.y - directrix) / 2.0
         let p2 = (focus2.y - directrix) / 2.0
         let h1 = focus1.x
@@ -101,14 +93,14 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
             let denominator = 2.0 * (h1 - h2)
             let x = numerator / denominator
             let y = (x - h1) * (x - h1) / (4.0 * p1) + k1
-            return [CGPoint(x: x, y: y), CGPoint(x: x, y: y)]
+            return [Point(x: x, y: y), Point(x: x, y: y)]
         } else if p1 ~= 0.0 {
-            let parab = VoronoiParabola(cell: VoronoiCell(point: focus2, boundaries: CGSize.zero))
-            let point = CGPoint(x: focus1.x, y: parab.yForX(focus1.x))
+            let parab = VoronoiParabola(cell: VoronoiCell(point: focus2, boundaries: Size.zero))
+            let point = Point(x: focus1.x, y: parab.yForX(focus1.x))
             return [point, point]
         } else if p2 ~= 0.0 {
-            let parab = VoronoiParabola(cell: VoronoiCell(point: focus1, boundaries: CGSize.zero))
-            let point = CGPoint(x: focus2.x, y: parab.yForX(focus2.x))
+            let parab = VoronoiParabola(cell: VoronoiCell(point: focus1, boundaries: Size.zero))
+            let point = Point(x: focus2.x, y: parab.yForX(focus2.x))
             return [point, point]
         }
         
@@ -121,13 +113,13 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
         } else if radical == 0.0 {
             let x = -b / (2.0 * a)
             let y = (x - h1) * (x - h1) / (4.0 * p1) + k1
-            return [CGPoint(x: x, y: y), CGPoint(x: x, y: y)]
+            return [Point(x: x, y: y), Point(x: x, y: y)]
         }
         let xNeg = (-b - sqrt(radical)) / (2.0 * a)
         let xPos = (-b + sqrt(radical)) / (2.0 * a)
         let yNeg = (xNeg - h1) * (xNeg - h1) / (4.0 * p1) + k1
         let yPos = (xPos - h1) * (xPos - h1) / (4.0 * p1) + k1
-        return [CGPoint(x: xNeg, y: yNeg), CGPoint(x: xPos, y: yPos)]
+        return [Point(x: xNeg, y: yNeg), Point(x: xPos, y: yPos)]
     }
 
     ///Gets the parabola that is to the left of this parabola on the beach line.

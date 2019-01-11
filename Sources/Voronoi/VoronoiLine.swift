@@ -6,34 +6,27 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
-#if os(iOS)
-import UIKit
-#else
-import Cocoa
-#endif
-
-import CoronaConvenience
-import CoronaStructures
-import CoronaGL
+import Foundation
+import CoronaMath
 
 /**
  An extremely lightweight struct that represents a line segment.
  */
 internal struct VoronoiLine {
     ///The starting point of the line.
-    internal var startPoint:CGPoint
+    internal var startPoint:Point
     //The ending point of thte line.
-    internal var endPoint:CGPoint
+    internal var endPoint:Point
     
     ///A unit vector starting at the start point and pointing in the direction of the end point.
-    internal var directionVector:CGPoint { return (self.endPoint - self.startPoint).unit() }
+    internal var directionVector:Point { return (self.endPoint - self.startPoint).unit() }
     ///The slope of the line.
-    internal var slope:CGFloat {
+    internal var slope:Double {
         //Negative recipricol to get the actual slope perpendicular to the focii.
         return (self.endPoint.y - self.startPoint.y) / (self.endPoint.x - self.startPoint.x)
     }
     ///The y-intercept of the line.
-    internal var yIntercept:CGFloat {
+    internal var yIntercept:Double {
         return self.startPoint.y - self.slope * self.startPoint.x
     }
     ///true if this line is vertical (the start and end points have the same x-coordinate), false otherwise.
@@ -41,14 +34,14 @@ internal struct VoronoiLine {
     ///true if the voronoi point associated with this line lies above this line, false if below.
     internal fileprivate(set) var voronoiPointLiesAbove:Bool = false
     
-    internal init(start:CGPoint, end:CGPoint, voronoi:CGPoint) {
+    internal init(start:Point, end:Point, voronoi:Point) {
         self.startPoint = start
         self.endPoint = end
         self.voronoiPointLiesAbove = self.pointLiesAbove(voronoi)
     }
     
     ///Returns whether a point lies above this line or not.
-    internal func pointLiesAbove(_ point:CGPoint) -> Bool {
+    internal func pointLiesAbove(_ point:Point) -> Bool {
         if self.isVertical {
             return point.x < self.startPoint.x
         } else {

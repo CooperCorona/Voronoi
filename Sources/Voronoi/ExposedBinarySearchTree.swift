@@ -7,9 +7,7 @@
 //
 
 import Foundation
-import CoronaConvenience
-import CoronaStructures
-import CoronaGL
+import CoronaMath
 
 public protocol ExposedBinarySearchTreeProtocol: class, Comparable {
     

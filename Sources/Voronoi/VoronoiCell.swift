@@ -6,15 +6,13 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
-#if os(iOS)
-import UIKit
-#else
-import Cocoa
-#endif
+import Foundation
+import CoronaMath
 
-import CoronaConvenience
-import CoronaStructures
-import CoronaGL
+internal func ~=(lhs:Double, rhs:Double) -> Bool {
+    let epsilon = 0.00001
+    return abs(lhs - rhs) < epsilon
+}
 
 /**
  Combines a voronoi point and the edges / vertices around it.
@@ -22,17 +20,17 @@ import CoronaGL
 open class VoronoiCell {
     
     ///The original voronoi point.
-    open let voronoiPoint:CGPoint
+    public let voronoiPoint:Point
     ///The boundaries of the VoronoiDiagram.
-    open let boundaries:CGSize
+    public let boundaries:Size
     ///The vertices that form the edges of this cell.
-    fileprivate var vertices:[CGPoint]? = nil
+    fileprivate var vertices:[Point]? = nil
     ///The actual edges that form the boundaries of this cell.
     internal var cellEdges:[VoronoiEdge] = []
     ///The neighboring cells adjacent to this cell.
     ///They must be weak references because otherwise, we have retain cycles.
     internal var weakNeighbors:[WeakReference<VoronoiCell>] = []
-    open var neighbors:[VoronoiCell] { return self.weakNeighbors.flatMap() { $0.object } }
+    open var neighbors:[VoronoiCell] { return self.weakNeighbors.compactMap() { $0.object } }
     
     ///The set of the voronoi diagram's boundaries that this
     ///cell touches. Initialized by makeVertexLoop.
@@ -50,14 +48,14 @@ open class VoronoiCell {
     }()
     
     ///Initializes a VoronoiCell with a voronoi point and the boundaries of a VoronoiDiagram.
-    public init(point:CGPoint, boundaries:CGSize) {
+    public init(point:Point, boundaries:Size) {
         self.voronoiPoint   = point
         self.boundaries     = boundaries
     }
 
     ///Calculates the vertices in the correct order so they can be
     ///combined to form the edges of this cell.
-    open func makeVertexLoop() -> [CGPoint] {
+    open func makeVertexLoop() -> [Point] {
         if let vertices = self.vertices {
             return vertices
         }
@@ -66,7 +64,7 @@ open class VoronoiCell {
         return vertices
     }
     
-    fileprivate func insertBoundaryEdge(for intersection:CGPoint) {
+    fileprivate func insertBoundaryEdge(for intersection:Point) {
         if intersection.x ~= 0.0 {
             self._boundaryEdges.insert(.Left)
         }
@@ -86,15 +84,15 @@ open class VoronoiCell {
      and then sorts them according to their angle from the
      voronoi point.
     */
-    fileprivate func windVertices() -> [CGPoint] {
-        let frame = CGRect(size: self.boundaries)
+    fileprivate func windVertices() -> [Point] {
+        let frame = Rect(origin: Point.zero, size: self.boundaries)
         var corners = [
-            CGPoint(x: 0.0, y: 0.0),
-            CGPoint(x: self.boundaries.width, y: 0.0),
-            CGPoint(x: self.boundaries.width, y: self.boundaries.height),
-            CGPoint(x: 0.0, y: self.boundaries.height),
+            Point(x: 0.0, y: 0.0),
+            Point(x: self.boundaries.width, y: 0.0),
+            Point(x: self.boundaries.width, y: self.boundaries.height),
+            Point(x: 0.0, y: self.boundaries.height),
         ]
-        var vertices:[CGPoint] = []
+        var vertices:[Point] = []
         for cellEdge in self.cellEdges {
             let line = VoronoiLine(start: cellEdge.startPoint, end: cellEdge.endPoint, voronoi: self.voronoiPoint)
             corners = corners.filter() { line.pointLiesAbove($0) == line.voronoiPointLiesAbove }
@@ -104,12 +102,12 @@ open class VoronoiCell {
             for intersection in intersections {
                 self.insertBoundaryEdge(for: intersection)
             }
-            
-            if frame.contains(cellEdge.startPoint) {
+
+            if frame.contains(point: cellEdge.startPoint) {
                 vertices.append(cellEdge.startPoint)
                 self.insertBoundaryEdge(for: cellEdge.startPoint)
             }
-            if frame.contains(cellEdge.endPoint) {
+            if frame.contains(point: cellEdge.endPoint) {
                 vertices.append(cellEdge.endPoint)
                 self.insertBoundaryEdge(for: cellEdge.endPoint)
             }
@@ -121,11 +119,11 @@ open class VoronoiCell {
         //to calculate a point inside all the vertices (in this case,
         //the geometric center). The algorithm proceeds the same,
         //it just doesn't require the potentially expensive operation.
-        if frame.contains(self.voronoiPoint) {
-            vertices = vertices.sorted() { self.voronoiPoint.angleTo($0) < self.voronoiPoint.angleTo($1) }
+        if frame.contains(point: self.voronoiPoint) {
+            vertices = vertices.sorted() { self.voronoiPoint.angle(to: $0) < self.voronoiPoint.angle(to: $1) }
         } else {
-            let center = vertices.reduce(CGPoint.zero) { $0 + $1 } / CGFloat(vertices.count)
-            vertices = vertices.sorted() { center.angleTo($0) < center.angleTo($1) }
+            let center = vertices.reduce(Point.zero) { $0 + $1 } / Double(vertices.count)
+            vertices = vertices.sorted() { center.angle(to: $0) < center.angle(to: $1) }
         }
         vertices = self.removeDuplicates(vertices)
         return vertices
@@ -139,7 +137,7 @@ open class VoronoiCell {
      - parameter vertices: An array of points.
      - returns: The array of points with duplicate (and adjacent) vertices removed.
      */
-    fileprivate func removeDuplicates(_ vertices:[CGPoint]) -> [CGPoint] {
+    fileprivate func removeDuplicates(_ vertices:[Point]) -> [Point] {
         var i = 0
         var filteredVertices = vertices
         while i < filteredVertices.count - 1 {
@@ -164,12 +162,12 @@ open class VoronoiCell {
 
 extension VoronoiCell {
     
-    public func contains(point:CGPoint) -> Bool {
+    public func contains(point:Point) -> Bool {
         //Ideally, the user has already called makeVertexLoop.
         //If not, we incur the expensive calculations (but
         //guarantee that the vertices exist).
         let vertices = self.makeVertexLoop()
-        for (i, vertex) in vertices.enumerateSkipLast() {
+        for (i, vertex) in vertices.enumerated().dropLast() {
             let line = VoronoiLine(start: vertex, end: vertices[i + 1], voronoi: self.voronoiPoint)
             if line.pointLiesAbove(point) != line.voronoiPointLiesAbove {
                 return false

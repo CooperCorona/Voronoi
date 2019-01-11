@@ -6,27 +6,23 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
-#if os(iOS)
-import UIKit
-#else
-import Cocoa
-#endif
-
+import Foundation
+import CoronaMath
 
 ///Represents a circle defined by its center and radius. Used to 
 ///calculate VoronoiCircleEvents.
 public struct Circle {
     
     ///The center of the circle.
-    public var center = CGPoint.zero
+    public var center = Point.zero
     ///The radius of the circle.
-    public var radius:CGFloat = 0.0
+    public var radius:Double = 0.0
     
     public init() {
         
     }
     
-    public init(center:CGPoint, radius:CGFloat) {
+    public init(center:Point, radius:Double) {
         self.center = center
         self.radius = radius
     }

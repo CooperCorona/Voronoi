@@ -20,6 +20,6 @@ let package = Package(
             dependencies: ["CoronaMath"]),
         .testTarget(
             name: "VoronoiTests",
-            dependencies: ["Voronoi"]),
+            dependencies: ["Voronoi", "CoronaMath"]),
     ]
 )
