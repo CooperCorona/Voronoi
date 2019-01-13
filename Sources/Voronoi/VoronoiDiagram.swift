@@ -15,7 +15,7 @@ import CoronaMath
  Given a set of voronoi points and the boundaries of the diagram, uses Fortune's
  algorithm to calculate the edges between the voronoi points.
  */
-open class VoronoiDiagram: NSObject {
+open class VoronoiDiagram {
     
     ///An array of voronoi points.
     public let points:[Point]
@@ -51,8 +51,6 @@ open class VoronoiDiagram: NSObject {
         self.points = points
         self.size   = size
         self.cells  = points.map() { VoronoiCell(point: $0, boundaries: size) }
-        
-        super.init()
         
         for cell in self.cells {
             self.events.push(VoronoiSiteEvent(cell: cell))
