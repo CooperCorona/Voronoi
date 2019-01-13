@@ -29,7 +29,7 @@ open class VoronoiCell {
     internal var cellEdges:[VoronoiEdge] = []
     ///The neighboring cells adjacent to this cell.
     ///They must be weak references because otherwise, we have retain cycles.
-    internal var weakNeighbors:[WeakReference<VoronoiCell>] = []
+    internal var weakNeighbors:Set<WeakReference<VoronoiCell>> = []
     open var neighbors:[VoronoiCell] { return self.weakNeighbors.compactMap() { $0.object } }
     
     ///The set of the voronoi diagram's boundaries that this
@@ -155,7 +155,7 @@ open class VoronoiCell {
      - parameter neighbor: The cell adjacent to this cell to mark as a neighbor.
      */
     internal func add(neighbor:VoronoiCell) {
-        self.weakNeighbors.append(WeakReference(object: neighbor))
+        self.weakNeighbors.insert(WeakReference(object: neighbor))
     }
     
 }
