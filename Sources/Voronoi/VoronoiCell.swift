@@ -96,20 +96,14 @@ open class VoronoiCell {
         for cellEdge in self.cellEdges {
             let line = VoronoiLine(start: cellEdge.startPoint, end: cellEdge.endPoint, voronoi: self.voronoiPoint)
             corners = corners.filter() { line.pointLiesAbove($0) == line.voronoiPointLiesAbove }
-            
+
             let intersections = cellEdge.intersectionWith(self.boundaries)
             vertices += intersections
-            for intersection in intersections {
-                self.insertBoundaryEdge(for: intersection)
-            }
-
             if frame.contains(point: cellEdge.startPoint) {
                 vertices.append(cellEdge.startPoint)
-                self.insertBoundaryEdge(for: cellEdge.startPoint)
             }
             if frame.contains(point: cellEdge.endPoint) {
                 vertices.append(cellEdge.endPoint)
-                self.insertBoundaryEdge(for: cellEdge.endPoint)
             }
         }
         vertices += corners
@@ -126,6 +120,7 @@ open class VoronoiCell {
             vertices = vertices.sorted() { center.angle(to: $0) < center.angle(to: $1) }
         }
         vertices = self.removeDuplicates(vertices)
+        self._boundaryEdges = self.calculateBoundaryEdges(vertices: vertices)
         return vertices
     }
     
@@ -148,6 +143,30 @@ open class VoronoiCell {
             }
         }
         return filteredVertices
+    }
+
+    /**
+     Determines which edges of the voronoi diagram this cell touches.
+     - parameter vertices: The vertices of this cell.
+     - returns: A set of directions corresponding to which edges of the boundaries this cell touches.
+     */
+    fileprivate func calculateBoundaryEdges(vertices:[Point]) -> Set<Direction2D> {
+        var edges:Set<Direction2D> = []
+        for vertex in vertices {
+            if vertex.x ~= 0.0 {
+                edges.insert(.Left)
+            }
+            if vertex.x ~= self.boundaries.width {
+                edges.insert(.Right)
+            }
+            if vertex.y ~= 0.0 {
+                edges.insert(.Down)
+            }
+            if vertex.y ~= self.boundaries.height {
+                edges.insert(.Up)
+            }
+        }
+        return edges
     }
 
     /**

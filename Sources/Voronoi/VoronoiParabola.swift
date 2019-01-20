@@ -14,7 +14,7 @@ import CoronaMath
  Stores the edges connected to this parabola and the cell associated with its focus.
  Also acts as a node for a binary search tree.
  */
-internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
+internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol, CustomStringConvertible {
     
     ///The cell associated with this parabola's focus.
     internal let cell:VoronoiCell
@@ -59,6 +59,10 @@ internal final class VoronoiParabola: ExposedBinarySearchTreeProtocol {
         self.cell       = cell
         self.focus      = cell.voronoiPoint
         self.directix   = cell.voronoiPoint.y
+    }
+
+    internal var description: String {
+        return "\(self.cell.voronoiPoint)"
     }
     
     /**

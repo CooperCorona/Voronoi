@@ -227,7 +227,7 @@ open class VoronoiDiagram {
             rightEdge.leftParabola  = newParab  
             rightEdge.rightParabola = rParab
             
-            self.checkCircleEventForParabola(lParab)
+            self.checkCircleEventForParabola(leftParab)
             self.checkCircleEventForParabola(rParab)
             return
         } else if let rParab = parab.getParabolaToRight() , VoronoiParabola.parabolaCollisions(parab.focus, focus2: rParab.focus, directrix: self.sweepLine).contains(where: { $0.x ~= point.x }) {
@@ -277,7 +277,6 @@ open class VoronoiDiagram {
             rightEdge.rightParabola = rightParab
             
             self.checkCircleEventForParabola(lParab)
-            self.checkCircleEventForParabola(newParab)
             self.checkCircleEventForParabola(rightParab)
             return
         }
@@ -392,11 +391,9 @@ open class VoronoiDiagram {
         guard let circle        = VoronoiDiagram.calculateCircle([leftChild.focus, parabola.focus, rightChild.focus]) else {
             return
         }
-        
         guard circle.center.y + circle.radius >= self.sweepLine else {
             return
         }
-        
         guard let leftEdge = leftChild.rightEdge, let rightEdge = rightChild.leftEdge, let _ = self.calculateCollisionOfEdges(leftEdge, right: rightEdge) else {
             return
         }
@@ -534,7 +531,6 @@ open class VoronoiDiagram {
         let cNeg        = points[1].x - points[0].x
         let x           = (aSquared * a + bSquared * b + cSquared * c) / d
         let y           = (aSquared * aNeg + bSquared * bNeg + cSquared * cNeg) / d
-        
         let center = Point(x: x, y: y)
         return Circle(center: center, radius: center.distanceFrom(vector: points[0]))
     }
