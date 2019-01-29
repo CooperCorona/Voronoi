@@ -35,43 +35,53 @@ public struct VoronoiResult {
     ///Used by VoronoiDiagram to store the result of Fortune's algorithm.
     ///You should not (and cannot) instantiate this yourself.
     internal init(cells:[VoronoiCell], edges:[VoronoiEdge], vertices:[Point], boundaries:Size) {
-        self.cells = cells
+        self.cells = cells.filter() { !$0.isSymmetricCell }
         self.edges = edges.map() { (start: $0.startPoint, end: $0.endPoint) }
         self.vertices = vertices
         self.boundaries = boundaries
     }
     
     public func tile() -> VoronoiResult {
-        var points:[Point] = []
+        var cells:[VoronoiCell] = []
         for cell in self.cells {
-            points.append(cell.voronoiPoint)
-            
+//            points.append(cell.voronoiPoint)
+            let newCell = VoronoiCell(point: cell.voronoiPoint, boundaries: cell.boundaries)
+            cells.append(newCell)
+
             if cell.boundaryEdges.contains(.Right) && cell.boundaryEdges.contains(.Down) {
-                points.append(cell.voronoiPoint + Point(x: -cell.boundaries.width, y: cell.boundaries.height))
+                let symmetricChild = newCell.addSymmetricChild(x: -cell.boundaries.width, y: cell.boundaries.height)
+                cells.append(symmetricChild)
             }
             if cell.boundaryEdges.contains(.Right) && cell.boundaryEdges.contains(.Up) {
-                points.append(cell.voronoiPoint + Point(x: -cell.boundaries.width, y: -cell.boundaries.height))
+                let symmetricChild = newCell.addSymmetricChild(x: -cell.boundaries.width, y: -cell.boundaries.height)
+                cells.append(symmetricChild)
             }
             if cell.boundaryEdges.contains(.Left) && cell.boundaryEdges.contains(.Down) {
-                points.append(cell.voronoiPoint + Point(x: cell.boundaries.width, y: cell.boundaries.height))
+                let symmetricChild = newCell.addSymmetricChild(x: cell.boundaries.width, y: cell.boundaries.height)
+                cells.append(symmetricChild)
             }
             if cell.boundaryEdges.contains(.Left) && cell.boundaryEdges.contains(.Up) {
-                points.append(cell.voronoiPoint + Point(x: cell.boundaries.width, y: -cell.boundaries.height))
+                let symmetricChild = newCell.addSymmetricChild(x: cell.boundaries.width, y: -cell.boundaries.height)
+                cells.append(symmetricChild)
             }
             
             if cell.boundaryEdges.contains(.Right) {
-                points.append(cell.voronoiPoint - Point(x: cell.boundaries.width, y: 0.0))
+                let symmetricChild = newCell.addSymmetricChild(x: -cell.boundaries.width, y: 0.0)
+                cells.append(symmetricChild)
             }
             if cell.boundaryEdges.contains(.Left) {
-                points.append(cell.voronoiPoint + Point(x: cell.boundaries.width, y: 0.0))
+                let symmetricChild = newCell.addSymmetricChild(x: cell.boundaries.width, y: 0.0)
+                cells.append(symmetricChild)
             }
             if cell.boundaryEdges.contains(.Up) {
-                points.append(cell.voronoiPoint - Point(x: 0.0, y: cell.boundaries.height))
+                let symmetricChild = newCell.addSymmetricChild(x: 0.0, y: -cell.boundaries.height)
+                cells.append(symmetricChild)
             }
             if cell.boundaryEdges.contains(.Down) {
-                points.append(cell.voronoiPoint + Point(x: 0.0, y: cell.boundaries.height))
+                let symmetricChild = newCell.addSymmetricChild(x: 0.0, y: cell.boundaries.height)
+                cells.append(symmetricChild)
             }
         }
-        return VoronoiDiagram(points: points, size: self.boundaries).sweep()
+        return VoronoiDiagram(cells: cells, size: self.boundaries).sweep()
     }
 }
