@@ -38,12 +38,12 @@ open class VoronoiCell {
     ///In the interest of abstraction, these cells should not be considered on their own. Instead,
     ///they pass neighbors to their parent, so a cell can have a neighbor somewhere on the opposite
     ///side of the diagram because a symmetric child lies adjacent to it.
-    internal weak var symmetricParent:VoronoiCell? = nil
-    internal var symmetricChildren:[WeakReference<VoronoiCell>] = []
+    public internal(set) weak var symmetricParent:VoronoiCell? = nil
+    public internal(set) var symmetricChildren:[VoronoiCell] = []
     ///In a tiled diagram, cells outside the diagram lying on the same axis as the original cells
     ///are created. These are called the *symmetric* cells. They are used to simulate laying a
     ///voronoi diagram side by side. These cells are not considered "real" by the result of the diagram.
-    internal var isSymmetricCell:Bool { return self.symmetricParent == nil }
+    public var isSymmetricCell:Bool { return self.symmetricParent != nil }
     ///The set of the voronoi diagram's boundaries that this
     ///cell touches. Initialized by makeVertexLoop.
     private var _boundaryEdges:Set<Direction2D> = []
@@ -193,7 +193,7 @@ open class VoronoiCell {
     internal func addSymmetricChild(x:Double, y:Double) -> VoronoiCell {
         let symmetricCell = VoronoiCell(point: self.voronoiPoint + Point(x: x, y: y), boundaries: self.boundaries)
         symmetricCell.symmetricParent = self
-        self.symmetricChildren.append(WeakReference(object: symmetricCell))
+        self.symmetricChildren.append(symmetricCell)
         return symmetricCell
     }
     
@@ -221,16 +221,4 @@ extension VoronoiCell {
         return true
     }
     
-}
-
-extension VoronoiCell: Hashable {
-
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(Unmanaged.passUnretained(self).toOpaque())
-    }
-
-}
-
-public func ==(lhs:VoronoiCell, rhs:VoronoiCell) -> Bool {
-    return lhs === rhs
 }
