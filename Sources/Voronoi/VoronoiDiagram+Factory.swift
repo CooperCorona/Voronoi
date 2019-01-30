@@ -6,17 +6,17 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
-#if os(iOS)
-import UIKit
-#else
-import Cocoa
-#endif
-
-import CoronaConvenience
-import CoronaStructures
-import CoronaGL
+import Foundation
+import CoronaMath
 
 extension VoronoiDiagram {
+
+    ///Returns a random number in the range [0, 1].
+    ///- returns: A random number in the range [0, 1].
+    private class func randomUniform() -> Double {
+        var random = SystemRandomNumberGenerator()
+        return Double.random(in: 0...1.0, using: &random)
+    }
     
     /**
      Creates a VoronoiDiagram object with a given size and random voronoi points.
@@ -26,14 +26,14 @@ extension VoronoiDiagram {
      points can be generated at.
      - returns: A VoronoiDiagram object with randomly generated voronoi points.
      */
-    public class func createWithSize(_ size:CGSize, points:Int, buffer:CGFloat = 0.0) -> VoronoiDiagram {
-        let frame = CGRect(x: buffer, y: buffer, width: size.width - 2.0 * buffer, height: size.height - 2.0 * buffer)
-        var voronoiPoints:[CGPoint] = []
+    public class func createWithSize(_ size:Size, points:Int, buffer:Double = 0.0) -> VoronoiDiagram {
+        let frame = Rect(x: buffer, y: buffer, width: size.width - 2.0 * buffer, height: size.height - 2.0 * buffer)
+        var voronoiPoints:[Point] = []
         while voronoiPoints.count < points {
-            let x = GLSParticleEmitter.randomFloat()
-            let y = GLSParticleEmitter.randomFloat()
-            let p = frame.interpolate(CGPoint(x: x, y: y))
-            if frame.contains(p) {
+            let x = VoronoiDiagram.randomUniform()
+            let y = VoronoiDiagram.randomUniform()
+            let p = frame.interpolate(point: Point(x: x, y: y))
+            if frame.contains(point: p) {
                 voronoiPoints.append(p)
             }
         }
@@ -44,21 +44,21 @@ extension VoronoiDiagram {
      Creates a VoronoiDiagram object with a given size and random voronoi points. Each
      voronoi point is generated in its own subrectangle of the boundaries.
      - parameter size: The size of the voronoi diagram.
-     - parameter rows: The number of rows of voronoi points (the total number of points is ```rows * columns```).
+     - parameter rows: The number of rows of voronoi points (the total number of points is `rows * columns`).
      - parameter columns: The number of columns of voronoi points.
      - parameter range: A number in the range (0.0, 1.0] that is multiplied into the subrectangle's size
      to constrain the position of the voronoi points.
      - returns: A VoronoiDiagram object with randomly generated (but constrained) voronoi points.
      */
-    public class func createWithSize(_ size:CGSize, rows:Int, columns:Int, range:CGFloat) -> VoronoiDiagram {
-        let pointRange = CGSize(width: size.width / CGFloat(rows), height: size.height / CGFloat(columns))
-        var voronoiPoints:[CGPoint] = []
+    public class func createWithSize(_ size:Size, rows:Int, columns:Int, range:Double) -> VoronoiDiagram {
+        let pointRange = Point(x: size.width / Double(rows), y: size.height / Double(columns))
+        var voronoiPoints:[Point] = []
         for j in 0..<columns {
             for i in 0..<rows {
-                let o = CGPoint(x: CGFloat(i) + 0.5, y: CGFloat(j) + 0.5) * pointRange
-                let x = GLSParticleEmitter.randomFloat() - 0.5
-                let y = GLSParticleEmitter.randomFloat() - 0.5
-                let p = CGPoint(x: x, y: y) * pointRange * range + o
+                let o = Point(x: Double(i) + 0.5, y: Double(j) + 0.5) * pointRange
+                let x = VoronoiDiagram.randomUniform() - 0.5
+                let y = VoronoiDiagram.randomUniform() - 0.5
+                let p = Point(x: x, y: y) * pointRange * range + o
                 voronoiPoints.append(p)
             }
         }

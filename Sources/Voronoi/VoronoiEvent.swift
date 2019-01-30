@@ -7,26 +7,18 @@
 //
 
 import Foundation
-#if os(iOS)
-import UIKit
-#else
-import Cocoa
-#endif
-
-import CoronaConvenience
-import CoronaStructures
-import CoronaGL
+import CoronaMath
 
 ///Represents an event that happens when the sweep line crosses a specific point.
 internal class VoronoiEvent: Comparable, CustomStringConvertible {
     
     ///The point at which the event is triggerred.
-    internal let point:CGPoint
+    internal let point:Point
     
     internal var description: String { return "VoronoiEvent(\(self.point))" }
     
     ///Initializes a VoronoiEvent with a given point.
-    internal init(point:CGPoint) {
+    internal init(point:Point) {
         self.point = point
     }
     

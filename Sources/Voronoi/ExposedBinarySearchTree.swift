@@ -7,9 +7,7 @@
 //
 
 import Foundation
-import CoronaConvenience
-import CoronaStructures
-import CoronaGL
+import CoronaMath
 
 public protocol ExposedBinarySearchTreeProtocol: class, Comparable {
     
@@ -117,6 +115,7 @@ extension ExposedBinarySearchTreeProtocol {
         self.left?.iterateChildren(handler)
         self.right?.iterateChildren(handler)
     }
+
 }
 
 /**
@@ -242,6 +241,12 @@ public struct ExposedBinarySearchTree<T: ExposedBinarySearchTreeProtocol>: Custo
         if let right = node.right {
             self.iterateNode(right, requireLeaf: requireLeaf, handler: handler)
         }
+    }
+
+    public func getLeaves() -> [T] {
+        var leaves:[T] = []
+        self.iterateLeaves() { leaves.append($0) }
+        return leaves
     }
     
     fileprivate static func toString(_ val:T, depth:Int) -> String {

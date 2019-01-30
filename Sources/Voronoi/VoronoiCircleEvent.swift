@@ -6,15 +6,8 @@
 //  Copyright © 2016 Cooper Knaak. All rights reserved.
 //
 
-#if os(iOS)
-import UIKit
-#else
-import Cocoa
-#endif
-
-import CoronaConvenience
-import CoronaStructures
-import CoronaGL
+import Foundation
+import CoronaMath
 
 /**
  A VoronoiEvent that occurs when the sweep line crosses the top
@@ -25,21 +18,21 @@ import CoronaGL
 internal class VoronoiCircleEvent: VoronoiEvent {
     
     ///The center of the circle. This is where the edges meet.
-    internal let center:CGPoint
+    internal let center:Point
     ///The radius of the circle.
-    internal let radius:CGFloat
+    internal let radius:Double
     ///The parabola that will be removed when the event occurs.
     internal weak var parabola:VoronoiParabola?
     
     internal override var description: String { return "VoronoiCircleEvent(\(self.point))" }
     
     ///Initializes the event with a given circle and associated parabola.
-    internal init(point:CGPoint, radius:CGFloat, parabola:VoronoiParabola) {
+    internal init(point:Point, radius:Double, parabola:VoronoiParabola) {
         self.center = point
         self.parabola = parabola
         self.radius = radius
         
-        super.init(point: point + CGPoint(y: radius))
+        super.init(point: point + Point(x: 0.0, y: radius))
     }
     
     ///Moves the sweep line to the top of the circle and removes the associated parabola.

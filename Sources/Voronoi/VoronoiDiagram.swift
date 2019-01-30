@@ -7,15 +7,7 @@
 //
 
 import Foundation
-#if os(iOS)
-import UIKit
-#else
-import Cocoa
-#endif
-
-import CoronaConvenience
-import CoronaStructures
-import CoronaGL
+import CoronaMath
 
 // TODO: Make VoronoiDiagram initializer handle duplicates and out of bounds points.
 
@@ -23,12 +15,12 @@ import CoronaGL
  Given a set of voronoi points and the boundaries of the diagram, uses Fortune's
  algorithm to calculate the edges between the voronoi points.
  */
-open class VoronoiDiagram: NSObject {
+open class VoronoiDiagram {
     
     ///An array of voronoi points.
-    open let points:[CGPoint]
+    public let points:[Point]
     ///The size of the boundary rect.
-    open let size:CGSize
+    public let size:Size
     ///The tree used to store the beach line and search when new parabolas are added.
     internal var parabolaTree = ExposedBinarySearchTree<VoronoiParabola>()
     ///The edges between two voronoi points, formed by the intersection of
@@ -40,7 +32,7 @@ open class VoronoiDiagram: NSObject {
     ///The cells that correspond to each voronoi point and encapsulate the edges / vertices around it.
     internal let cells:[VoronoiCell]
     ///The position of the sweep line. Formula: ```y = sweepLine```.
-    internal var sweepLine:CGFloat = 0.0
+    internal var sweepLine:Double = 0.0
     ///The result of sweeping (calculated by ```sweep```). Since the array of points is
     ///constant, ```sweep``` returns this value immediately if it already has been calculated.
     fileprivate var result:VoronoiResult? = nil
@@ -55,17 +47,32 @@ open class VoronoiDiagram: NSObject {
      - parameter size: The size of the the boundaries of the diagram.
      - returns: A VoronoiDiagram (that has **not** yet calculated the edges).
      */
-    public init(points:[CGPoint], size:CGSize) {
+    public init(points:[Point], size:Size) {
         self.points = points
         self.size   = size
         self.cells  = points.map() { VoronoiCell(point: $0, boundaries: size) }
-        
-        super.init()
         
         for cell in self.cells {
             self.events.push(VoronoiSiteEvent(cell: cell))
         }
         
+    }
+
+    /**
+     Initializes a VoronoiDiagram with voronoi points and boundaries.
+     - parameter cells: An array of voronoi cells contaning voronoi points.
+     Currently doesn't check for duplicates or out of bounds points.
+     - parameter size: The size of the the boundaries of the diagram.
+     - returns: A VoronoiDiagram (that has **not** yet calculated the edges).
+     */
+    internal init(cells:[VoronoiCell], size:Size) {
+        self.points = cells.map() { $0.voronoiPoint }
+        self.size = size
+        self.cells = cells
+
+        for cell in self.cells {
+            self.events.push(VoronoiSiteEvent(cell: cell))
+        }
     }
 
     ///Calculates the edges of the VoronoiDiagram. Returns a VoronoiResult that exposes
@@ -80,7 +87,7 @@ open class VoronoiDiagram: NSObject {
             self.sweepOnce()
         }
         
-        var vertices:[CGPoint] = []
+        var vertices:[Point] = []
         for edge in self.edges {
             if !vertices.contains(edge.startPoint) {
                 vertices.append(edge.startPoint)
@@ -118,7 +125,7 @@ open class VoronoiDiagram: NSObject {
      - returns: The parabola above the given x-coordinate
      (this always exists if there is a parabola in the beach line).
      */
-    internal func findParabolaAtX(_ x:CGFloat) -> VoronoiParabola? {
+    internal func findParabolaAtX(_ x:Double) -> VoronoiParabola? {
         var lastParabola:VoronoiParabola? = nil
         var currentParabola = self.parabolaTree.root
         while let parab = currentParabola {
@@ -127,7 +134,7 @@ open class VoronoiDiagram: NSObject {
                 break
             }
             let intersections = VoronoiParabola.parabolaCollisions(left.focus, focus2: right.focus, directrix: self.sweepLine)
-            let xIntersection:CGFloat
+            let xIntersection:Double
             if left.focus.y < right.focus.y {
                 xIntersection = intersections.min(by: { $0.x < $1.x })!.x
             } else {
@@ -174,7 +181,7 @@ open class VoronoiDiagram: NSObject {
             //If another point is added later in between those 2, the arbitrary y-value
             //needs to be low enough that the new edge connects ABOVE the old one.
             let y = (self.sweepLine ~= parab.focus.y ? -1_000_000.0 : parab.yForX(point.x))
-            let edge = VoronoiEdge(start: CGPoint(x: (parab.focus.x + cell.voronoiPoint.x) / 2.0, y: y), left: leftParab.cell, right: rightParab.cell)
+            let edge = VoronoiEdge(start: Point(x: (parab.focus.x + cell.voronoiPoint.x) / 2.0, y: y), left: leftParab.cell, right: rightParab.cell)
             edge.leftParabola = leftParab
             edge.rightParabola = rightParab
             self.edges.append(edge)
@@ -221,7 +228,7 @@ open class VoronoiDiagram: NSObject {
             
             lParab.directix = self.sweepLine
             let y = lParab.yForX(cell.voronoiPoint.x)
-            let p = CGPoint(x: cell.voronoiPoint.x, y: y)
+            let p = Point(x: cell.voronoiPoint.x, y: y)
             let leftEdge = VoronoiEdge(start: p, left: lParab.cell, right: newParab.cell)
             let rightEdge = VoronoiEdge(start: p, left: newParab.cell, right: rParab.cell)
             
@@ -237,7 +244,7 @@ open class VoronoiDiagram: NSObject {
             rightEdge.leftParabola  = newParab  
             rightEdge.rightParabola = rParab
             
-            self.checkCircleEventForParabola(lParab)
+            self.checkCircleEventForParabola(leftParab)
             self.checkCircleEventForParabola(rParab)
             return
         } else if let rParab = parab.getParabolaToRight() , VoronoiParabola.parabolaCollisions(parab.focus, focus2: rParab.focus, directrix: self.sweepLine).contains(where: { $0.x ~= point.x }) {
@@ -272,7 +279,7 @@ open class VoronoiDiagram: NSObject {
             
             rParab.directix = self.sweepLine
             let y = rParab.yForX(cell.voronoiPoint.x)
-            let p = CGPoint(x: cell.voronoiPoint.x, y: y)
+            let p = Point(x: cell.voronoiPoint.x, y: y)
             let leftEdge = VoronoiEdge(start: p, left: lParab.cell, right: newParab.cell)
             let rightEdge = VoronoiEdge(start: p, left: newParab.cell, right: rParab.cell)
             
@@ -287,7 +294,6 @@ open class VoronoiDiagram: NSObject {
             rightEdge.rightParabola = rightParab
             
             self.checkCircleEventForParabola(lParab)
-            self.checkCircleEventForParabola(newParab)
             self.checkCircleEventForParabola(rightParab)
             return
         }
@@ -297,7 +303,7 @@ open class VoronoiDiagram: NSObject {
         let newParab    = VoronoiParabola(cell: cell)
         parab.left      = leftParab
         //Dummy parabola, needs two children
-        parab.right     = VoronoiParabola(cell: VoronoiCell(point: CGPoint.zero, boundaries: CGSize.zero))
+        parab.right     = VoronoiParabola(cell: VoronoiCell(point: Point.zero, boundaries: Size.zero))
         parab.right?.left  = newParab
         parab.right?.right = rightParab
         
@@ -314,7 +320,7 @@ open class VoronoiDiagram: NSObject {
             parab.circleEvent = nil
         }
         
-        let start           = CGPoint(x: point.x, y: y)
+        let start           = Point(x: point.x, y: y)
         let leftEdge        = VoronoiEdge(start: start, left: parab.cell, right: cell)
         let rightEdge       = VoronoiEdge(start: start, left: cell, right: parab.cell)
         self.edges.append(leftEdge)
@@ -402,11 +408,9 @@ open class VoronoiDiagram: NSObject {
         guard let circle        = VoronoiDiagram.calculateCircle([leftChild.focus, parabola.focus, rightChild.focus]) else {
             return
         }
-        
         guard circle.center.y + circle.radius >= self.sweepLine else {
             return
         }
-        
         guard let leftEdge = leftChild.rightEdge, let rightEdge = rightChild.leftEdge, let _ = self.calculateCollisionOfEdges(leftEdge, right: rightEdge) else {
             return
         }
@@ -432,7 +436,7 @@ open class VoronoiDiagram: NSObject {
      - returns: The intersection of the edge (which is the same as the center of a circle event),
      or nil if no such intersection exists.
      */
-    fileprivate func calculateCollisionOfEdges(_ left:VoronoiEdge, right:VoronoiEdge) -> CGPoint? {
+    fileprivate func calculateCollisionOfEdges(_ left:VoronoiEdge, right:VoronoiEdge) -> Point? {
         if left.directionVector.x ~= 0.0 {
 
             let x = left.startPoint.x
@@ -446,7 +450,7 @@ open class VoronoiDiagram: NSObject {
             if (y - right.startPoint.y) / right.directionVector.y > 0.0 {
                 return nil
             }
-            return CGPoint.zero
+            return Point.zero
         } else if right.directionVector.x ~= 0.0 {
 
             let x = right.startPoint.x
@@ -460,7 +464,7 @@ open class VoronoiDiagram: NSObject {
             if (y - right.startPoint.y) / right.directionVector.y > 0.0 {
                 return nil
             }
-            return CGPoint.zero
+            return Point.zero
         }
         
         let x = (left.yIntercept - right.yIntercept) / (right.slope - left.slope)
@@ -479,7 +483,7 @@ open class VoronoiDiagram: NSObject {
             return nil
         }
         
-        return CGPoint(x: x, y: y)
+        return Point(x: x, y: y)
     }
     
     ///Extends all edges that have not yet ended to the boundaries of the diagram.
@@ -503,15 +507,15 @@ open class VoronoiDiagram: NSObject {
                 //(vertical edges that connect to the bottom like that can only occur
                 //if the first two points have the same y-value, in which case the START
                 //point is connected to the bottom, preventing this from being an issue).
-                edge.endPoint = CGPoint(x: edge.startPoint.x, y: self.size.height)
+                edge.endPoint = Point(x: edge.startPoint.x, y: self.size.height)
             } else {
-                let mx:CGFloat
+                let mx:Double
                 if edge.directionVector.x < 0.0 {
                     mx = max(self.size.width, edge.startPoint.x + 10.0)
                 } else {
                     mx = min(0.0, edge.startPoint.x - 10.0)
                 }
-                edge.endPoint = CGPoint(x: mx, y: mx * edge.slope + edge.yIntercept)
+                edge.endPoint = Point(x: mx, y: mx * edge.slope + edge.yIntercept)
             }
         }
     }
@@ -522,14 +526,13 @@ open class VoronoiDiagram: NSObject {
      - returns: The circle that intersects all 3 points, or nil if no such
      circle exists (which occurs when three points lie on a line).
      */
-    var doLog = false
-    fileprivate static func calculateCircle(_ points:[CGPoint]) -> Circle? {
+    fileprivate static func calculateCircle(_ points:[Point]) -> Circle? {
         guard points.count >= 3 else {
             return nil
         }
-        let aSquared    = points[0].dot(points[0])
-        let bSquared    = points[1].dot(points[1])
-        let cSquared    = points[2].dot(points[2])
+        let aSquared    = points[0].dot(vector: points[0])
+        let bSquared    = points[1].dot(vector: points[1])
+        let cSquared    = points[2].dot(vector: points[2])
         let a           = (points[1].y - points[2].y)
         let b           = (points[2].y - points[0].y)
         let c           = (points[0].y - points[1].y)
@@ -545,9 +548,8 @@ open class VoronoiDiagram: NSObject {
         let cNeg        = points[1].x - points[0].x
         let x           = (aSquared * a + bSquared * b + cSquared * c) / d
         let y           = (aSquared * aNeg + bSquared * bNeg + cSquared * cNeg) / d
-        
-        let center = CGPoint(x: x, y: y)
-        return Circle(center: center, radius: center.distanceFrom(points[0]))
+        let center = Point(x: x, y: y)
+        return Circle(center: center, radius: center.distanceFrom(vector: points[0]))
     }
     
 }
