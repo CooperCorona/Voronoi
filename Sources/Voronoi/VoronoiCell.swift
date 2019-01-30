@@ -29,9 +29,21 @@ open class VoronoiCell {
     internal var cellEdges:[VoronoiEdge] = []
     ///The neighboring cells adjacent to this cell.
     ///They must be weak references because otherwise, we have retain cycles.
+    ///In a tiled diagram, this includes neighbors of symmetric cells (said
+    ///symmetric cells do not have their own neighbors).
     internal var weakNeighbors:Set<WeakReference<VoronoiCell>> = []
     open var neighbors:[VoronoiCell] { return self.weakNeighbors.compactMap() { $0.object } }
-    
+
+    ///In a tiled diagram, cells outside the diagram are created. These are called the *symmetric* cells.
+    ///In the interest of abstraction, these cells should not be considered on their own. Instead,
+    ///they pass neighbors to their parent, so a cell can have a neighbor somewhere on the opposite
+    ///side of the diagram because a symmetric child lies adjacent to it.
+    public internal(set) weak var symmetricParent:VoronoiCell? = nil
+    public internal(set) var symmetricChildren:[VoronoiCell] = []
+    ///In a tiled diagram, cells outside the diagram lying on the same axis as the original cells
+    ///are created. These are called the *symmetric* cells. They are used to simulate laying a
+    ///voronoi diagram side by side. These cells are not considered "real" by the result of the diagram.
+    public var isSymmetricCell:Bool { return self.symmetricParent != nil }
     ///The set of the voronoi diagram's boundaries that this
     ///cell touches. Initialized by makeVertexLoop.
     private var _boundaryEdges:Set<Direction2D> = []
@@ -174,7 +186,15 @@ open class VoronoiCell {
      - parameter neighbor: The cell adjacent to this cell to mark as a neighbor.
      */
     internal func add(neighbor:VoronoiCell) {
+        self.symmetricParent?.add(neighbor: neighbor)
         self.weakNeighbors.insert(WeakReference(object: neighbor))
+    }
+
+    internal func addSymmetricChild(x:Double, y:Double) -> VoronoiCell {
+        let symmetricCell = VoronoiCell(point: self.voronoiPoint + Point(x: x, y: y), boundaries: self.boundaries)
+        symmetricCell.symmetricParent = self
+        self.symmetricChildren.append(symmetricCell)
+        return symmetricCell
     }
     
 }

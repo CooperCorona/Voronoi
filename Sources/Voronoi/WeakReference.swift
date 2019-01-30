@@ -36,5 +36,5 @@ public func ==<T>(lhs: WeakReference<T>, rhs: WeakReference<T>) -> Bool where T:
     guard let leftObject = lhs.object, let rightObject = rhs.object else {
         return false
     }
-    return Unmanaged.passUnretained(leftObject).toOpaque() == Unmanaged.passUnretained(rightObject).toOpaque()
+    return leftObject === rightObject
 }

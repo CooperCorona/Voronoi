@@ -58,6 +58,23 @@ open class VoronoiDiagram {
         
     }
 
+    /**
+     Initializes a VoronoiDiagram with voronoi points and boundaries.
+     - parameter cells: An array of voronoi cells contaning voronoi points.
+     Currently doesn't check for duplicates or out of bounds points.
+     - parameter size: The size of the the boundaries of the diagram.
+     - returns: A VoronoiDiagram (that has **not** yet calculated the edges).
+     */
+    internal init(cells:[VoronoiCell], size:Size) {
+        self.points = cells.map() { $0.voronoiPoint }
+        self.size = size
+        self.cells = cells
+
+        for cell in self.cells {
+            self.events.push(VoronoiSiteEvent(cell: cell))
+        }
+    }
+
     ///Calculates the edges of the VoronoiDiagram. Returns a VoronoiResult that exposes
     ///access to the diagram in different formats. If the result has already been calculated,
     ///it returns immediately rather than recalculating.
