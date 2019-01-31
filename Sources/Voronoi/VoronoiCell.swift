@@ -222,3 +222,15 @@ extension VoronoiCell {
     }
     
 }
+
+extension VoronoiCell: Hashable {
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(Unmanaged.passUnretained(self).toOpaque())
+    }
+
+}
+
+public func ==(lhs:VoronoiCell, rhs:VoronoiCell) -> Bool {
+    return lhs === rhs
+}

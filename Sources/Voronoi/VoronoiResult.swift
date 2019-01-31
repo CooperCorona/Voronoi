@@ -44,7 +44,6 @@ public struct VoronoiResult {
     public func tile() -> VoronoiResult {
         var cells:[VoronoiCell] = []
         for cell in self.cells {
-//            points.append(cell.voronoiPoint)
             let newCell = VoronoiCell(point: cell.voronoiPoint, boundaries: cell.boundaries)
             cells.append(newCell)
 
@@ -83,5 +82,18 @@ public struct VoronoiResult {
             }
         }
         return VoronoiDiagram(cells: cells, size: self.boundaries).sweep()
+    }
+
+    public func colors<R: RandomNumberGenerator>(count:Int, using random:R? = nil) -> ColorAssignment<VoronoiCell> {
+        let graph = ColorGraph<VoronoiCell>()
+        for cell in self.cells {
+            graph.add(node: cell)
+        }
+        for cell in self.cells {
+            for neighbor in cell.neighbors {
+                try! graph.addEdge(from: cell, to: neighbor)
+            }
+        }
+        return graph.colorGraph(count: count, using: random)
     }
 }
