@@ -40,11 +40,12 @@ public struct VoronoiResult {
         self.vertices = vertices
         self.boundaries = boundaries
     }
-    
+
+    ///Calculates a new `VoronoiResult` by creating pseudo voronoi points mirrored across
+    ///the image to simulate laying the voronoi diagram next to itself.
     public func tile() -> VoronoiResult {
         var cells:[VoronoiCell] = []
         for cell in self.cells {
-//            points.append(cell.voronoiPoint)
             let newCell = VoronoiCell(point: cell.voronoiPoint, boundaries: cell.boundaries)
             cells.append(newCell)
 
@@ -83,5 +84,30 @@ public struct VoronoiResult {
             }
         }
         return VoronoiDiagram(cells: cells, size: self.boundaries).sweep()
+    }
+
+    ///Assigns a "color" to each `VoronoiCell` such that neighbors do not share the same color
+    ///(assuming `count` is high enough).
+    /// - parameter count: The number of distinct states `color` can be.
+    /// - parameter random: A random number generator used to randomly assign colors.
+    public func assignColors<R: RandomNumberGenerator>(count:Int, using random:R) -> ColorAssignment<VoronoiCell> {
+        let graph = ColorGraph<VoronoiCell>()
+        for cell in self.cells {
+            graph.add(node: cell)
+        }
+        for cell in self.cells {
+            for neighbor in cell.neighbors {
+                try! graph.addEdge(from: cell, to: neighbor)
+            }
+        }
+        return graph.colorGraph(count: count, using: random)
+    }
+
+    ///Assigns a "color" to each `VoronoiCell` such that neighbors do not share the same color
+    ///(assuming `count` is high enough).
+    /// - parameter count: The number of distinct states `color` can be.
+    public func assignColors(count:Int) -> ColorAssignment<VoronoiCell> {
+        let systemRand = SystemRandomNumberGenerator()
+        return self.assignColors(count: count, using: systemRand)
     }
 }

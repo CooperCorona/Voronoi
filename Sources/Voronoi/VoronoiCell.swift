@@ -187,7 +187,7 @@ open class VoronoiCell {
      */
     internal func add(neighbor:VoronoiCell) {
         self.symmetricParent?.add(neighbor: neighbor)
-        self.weakNeighbors.insert(WeakReference(object: neighbor))
+        self.weakNeighbors.insert(WeakReference(object: neighbor.symmetricParent ?? neighbor))
     }
 
     internal func addSymmetricChild(x:Double, y:Double) -> VoronoiCell {
@@ -221,4 +221,16 @@ extension VoronoiCell {
         return true
     }
     
+}
+
+extension VoronoiCell: Hashable {
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(Unmanaged.passUnretained(self).toOpaque())
+    }
+
+}
+
+public func ==(lhs:VoronoiCell, rhs:VoronoiCell) -> Bool {
+    return lhs === rhs
 }
