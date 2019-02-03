@@ -15,16 +15,18 @@ public class WeakReference<T: AnyObject>: Hashable {
     ///The object to be wrapped.
     public private(set) weak var object:T? = nil
 
+    public var hashValue: Int {
+        if let obj = self.object {
+            return Unmanaged.passUnretained(obj).toOpaque().hashValue
+        } else {
+            return 0
+        }
+    }
+
     ///Initializes a `WeakReference` instance by wrapping the given object.
     ///- parameter object: The object to wrap in a weak reference.
     public init(object:T?) {
         self.object = object
-    }
-
-    public func hash(into hasher: inout Hasher) {
-        if let obj = object {
-            hasher.combine(Unmanaged.passUnretained(obj).toOpaque())
-        }
     }
 
 }

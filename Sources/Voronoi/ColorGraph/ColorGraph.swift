@@ -79,9 +79,10 @@ internal class ColorGraph<T: Hashable> {
     }
 
     ///Returns a function used to generate random colors.
-    private func randomGenerator<R: RandomNumberGenerator>(using random:R) -> Random  {
-        var random = random
-        return { (n:Int) in Int.random(in: 0..<n, using: &random) }
+    private func randomGenerator() -> Random  {
+        //Because the parameter is an Int, the reuslting value
+        //must be in Int's domain, so it is safe to cast it back.
+        return { (n:Int) in Int(arc4random_uniform(UInt32(n))) }
     }
 
     ///Assigns a color to `node` that is assigned to none of its neighbors.
@@ -138,17 +139,9 @@ internal class ColorGraph<T: Hashable> {
     ///share the same color (if `count` is high enough).
     /// - parameter count: The number of distinct states `color` can be.
     /// - parameter random: A random number generator used to randomly assign colors.
-    internal func colorGraph<R: RandomNumberGenerator>(count:Int, using random:R) -> ColorAssignment<T> {
-        let rand = self.randomGenerator(using: random)
-        return self._colorGraph(count: count, rand: rand)
-    }
-
-    ///Assigns a color to each node in this graph such that no two adjacent nodes
-    ///share the same color (if `count` is high enough).
-    /// - parameter count: The number of distinct states `color` can be.
     internal func colorGraph(count:Int) -> ColorAssignment<T> {
-        let systemRand = SystemRandomNumberGenerator()
-        return self.colorGraph(count: count, using: systemRand)
+        let rand = self.randomGenerator()
+        return self._colorGraph(count: count, rand: rand)
     }
 
 }
