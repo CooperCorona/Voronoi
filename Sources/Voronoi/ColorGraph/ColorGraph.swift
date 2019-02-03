@@ -80,9 +80,14 @@ internal class ColorGraph<T: Hashable> {
 
     ///Returns a function used to generate random colors.
     private func randomGenerator() -> Random  {
-        //Because the parameter is an Int, the reuslting value
-        //must be in Int's domain, so it is safe to cast it back.
-        return { (n:Int) in Int(arc4random_uniform(UInt32(n))) }
+        //drand48 generates results in range [0.0, 1.0], so it is possible
+        //to have 1.0 * n = n, but the result of this method should be in
+        //range [0, n), so the modulus is used to remove the possibility
+        //of returning n. Technically, this increases the possibility o
+        //returning 0 (since both 0 and n map to 0), but because this only
+        //occurs when drand48 returns 1, and drand48's range is the entirety
+        //of the floating point numbers between 0 and 1, this increase is negligible.
+        return { (n:Int) in Int(drand48() * Double(n)) % n }
     }
 
     ///Assigns a color to `node` that is assigned to none of its neighbors.
