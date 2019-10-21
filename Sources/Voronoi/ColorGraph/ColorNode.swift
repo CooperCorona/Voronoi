@@ -14,8 +14,8 @@ internal class ColorNode<T: Hashable>: Hashable {
     ///The value of this node's `color`.
     internal var color:Int = -1
 
-    internal var hashValue: Int {
-        return self.value.hashValue
+    func hash(into hasher:inout Hasher) {
+        hasher.combine(self.value)
     }
 
     internal init(value:T) {

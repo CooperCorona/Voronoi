@@ -5,17 +5,17 @@
         "package": "CoronaErrors",
         "repositoryURL": "https://github.com/CooperCorona/CoronaErrors.git",
         "state": {
-          "branch": null,
-          "revision": "6408325d794c499a470d3009b9e67aaec0bd5831",
-          "version": "2.0.3"
+          "branch": "Swift5",
+          "revision": "6f47f484f99523cfbd8ee4e7657a11f558c3253e",
+          "version": null
         }
       },
       {
         "package": "CoronaMath",
         "repositoryURL": "https://github.com/CooperCorona/CoronaMath.git",
         "state": {
-          "branch": "Swift4.1.3",
-          "revision": "597de60902ef038e01e4089239e6cb02bc4577ea",
+          "branch": "Swift5",
+          "revision": "f3fa24bbde67eaad476cff584bf2f7be77e0cf7c",
           "version": null
         }
       }

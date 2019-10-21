@@ -225,8 +225,8 @@ extension VoronoiCell {
 
 extension VoronoiCell: Hashable {
 
-    public var hashValue: Int {
-        return Unmanaged.passUnretained(self).toOpaque().hashValue
+    public func hash(into hasher:inout Hasher) {
+        hasher.combine(Unmanaged.passUnretained(self).toOpaque())
     }
 
 }
