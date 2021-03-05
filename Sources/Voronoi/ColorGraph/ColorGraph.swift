@@ -79,9 +79,15 @@ internal class ColorGraph<T: Hashable> {
     }
 
     ///Returns a function used to generate random colors.
-    private func randomGenerator<R: RandomNumberGenerator>(using random:R) -> Random  {
-        var random = random
-        return { (n:Int) in Int.random(in: 0..<n, using: &random) }
+    private func randomGenerator() -> Random  {
+        //drand48 generates results in range [0.0, 1.0], so it is possible
+        //to have 1.0 * n = n, but the result of this method should be in
+        //range [0, n), so the modulus is used to remove the possibility
+        //of returning n. Technically, this increases the possibility o
+        //returning 0 (since both 0 and n map to 0), but because this only
+        //occurs when drand48 returns 1, and drand48's range is the entirety
+        //of the floating point numbers between 0 and 1, this increase is negligible.
+        return { (n:Int) in Int(drand48() * Double(n)) % n }
     }
 
     ///Assigns a color to `node` that is assigned to none of its neighbors.
@@ -138,17 +144,9 @@ internal class ColorGraph<T: Hashable> {
     ///share the same color (if `count` is high enough).
     /// - parameter count: The number of distinct states `color` can be.
     /// - parameter random: A random number generator used to randomly assign colors.
-    internal func colorGraph<R: RandomNumberGenerator>(count:Int, using random:R) -> ColorAssignment<T> {
-        let rand = self.randomGenerator(using: random)
-        return self._colorGraph(count: count, rand: rand)
-    }
-
-    ///Assigns a color to each node in this graph such that no two adjacent nodes
-    ///share the same color (if `count` is high enough).
-    /// - parameter count: The number of distinct states `color` can be.
     internal func colorGraph(count:Int) -> ColorAssignment<T> {
-        let systemRand = SystemRandomNumberGenerator()
-        return self.colorGraph(count: count, using: systemRand)
+        let rand = self.randomGenerator()
+        return self._colorGraph(count: count, rand: rand)
     }
 
 }

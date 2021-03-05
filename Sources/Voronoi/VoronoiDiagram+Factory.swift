@@ -14,8 +14,7 @@ extension VoronoiDiagram {
     ///Returns a random number in the range [0, 1].
     ///- returns: A random number in the range [0, 1].
     private class func randomUniform() -> Double {
-        var random = SystemRandomNumberGenerator()
-        return Double.random(in: 0...1.0, using: &random)
+        return drand48()
     }
     
     /**
