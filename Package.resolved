@@ -2,21 +2,30 @@
   "object": {
     "pins": [
       {
+        "package": "COpenBlas",
+        "repositoryURL": "https://github.com/CooperCorona/COpenBlas",
+        "state": {
+          "branch": null,
+          "revision": "0a17e5cd39159120313092b8614dde1186855146",
+          "version": "1.1.0"
+        }
+      },
+      {
         "package": "CoronaErrors",
         "repositoryURL": "https://github.com/CooperCorona/CoronaErrors.git",
         "state": {
-          "branch": "Swift5",
-          "revision": "6f47f484f99523cfbd8ee4e7657a11f558c3253e",
-          "version": null
+          "branch": null,
+          "revision": "14b3459de494f16dbd09b9bf3f732312587a0472",
+          "version": "2.0.4"
         }
       },
       {
         "package": "CoronaMath",
         "repositoryURL": "https://github.com/CooperCorona/CoronaMath.git",
         "state": {
-          "branch": "Swift5",
-          "revision": "f3fa24bbde67eaad476cff584bf2f7be77e0cf7c",
-          "version": null
+          "branch": null,
+          "revision": "b4a1a8604ee08cb8534b157f551e49c97a2be6ee",
+          "version": "2.0.0"
         }
       }
     ]

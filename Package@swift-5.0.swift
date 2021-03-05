@@ -12,7 +12,7 @@ let package = Package(
             targets: ["Voronoi"]),
     ],
     dependencies: [
-	.package(url: "https://github.com/CooperCorona/CoronaMath.git", .branch("Swift5"))
+        .package(url: "https://github.com/CooperCorona/CoronaMath.git", .upToNextMajor(from: "2.0.0"))
     ],
     targets: [
         .target(
